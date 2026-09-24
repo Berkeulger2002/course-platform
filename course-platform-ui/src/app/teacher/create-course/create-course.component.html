@@ -1,0 +1,291 @@
+<div class="create-course-page">
+
+  <!-- ===================================================== -->
+  <!-- BAŞLIK -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        ➕ Yeni Kurs Oluştur
+      </h1>
+
+      <p>
+        Yeni bir eğitim oluşturun,
+        kapak görselinizi ve kurs videonuzu yükleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="cancel-top-button"
+      (click)="cancel()"
+      [disabled]="isUploading"
+    >
+      ← Ana Sayfaya Dön
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- FORM -->
+  <!-- ===================================================== -->
+
+  <div class="course-card">
+
+    <form
+      #courseForm="ngForm"
+      (ngSubmit)="addCourse()"
+    >
+
+      <!-- KURS ADI -->
+      <div class="form-group">
+
+        <label>
+          Kurs Adı
+        </label>
+
+        <input
+          type="text"
+          name="name"
+          [(ngModel)]="newCourse.name"
+          placeholder="Örn: Sıfırdan İleri Seviye Java"
+          [disabled]="isUploading"
+          required
+        >
+
+      </div>
+
+
+      <!-- AÇIKLAMA -->
+      <div class="form-group">
+
+        <label>
+          Kurs Açıklaması
+        </label>
+
+        <textarea
+          name="description"
+          [(ngModel)]="newCourse.description"
+          placeholder="Bu kursta öğrenciler neler öğrenecek?"
+          rows="6"
+          [disabled]="isUploading"
+          required
+        ></textarea>
+
+      </div>
+
+
+      <!-- FİYAT -->
+      <div class="form-group">
+
+        <label>
+          Fiyat (TL)
+        </label>
+
+        <input
+          type="number"
+          name="price"
+          [(ngModel)]="newCourse.price"
+          placeholder="Örn: 299"
+          min="0"
+          [disabled]="isUploading"
+          required
+        >
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- GÖRSEL -->
+      <!-- ================================================= -->
+
+      <div class="upload-section">
+
+        <div class="upload-header">
+
+          <div class="upload-icon">
+            🖼️
+          </div>
+
+          <div>
+
+            <h3>
+              Kurs Kapak Görseli
+            </h3>
+
+            <p>
+              Öğrencilerin kurs mağazasında
+              göreceği görsel.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <input
+          class="file-input"
+          type="file"
+          accept="image/*"
+          (change)="onImageSelected($event)"
+          [disabled]="isUploading"
+        >
+
+
+        <div
+          *ngIf="imagePreview"
+          class="image-preview"
+        >
+
+          <p>
+            Görsel Önizleme
+          </p>
+
+          <img
+            [src]="imagePreview"
+            alt="Kurs görseli"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- VIDEO -->
+      <!-- ================================================= -->
+
+      <div class="upload-section">
+
+        <div class="upload-header">
+
+          <div class="upload-icon">
+            🎥
+          </div>
+
+          <div>
+
+            <h3>
+              Kurs Videosu
+            </h3>
+
+            <p>
+              Video ImageKit'e private
+              olarak yüklenecektir.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <input
+          class="file-input"
+          type="file"
+          accept="video/*"
+          (change)="onVideoSelected($event)"
+          [disabled]="isUploading"
+        >
+
+
+        <div
+          *ngIf="selectedVideoName"
+          class="selected-file"
+        >
+
+          <span>
+            🎬
+          </span>
+
+          <div>
+
+            <strong>
+              Seçilen video
+            </strong>
+
+            <p>
+              {{ selectedVideoName }}
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- YÜKLENİYOR -->
+      <!-- ================================================= -->
+
+      <div
+        *ngIf="isUploading"
+        class="uploading-box"
+      >
+
+        <div class="spinner">
+          ⏳
+        </div>
+
+        <div>
+
+          <strong>
+            Kurs oluşturuluyor...
+          </strong>
+
+          <p>
+            Görsel ve video yükleniyor.
+            Lütfen bu sayfayı kapatmayın.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- BUTTONS -->
+      <!-- ================================================= -->
+
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="cancel()"
+          [disabled]="isUploading"
+        >
+          İptal
+        </button>
+
+
+        <button
+          type="submit"
+          class="publish-button"
+          [disabled]="
+            isUploading ||
+            courseForm.invalid
+          "
+        >
+
+          {{
+            isUploading
+              ? '⏳ Yükleniyor...'
+              : '🚀 Kursu Yayınla'
+          }}
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

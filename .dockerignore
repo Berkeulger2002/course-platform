@@ -1,0 +1,28 @@
+.git
+.gitignore
+
+.idea
+.vscode
+
+.DS_Store
+
+**/node_modules
+**/dist
+**/target
+
+**/*.log
+**/*.tmp
+
+# =============================================================
+# LOCAL SECRETS
+# =============================================================
+#
+# Gizli anahtarlar hiçbir şekilde Docker image içine
+# girmemeli.
+#
+# Production'da bunları Render Environment Variables
+# üzerinden vereceğiz.
+# =============================================================
+
+**/.course-platform-secrets.properties
+**/*secrets*.properties

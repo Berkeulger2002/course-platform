@@ -1,0 +1,321 @@
+* {
+  box-sizing: border-box;
+}
+
+.panel-container {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: Arial, sans-serif;
+}
+
+
+/* ============================= */
+/* SIDEBAR */
+/* ============================= */
+
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+
+  background: #172554;
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  overflow-y: auto;
+}
+
+
+.logo-area {
+  padding: 25px 20px;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+.logo-area h2 {
+  margin: 0;
+
+  font-size: 20px;
+}
+
+
+.logo-area p {
+  margin: 8px 0 0;
+
+  color: #b8c2e0;
+
+  font-size: 13px;
+}
+
+
+/* ============================= */
+/* MENU */
+/* ============================= */
+
+.menu {
+  padding: 20px 10px;
+
+  flex: 1;
+}
+
+
+.menu a {
+  display: block;
+
+  color: #dbe4ff;
+
+  text-decoration: none;
+
+  padding: 13px 15px;
+
+  margin-bottom: 5px;
+
+  border-radius: 7px;
+
+  transition: 0.2s;
+}
+
+
+.menu a:hover {
+  background: rgba(255, 255, 255, 0.1);
+
+  color: white;
+}
+
+
+.menu a.active {
+  background: #2563eb;
+
+  color: white;
+}
+
+
+/* ============================= */
+/* BİLDİRİM MENÜSÜ */
+/* ============================= */
+
+.notification-menu-link {
+  display: flex !important;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+
+/* ============================= */
+/* OKUNMAMIŞ BİLDİRİM ROZETİ */
+/* ============================= */
+
+.notification-badge {
+  min-width: 24px;
+
+  height: 24px;
+
+  padding: 0 7px;
+
+  flex-shrink: 0;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: #ef4444;
+
+  color: white;
+
+  border:
+    2px solid rgba(255, 255, 255, 0.85);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  line-height: 1;
+
+  box-shadow:
+    0 3px 8px rgba(239, 68, 68, 0.35);
+}
+
+
+/*
+ * Bildirimler sayfası aktifken
+ * öğretmen panelindeki gibi
+ * badge beyaz görünür.
+ */
+.notification-menu-link.active
+.notification-badge {
+  background: white;
+
+  color: #2563eb;
+
+  border-color: white;
+
+  box-shadow: none;
+}
+
+
+/* ============================= */
+/* LOGOUT */
+/* ============================= */
+
+.logout-button {
+  margin: 15px;
+
+  padding: 12px;
+
+  border: none;
+
+  border-radius: 7px;
+
+  background: #dc3545;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+.logout-button:hover {
+  background: #bb2d3b;
+}
+
+
+/* ============================= */
+/* MAIN AREA */
+/* ============================= */
+
+.main-area {
+  flex: 1;
+
+  margin-left: 260px;
+
+  min-height: 100vh;
+}
+
+
+/* ============================= */
+/* TOPBAR */
+/* ============================= */
+
+.topbar {
+  min-height: 90px;
+
+  background: white;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 15px 30px;
+}
+
+
+.topbar h2 {
+  margin: 0;
+
+  color: #1f2937;
+}
+
+
+.topbar p {
+  margin: 5px 0 0;
+
+  color: #6b7280;
+}
+
+
+/* ============================= */
+/* PROFILE */
+/* ============================= */
+
+.profile-area {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.profile-area small {
+  display: block;
+
+  color: #6b7280;
+
+  margin-top: 3px;
+}
+
+
+.avatar {
+  width: 42px;
+
+  height: 42px;
+
+  border-radius: 50%;
+
+  background: #e5e7eb;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* ============================= */
+/* CONTENT */
+/* ============================= */
+
+.content-area {
+  padding: 30px;
+}
+
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 900px) {
+
+  .sidebar {
+    width: 210px;
+  }
+
+
+  .main-area {
+    margin-left: 210px;
+  }
+
+
+  .topbar {
+    padding: 15px 20px;
+  }
+
+
+  .content-area {
+    padding: 20px;
+  }
+}

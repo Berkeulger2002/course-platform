@@ -1,0 +1,729 @@
+<div>
+
+  <!-- ====================================================== -->
+  <!-- SAYFA BAŞLIĞI -->
+  <!-- ====================================================== -->
+
+  <div style="margin-bottom: 30px;">
+
+    <h1
+      style="
+        margin: 0;
+        color: #1f2937;
+      "
+    >
+      🎓 Kurslarım
+    </h1>
+
+    <p
+      style="
+        color: #6b7280;
+        margin-top: 8px;
+      "
+    >
+      Satın aldığınız eğitimlere buradan devam edebilirsiniz.
+    </p>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- VIDEO PLAYER -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="selectedVideoCourse"
+    style="
+      background: #111827;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    "
+  >
+
+    <!-- VIDEO BAŞLIĞI -->
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      "
+    >
+
+      <div>
+
+        <h2
+          style="
+            margin: 0;
+            color: white;
+          "
+        >
+          {{ selectedVideoCourse?.name }}
+        </h2>
+
+        <p
+          style="
+            color: #9ca3af;
+            margin: 5px 0 0;
+          "
+        >
+          🎬 Kurs videosu
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        (click)="closeCourseVideo()"
+        style="
+          border: none;
+          background: #dc3545;
+          color: white;
+          padding: 9px 15px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: bold;
+        "
+      >
+        ✕ Kapat
+      </button>
+
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- VIDEO YÜKLENİYOR -->
+    <!-- ==================================================== -->
+
+    <div
+      *ngIf="isVideoLoading"
+      style="
+        padding: 70px;
+        text-align: center;
+        color: white;
+        background: #000;
+        border-radius: 8px;
+        font-weight: bold;
+      "
+    >
+      ⏳ Video hazırlanıyor...
+    </div>
+
+
+    <!-- ==================================================== -->
+    <!-- GERÇEK VIDEO PLAYER -->
+    <!-- ==================================================== -->
+
+    <video
+      #videoPlayer
+      *ngIf="selectedVideoUrl && !isVideoLoading"
+      [src]="selectedVideoUrl"
+      controls
+      autoplay
+
+      (loadedmetadata)="onVideoLoadedMetadata(videoPlayer)"
+      (timeupdate)="onVideoTimeUpdate(videoPlayer)"
+      (pause)="onVideoPause(videoPlayer)"
+      (ended)="onVideoEnded(videoPlayer)"
+
+      style="
+        display: block;
+        width: 100%;
+        max-height: 650px;
+        background: black;
+        border-radius: 8px;
+      "
+    >
+      Tarayıcınız video oynatmayı desteklemiyor.
+    </video>
+
+
+    <!-- ==================================================== -->
+    <!-- CANLI İLERLEME -->
+    <!-- ==================================================== -->
+
+    <div
+      *ngIf="selectedVideoUrl && !isVideoLoading"
+      style="
+        margin-top: 15px;
+        background: #1f2937;
+        border-radius: 8px;
+        padding: 15px;
+      "
+    >
+
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+          color: #d1d5db;
+          font-size: 13px;
+        "
+      >
+
+        <span>
+          ⏱️
+          {{ formatTime(currentPositionSeconds) }}
+          /
+          {{ formatTime(currentDurationSeconds) }}
+        </span>
+
+
+        <span
+          *ngIf="currentDurationSeconds > 0"
+        >
+          {{
+            (
+              currentPositionSeconds
+              /
+              currentDurationSeconds
+              *
+              100
+            ) | number:'1.0-0'
+          }}%
+        </span>
+
+      </div>
+
+
+      <!-- PROGRESS BAR -->
+
+      <div
+        style="
+          width: 100%;
+          height: 9px;
+          background: #374151;
+          border-radius: 999px;
+          overflow: hidden;
+        "
+      >
+
+        <div
+          [style.width.%]="
+            currentDurationSeconds > 0
+              ? (
+                  currentPositionSeconds
+                  /
+                  currentDurationSeconds
+                  *
+                  100
+                )
+              : 0
+          "
+          style="
+            height: 100%;
+            background: #22c55e;
+            border-radius: 999px;
+            transition: width 0.3s;
+          "
+        >
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- PRIVATE VIDEO BİLGİSİ -->
+
+    <p
+      *ngIf="selectedVideoUrl"
+      style="
+        color: #9ca3af;
+        text-align: center;
+        font-size: 12px;
+        margin-bottom: 0;
+      "
+    >
+      🔒 Bu içerik yalnızca kursa kayıtlı öğrenciler içindir.
+      İzleme ilerlemeniz otomatik olarak kaydedilir.
+    </p>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- KURS YOK -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="myCourses.length === 0"
+    style="
+      padding: 50px;
+      text-align: center;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      color: #6b7280;
+    "
+  >
+
+    <div style="font-size: 45px;">
+      🎓
+    </div>
+
+    <h3>
+      Henüz bir kursunuz yok
+    </h3>
+
+    <p>
+      Kurs Mağazası üzerinden yeni eğitimler satın alabilirsiniz.
+    </p>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- KURSLAR -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="myCourses.length > 0"
+    style="
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+    "
+  >
+
+    <!-- ==================================================== -->
+    <!-- TEK KURS KARTI -->
+    <!-- ==================================================== -->
+
+    <div
+      *ngFor="let course of myCourses"
+      style="
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      "
+    >
+
+      <!-- ================================================== -->
+      <!-- KAPAK GÖRSELİ -->
+      <!-- ================================================== -->
+
+      <img
+        *ngIf="course.imageUrl"
+        [src]="course.imageUrl"
+        [alt]="course.name"
+        style="
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          display: block;
+        "
+      >
+
+
+      <!-- GÖRSEL YOK -->
+
+      <div
+        *ngIf="!course.imageUrl"
+        style="
+          width: 100%;
+          height: 180px;
+          background: #f3f4f6;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 45px;
+        "
+      >
+        🎓
+      </div>
+
+
+      <div style="padding: 20px;">
+
+        <!-- ================================================= -->
+        <!-- KURS ADI -->
+        <!-- ================================================= -->
+
+        <h2
+          style="
+            color: #1f2937;
+            font-size: 20px;
+            margin-top: 0;
+          "
+        >
+          {{ course.name }}
+        </h2>
+
+
+        <p
+          style="
+            color: #6b7280;
+            font-size: 14px;
+            min-height: 40px;
+          "
+        >
+          {{ course.description }}
+        </p>
+
+
+        <!-- ================================================= -->
+        <!-- TAMAMLANDI ROZETİ -->
+        <!-- ================================================= -->
+
+        <div
+          *ngIf="course.completed"
+          style="
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: #166534;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 13px;
+          "
+        >
+          ✅ Kurs Tamamlandı
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- İLERLEME BİLGİSİ -->
+        <!-- ================================================= -->
+
+        <div
+          style="
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+          "
+        >
+
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 8px;
+            "
+          >
+
+            <strong
+              style="
+                color: #374151;
+                font-size: 13px;
+              "
+            >
+              📈 İlerleme
+            </strong>
+
+
+            <strong
+              style="
+                color: #16a34a;
+                font-size: 13px;
+              "
+            >
+              {{
+                course.progressPercentage || 0
+                  | number:'1.0-0'
+              }}%
+            </strong>
+
+          </div>
+
+
+          <!-- KURS PROGRESS BAR -->
+
+          <div
+            style="
+              width: 100%;
+              height: 9px;
+              background: #e5e7eb;
+              border-radius: 999px;
+              overflow: hidden;
+              margin-bottom: 8px;
+            "
+          >
+
+            <div
+              [style.width.%]="course.progressPercentage || 0"
+              style="
+                height: 100%;
+                background: #22c55e;
+                border-radius: 999px;
+                transition: width 0.3s;
+              "
+            >
+            </div>
+
+          </div>
+
+
+          <!-- KALDIĞI YER -->
+
+          <div
+            *ngIf="course.durationSeconds > 0"
+            style="
+              font-size: 12px;
+              color: #6b7280;
+            "
+          >
+            ⏱️ Kaldığın yer:
+            {{ formatTime(course.lastPositionSeconds) }}
+            /
+            {{ formatTime(course.durationSeconds) }}
+          </div>
+
+
+          <!-- HENÜZ BAŞLAMADI -->
+
+          <div
+            *ngIf="!course.durationSeconds"
+            style="
+              font-size: 12px;
+              color: #6b7280;
+            "
+          >
+            ▶ Bu eğitime henüz başlamadınız.
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- VIDEO BUTONU -->
+        <!-- ================================================= -->
+
+        <button
+          type="button"
+          (click)="openCourseVideo(course)"
+          [disabled]="
+            isVideoLoading &&
+            selectedVideoCourse?.id === course.id
+          "
+          style="
+            width: 100%;
+            padding: 11px;
+            background: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+          "
+        >
+
+          {{
+            isVideoLoading &&
+            selectedVideoCourse?.id === course.id
+
+              ? '⏳ Hazırlanıyor...'
+
+              : course.completed
+
+                ? '🔄 Eğitimi Tekrar İzle'
+
+                : course.progressPercentage > 0
+
+                  ? '▶ Eğitime Devam Et'
+
+                  : '▶ Eğitime Başla'
+          }}
+
+        </button>
+
+
+        <!-- ================================================= -->
+        <!-- YORUM FORMU -->
+        <!-- ================================================= -->
+
+        <div
+          style="
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+          "
+        >
+
+          <strong>
+            Eğitimi Değerlendir
+          </strong>
+
+
+          <select
+            [(ngModel)]="course.tempRating"
+            style="
+              width: 100%;
+              padding: 8px;
+              margin-top: 10px;
+              margin-bottom: 10px;
+              border: 1px solid #d1d5db;
+              border-radius: 6px;
+            "
+          >
+
+            <option [ngValue]="5">
+              ⭐⭐⭐⭐⭐ (5)
+            </option>
+
+            <option [ngValue]="4">
+              ⭐⭐⭐⭐ (4)
+            </option>
+
+            <option [ngValue]="3">
+              ⭐⭐⭐ (3)
+            </option>
+
+            <option [ngValue]="2">
+              ⭐⭐ (2)
+            </option>
+
+            <option [ngValue]="1">
+              ⭐ (1)
+            </option>
+
+          </select>
+
+
+          <textarea
+            [(ngModel)]="course.tempComment"
+            rows="3"
+            placeholder="Kurs hakkında ne düşünüyorsunuz?"
+            style="
+              width: 100%;
+              padding: 8px;
+              border: 1px solid #d1d5db;
+              border-radius: 6px;
+              box-sizing: border-box;
+              resize: vertical;
+            "
+          ></textarea>
+
+
+          <button
+            type="button"
+            (click)="submitReview(course)"
+            style="
+              width: 100%;
+              margin-top: 10px;
+              background: #2563eb;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              padding: 9px;
+              font-weight: bold;
+              cursor: pointer;
+            "
+          >
+            ⭐ Değerlendirmeyi Gönder
+          </button>
+
+
+          <button
+            type="button"
+            (click)="toggleReviews(course)"
+            style="
+              width: 100%;
+              margin-top: 8px;
+              background: #f3f4f6;
+              color: #374151;
+              border: 1px solid #d1d5db;
+              border-radius: 6px;
+              padding: 8px;
+              cursor: pointer;
+              font-weight: bold;
+            "
+          >
+            💬 Yorumları
+            {{ course.showReviews ? 'Gizle' : 'Gör' }}
+          </button>
+
+
+          <!-- =============================================== -->
+          <!-- YORUMLAR -->
+          <!-- =============================================== -->
+
+          <div
+            *ngIf="course.showReviews"
+            style="
+              background: #f9fafb;
+              border-radius: 6px;
+              margin-top: 10px;
+              padding: 10px;
+              max-height: 200px;
+              overflow-y: auto;
+            "
+          >
+
+            <!-- YORUM YOK -->
+
+            <p
+              *ngIf="course.reviews?.length === 0"
+              style="
+                text-align: center;
+                color: #6b7280;
+                font-size: 13px;
+              "
+            >
+              Henüz yorum yapılmamış.
+            </p>
+
+
+            <!-- YORUM -->
+
+            <div
+              *ngFor="let review of course.reviews"
+              style="
+                padding: 8px 0;
+                border-bottom: 1px solid #e5e7eb;
+              "
+            >
+
+              <strong
+                style="
+                  font-size: 13px;
+                "
+              >
+                👤 {{ review.studentName }}
+              </strong>
+
+
+              <div
+                style="
+                  font-size: 12px;
+                "
+              >
+                {{ getStars(review.rating) }}
+              </div>
+
+
+              <p
+                style="
+                  font-size: 13px;
+                  color: #4b5563;
+                  margin-bottom: 0;
+                "
+              >
+                {{ review.comment }}
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

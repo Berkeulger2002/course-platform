@@ -1,0 +1,450 @@
+<div class="home-page">
+
+  <!-- ===================================================== -->
+  <!-- ARKA PLAN DEKORLARI -->
+  <!-- ===================================================== -->
+
+  <div class="background-glow glow-one"></div>
+  <div class="background-glow glow-two"></div>
+
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <header class="home-header">
+
+    <a
+      class="brand"
+      routerLink="/"
+    >
+
+      <div class="brand-icon">
+        🎓
+      </div>
+
+      <div class="brand-text">
+
+        <strong>
+          Course Platform
+        </strong>
+
+        <span>
+          Öğrenmenin yeni adresi
+        </span>
+
+      </div>
+
+    </a>
+
+
+    <div class="header-badge">
+
+      <span class="status-dot"></span>
+
+      Online Eğitim Platformu
+
+    </div>
+
+  </header>
+
+
+  <!-- ===================================================== -->
+  <!-- ANA İÇERİK -->
+  <!-- ===================================================== -->
+
+  <main class="hero-section">
+
+
+    <!-- =================================================== -->
+    <!-- SOL: TANITIM -->
+    <!-- =================================================== -->
+
+    <section class="hero-content">
+
+
+      <div class="eyebrow">
+
+        <span>
+          ✨
+        </span>
+
+        Öğren, öğret ve geliş
+
+      </div>
+
+
+      <h1>
+
+        Bilgiyi
+
+        <span>
+          geleceğe
+        </span>
+
+        dönüştür.
+
+      </h1>
+
+
+      <p class="hero-description">
+
+        İster yeni beceriler kazanmak isteyen bir öğrenci,
+        ister bilgisini paylaşmak isteyen bir eğitmen olun.
+        Course Platform ile bütün eğitim sürecinizi tek
+        noktadan yönetin.
+
+      </p>
+
+
+      <!-- ÖZELLİKLER -->
+
+      <div class="feature-grid">
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            📚
+          </div>
+
+          <div>
+            <strong>
+              Online Kurslar
+            </strong>
+
+            <span>
+              Eğitimlere dilediğiniz yerden ulaşın.
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            📈
+          </div>
+
+          <div>
+            <strong>
+              İlerleme Takibi
+            </strong>
+
+            <span>
+              Öğrenme sürecinizi anlık takip edin.
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            🏆
+          </div>
+
+          <div>
+            <strong>
+              Sertifikalar
+            </strong>
+
+            <span>
+              Tamamladığınız eğitimleri belgeleyin.
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+          <div class="feature-icon">
+            🔒
+          </div>
+
+          <div>
+            <strong>
+              Güvenli Sistem
+            </strong>
+
+            <span>
+              Hesabınız güvenli şekilde korunur.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- KÜÇÜK ALT BİLGİ -->
+
+      <div class="hero-footer-info">
+
+        <div class="mini-avatar-group">
+
+          <span>
+            👨‍💻
+          </span>
+
+          <span>
+            👩‍🎓
+          </span>
+
+          <span>
+            👨‍🏫
+          </span>
+
+        </div>
+
+        <p>
+          Öğrenciler ve eğitmenler için tek platform.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================== -->
+    <!-- SAĞ: ROL SEÇİMİ -->
+    <!-- =================================================== -->
+
+    <section class="role-section">
+
+
+      <div class="role-heading">
+
+        <span>
+          Başlamak için
+        </span>
+
+        <h2>
+          Rolünüzü seçin
+        </h2>
+
+        <p>
+          Size uygun panele giriş yapın veya yeni hesabınızı oluşturun.
+        </p>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- ÖĞRENCİ -->
+      <!-- ================================================= -->
+
+      <article class="role-card student-card">
+
+
+        <div class="role-card-top">
+
+          <div class="role-icon student-icon">
+            🎓
+          </div>
+
+
+          <div class="role-label">
+
+            <span>
+              ÖĞRENCİ
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <h3>
+          Öğrenmeye Başla
+        </h3>
+
+
+        <p>
+
+          İlginizi çeken kursları keşfedin,
+          videoları izleyin ve gelişiminizi takip edin.
+
+        </p>
+
+
+        <ul>
+
+          <li>
+            <span>✓</span>
+            Kurs satın alma ve favoriler
+          </li>
+
+          <li>
+            <span>✓</span>
+            Video ilerleme takibi
+          </li>
+
+          <li>
+            <span>✓</span>
+            Sertifika sistemi
+          </li>
+
+          <li>
+            <span>✓</span>
+            Bildirim ve ödeme geçmişi
+          </li>
+
+        </ul>
+
+
+        <button
+          class="role-button student-button"
+          [routerLink]="['/auth']"
+          [queryParams]="{
+            role: 'student'
+          }"
+        >
+
+          <span>
+            Öğrenci Girişi / Kayıt
+          </span>
+
+          <span class="arrow">
+            →
+          </span>
+
+        </button>
+
+      </article>
+
+
+      <!-- ================================================= -->
+      <!-- ÖĞRETMEN -->
+      <!-- ================================================= -->
+
+      <article class="role-card teacher-card">
+
+
+        <div class="role-card-top">
+
+          <div class="role-icon teacher-icon">
+            👨‍🏫
+          </div>
+
+
+          <div class="role-label teacher-label">
+
+            <span>
+              ÖĞRETMEN
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <h3>
+          Bilginizi Paylaşın
+        </h3>
+
+
+        <p>
+
+          Kendi kurslarınızı oluşturun,
+          öğrencilerinizi takip edin ve içeriklerinizi yönetin.
+
+        </p>
+
+
+        <ul>
+
+          <li>
+            <span>✓</span>
+            Kurs ve video yönetimi
+          </li>
+
+          <li>
+            <span>✓</span>
+            Öğrenci ilerleme takibi
+          </li>
+
+          <li>
+            <span>✓</span>
+            Satış ve gelir istatistikleri
+          </li>
+
+          <li>
+            <span>✓</span>
+            Değerlendirme ve bildirimler
+          </li>
+
+        </ul>
+
+
+        <button
+          class="role-button teacher-button"
+          [routerLink]="['/auth']"
+          [queryParams]="{
+            role: 'teacher'
+          }"
+        >
+
+          <span>
+            Öğretmen Girişi / Kayıt
+          </span>
+
+          <span class="arrow">
+            →
+          </span>
+
+        </button>
+
+      </article>
+
+    </section>
+
+  </main>
+
+
+  <!-- ===================================================== -->
+  <!-- ALT ŞERİT -->
+  <!-- ===================================================== -->
+
+  <footer class="home-footer">
+
+    <div>
+      <span>
+        ⚡
+      </span>
+
+      Hızlı ve kolay kullanım
+    </div>
+
+
+    <div>
+      <span>
+        🔐
+      </span>
+
+      Güvenli oturum sistemi
+    </div>
+
+
+    <div>
+      <span>
+        🎯
+      </span>
+
+      İlerlemenizi takip edin
+    </div>
+
+
+    <div>
+      <span>
+        🏆
+      </span>
+
+      Başarınızı belgelendirin
+    </div>
+
+  </footer>
+
+</div>

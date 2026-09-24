@@ -1,0 +1,350 @@
+<div class="students-page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        👥 Öğrencilerim
+      </h1>
+
+      <p *ngIf="!selectedCourseId">
+        Kurslarınıza kayıtlı öğrencileri ve
+        ilerleme durumlarını görüntüleyebilirsiniz.
+      </p>
+
+
+      <p *ngIf="selectedCourseId">
+        <strong>
+          {{ selectedCourseName || 'Seçili kurs' }}
+        </strong>
+        öğrencileri görüntüleniyor.
+      </p>
+
+    </div>
+
+
+    <button
+      *ngIf="selectedCourseId"
+      type="button"
+      class="all-students-button"
+      (click)="clearCourseFilter()"
+    >
+      👥 Tüm Öğrencileri Göster
+    </button>
+
+  </div>
+
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Öğrenciler yükleniyor...
+  </div>
+
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+
+        <span class="stat-icon">
+          👥
+        </span>
+
+        <div>
+
+          <small>
+            Öğrenci
+          </small>
+
+          <strong>
+            {{ uniqueStudentCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span class="stat-icon">
+          📚
+        </span>
+
+        <div>
+
+          <small>
+            Toplam Kayıt
+          </small>
+
+          <strong>
+            {{ students.length }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span class="stat-icon">
+          ✅
+        </span>
+
+        <div>
+
+          <small>
+            Tamamlanan
+          </small>
+
+          <strong>
+            {{ completedCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <span class="stat-icon">
+          📈
+        </span>
+
+        <div>
+
+          <small>
+            Ortalama İlerleme
+          </small>
+
+          <strong>
+            {{
+              averageProgress
+                | number:'1.0-1'
+            }}%
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- EMPTY -->
+
+    <div
+      *ngIf="students.length === 0"
+      class="empty-state"
+    >
+
+      <div>
+        👥
+      </div>
+
+      <h2>
+        Henüz öğrenci bulunmuyor
+      </h2>
+
+      <p>
+        Bu kursa henüz bir öğrenci
+        kayıt olmamış.
+      </p>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div
+      *ngIf="students.length > 0"
+      class="students-card"
+    >
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+          <tr>
+
+            <th>
+              Öğrenci
+            </th>
+
+            <th>
+              Kurs
+            </th>
+
+            <th>
+              İlerleme
+            </th>
+
+            <th>
+              Durum
+            </th>
+
+            <th>
+              Son İzleme
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+          <tr
+            *ngFor="let student of students"
+          >
+
+            <!-- STUDENT -->
+
+            <td>
+
+              <div class="student-info">
+
+                <div class="avatar">
+                  👤
+                </div>
+
+
+                <div>
+
+                  <strong>
+                    {{ student.studentName }}
+                  </strong>
+
+                  <span>
+                      {{ student.studentEmail }}
+                    </span>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- COURSE -->
+
+            <td>
+
+                <span class="course-name">
+                  {{ student.courseName }}
+                </span>
+
+            </td>
+
+
+            <!-- PROGRESS -->
+
+            <td>
+
+              <div class="progress-info">
+
+                <div class="progress-header">
+
+                    <span>
+                      {{
+                        student.progressPercentage
+                          | number:'1.0-1'
+                      }}%
+                    </span>
+
+                </div>
+
+
+                <div class="progress-track">
+
+                  <div
+                    class="progress-value"
+                    [style.width.%]="
+                        student.progressPercentage
+                      "
+                  ></div>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- STATUS -->
+
+            <td>
+
+                <span
+                  class="status-badge"
+                  [class.completed]="
+                    student.completed
+                  "
+                  [class.continuing]="
+                    !student.completed
+                  "
+                >
+
+                  {{
+                    student.completed
+                      ? '✅ Tamamlandı'
+                      : (
+                        student.progressPercentage > 0
+                          ? '▶️ Devam Ediyor'
+                          : '⏳ Başlamadı'
+                      )
+                  }}
+
+                </span>
+
+            </td>
+
+
+            <!-- LAST WATCH -->
+
+            <td>
+
+                <span
+                  *ngIf="student.lastWatchedAt"
+                >
+
+                  {{
+                    student.lastWatchedAt
+                      | date:'dd.MM.yyyy HH:mm'
+                  }}
+
+                </span>
+
+
+              <span
+                *ngIf="!student.lastWatchedAt"
+                class="not-watched"
+              >
+                  Henüz izlemedi
+                </span>
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

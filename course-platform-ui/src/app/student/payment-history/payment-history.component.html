@@ -1,0 +1,296 @@
+<div class="payment-page">
+
+  <!-- ====================================================== -->
+  <!-- BAŞLIK -->
+  <!-- ====================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        💳 Ödeme Geçmişi
+      </h1>
+
+      <p>
+        Kurs satın alma işlemlerinizi ve işlem detaylarınızı görüntüleyin.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- YÜKLENİYOR -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="empty-state"
+  >
+    ⏳ Ödeme geçmişi yükleniyor...
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- ÖZET -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="!isLoading"
+    class="stats-grid"
+  >
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        🧾
+      </div>
+
+      <div class="stat-title">
+        Toplam İşlem
+      </div>
+
+      <div class="stat-value">
+        {{ payments.length }}
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        💰
+      </div>
+
+      <div class="stat-title">
+        Toplam Harcama
+      </div>
+
+      <div class="stat-value money">
+        {{ formatMoney(totalSpent) }}
+      </div>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <div class="stat-icon">
+        ✅
+      </div>
+
+      <div class="stat-title">
+        Başarılı İşlem
+      </div>
+
+      <div class="stat-value success">
+
+        <div class="stat-card">
+
+          <div class="stat-icon">
+            ✅
+          </div>
+
+          <div class="stat-title">
+            Başarılı İşlem
+          </div>
+
+          <div class="stat-value success">
+            {{ completedPaymentCount }}
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- ÖDEME YOK -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      payments.length === 0
+    "
+    class="empty-state"
+  >
+
+    <div class="empty-icon">
+      💳
+    </div>
+
+    <h2>
+      Henüz ödeme kaydınız yok
+    </h2>
+
+    <p>
+      Bundan sonra satın aldığınız kursların işlem bilgileri
+      burada görüntülenecek.
+    </p>
+
+
+    <button
+      class="marketplace-button"
+      (click)="goToMarketplace()"
+    >
+      🛍️ Kurs Mağazasına Git
+    </button>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- ÖDEME KAYITLARI -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      payments.length > 0
+    "
+    class="payment-list"
+  >
+
+    <div
+      *ngFor="let payment of payments"
+      class="payment-card"
+    >
+
+      <!-- KURS RESMİ -->
+
+      <div class="course-image-area">
+
+        <img
+          *ngIf="payment.imageUrl"
+          [src]="payment.imageUrl"
+          [alt]="payment.courseName"
+        >
+
+
+        <div
+          *ngIf="!payment.imageUrl"
+          class="image-placeholder"
+        >
+          🎓
+        </div>
+
+      </div>
+
+
+      <!-- ORTA BİLGİLER -->
+
+      <div class="payment-info">
+
+        <div class="payment-top">
+
+          <div>
+
+            <h3>
+              {{ payment.courseName }}
+            </h3>
+
+            <div class="purchase-date">
+
+              📅
+              {{
+                payment.purchasedAt
+                  | date:'dd.MM.yyyy HH:mm'
+              }}
+
+            </div>
+
+          </div>
+
+
+          <span
+            class="status-badge"
+            [class.completed]="payment.status === 'COMPLETED'"
+          >
+
+            ✅
+            {{
+              getStatusText(
+                payment.status
+              )
+            }}
+
+          </span>
+
+        </div>
+
+
+        <div class="details-grid">
+
+          <div class="detail-item">
+
+            <span>
+              Tutar
+            </span>
+
+            <strong class="price">
+              {{ formatMoney(payment.amount) }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>
+              Ödeme Yöntemi
+            </span>
+
+            <strong>
+
+              {{
+                getPaymentMethodText(
+                  payment.paymentMethod
+                )
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item transaction">
+
+            <span>
+              İşlem Kodu
+            </span>
+
+            <strong>
+              {{ payment.transactionCode }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="copy-button"
+          (click)="
+            copyTransactionCode(
+              payment.transactionCode
+            )
+          "
+        >
+          📋 İşlem Kodunu Kopyala
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

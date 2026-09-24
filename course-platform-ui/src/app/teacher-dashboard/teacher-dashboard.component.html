@@ -1,0 +1,396 @@
+<div class="dashboard-page">
+
+  <!-- ===================================================== -->
+  <!-- BAŞLIK -->
+  <!-- ===================================================== -->
+
+  <section class="welcome-section">
+
+    <div>
+
+      <h1>
+        Hoş Geldin,
+        {{ currentTeacher?.name }}
+        {{ currentTeacher?.surname }}! 👨‍🏫
+      </h1>
+
+      <p>
+        Kurslarınızı, öğrencilerinizi ve eğitim
+        performansınızı buradan takip edebilirsiniz.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="create-course-button"
+      (click)="goToCreateCourse()"
+    >
+      ➕ Yeni Kurs Oluştur
+    </button>
+
+  </section>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Öğretmen bilgileri yükleniyor...
+  </div>
+
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- =================================================== -->
+    <!-- İSTATİSTİK KARTLARI -->
+    <!-- =================================================== -->
+
+    <section class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📚
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Kurs
+          </span>
+
+          <strong>
+            {{ totalCourses }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          👥
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Kayıt
+          </span>
+
+          <strong>
+            {{ totalStudents }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          ✅
+        </div>
+
+        <div>
+
+          <span>
+            Satışa Açık Kurs
+          </span>
+
+          <strong>
+            {{ purchasableCourses }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🎯
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Kapasite
+          </span>
+
+          <strong>
+            {{ totalCapacity }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================== -->
+    <!-- ANA İÇERİK -->
+    <!-- =================================================== -->
+
+    <section class="dashboard-grid">
+
+      <!-- ================================================= -->
+      <!-- SON KURSLAR -->
+      <!-- ================================================= -->
+
+      <div class="panel-card">
+
+        <div class="panel-header">
+
+          <div>
+
+            <h2>
+              📚 Son Kurslarınız
+            </h2>
+
+            <p>
+              En son oluşturduğunuz eğitimler
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="secondary-button"
+            (click)="goToCourses()"
+          >
+            Tümünü Gör
+          </button>
+
+        </div>
+
+
+        <!-- Kurs yok -->
+        <div
+          *ngIf="courses.length === 0"
+          class="empty-state"
+        >
+
+          <div class="empty-icon">
+            📚
+          </div>
+
+          <h3>
+            Henüz kursunuz yok
+          </h3>
+
+          <p>
+            İlk eğitiminizi oluşturarak
+            öğretmenlik yolculuğunuza başlayabilirsiniz.
+          </p>
+
+          <button
+            type="button"
+            class="primary-button"
+            (click)="goToCreateCourse()"
+          >
+            ➕ İlk Kursumu Oluştur
+          </button>
+
+        </div>
+
+
+        <!-- Kurslar -->
+        <div
+          *ngIf="courses.length > 0"
+          class="course-list"
+        >
+
+          <div
+            *ngFor="let course of recentCourses"
+            class="course-item"
+          >
+
+            <div class="course-image">
+
+              <img
+                *ngIf="course.imageUrl"
+                [src]="course.imageUrl"
+                [alt]="course.name"
+              >
+
+              <div
+                *ngIf="!course.imageUrl"
+                class="image-placeholder"
+              >
+                📚
+              </div>
+
+            </div>
+
+
+            <div class="course-info">
+
+              <h3>
+                {{ course.name }}
+              </h3>
+
+              <p>
+                👥
+                {{ course.currentEnrolled || 0 }}
+                öğrenci
+              </p>
+
+            </div>
+
+
+            <div class="course-price">
+
+              {{ course.price || 0 }}
+              TL
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- HIZLI İŞLEMLER -->
+      <!-- ================================================= -->
+
+      <div class="panel-card">
+
+        <div class="panel-header">
+
+          <div>
+
+            <h2>
+              ⚡ Hızlı İşlemler
+            </h2>
+
+            <p>
+              Sık kullanılan işlemler
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+          <button
+            type="button"
+            (click)="goToCreateCourse()"
+          >
+
+            <span class="action-icon">
+              ➕
+            </span>
+
+            <span>
+
+              <strong>
+                Yeni Kurs
+              </strong>
+
+              <small>
+                Yeni eğitim yayınla
+              </small>
+
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            (click)="goToCourses()"
+          >
+
+            <span class="action-icon">
+              📚
+            </span>
+
+            <span>
+
+              <strong>
+                Kurslarım
+              </strong>
+
+              <small>
+                Kurslarını yönet
+              </small>
+
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            (click)="goToStudents()"
+          >
+
+            <span class="action-icon">
+              👥
+            </span>
+
+            <span>
+
+              <strong>
+                Öğrenciler
+              </strong>
+
+              <small>
+                Öğrencilerini görüntüle
+              </small>
+
+            </span>
+
+          </button>
+
+
+          <button
+            type="button"
+            (click)="goToAnalytics()"
+          >
+
+            <span class="action-icon">
+              📊
+            </span>
+
+            <span>
+
+              <strong>
+                İstatistikler
+              </strong>
+
+              <small>
+                Performansı incele
+              </small>
+
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </ng-container>
+
+</div>

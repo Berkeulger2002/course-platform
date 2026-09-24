@@ -1,0 +1,46 @@
+# ===============================
+# IDE / macOS
+# ===============================
+.idea/
+.vscode/
+.DS_Store
+
+# ===============================
+# BUILD OUTPUTS
+# ===============================
+**/target/
+**/dist/
+**/node_modules/
+**/.angular/
+
+# ===============================
+# LOCAL SECRETS
+# ===============================
+.env
+.env.*
+!.env.example
+
+**/.course-platform-secrets.properties
+**/*secrets*.properties
+
+# ===============================
+# LOCAL DATABASE / DEV CONFIG
+# ===============================
+**/docker-compose.yml
+
+# ===============================
+# DATABASE BACKUPS
+# ===============================
+*.dump
+*.archive
+*.archive.gz
+*.sql
+
+course_db.dump
+course_platform_db.archive.gz
+
+# ===============================
+# LOGS
+# ===============================
+*.log
+*.tmp

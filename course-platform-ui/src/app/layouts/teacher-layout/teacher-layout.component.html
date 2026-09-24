@@ -1,0 +1,221 @@
+<div class="teacher-layout">
+
+  <!-- ======================================= -->
+  <!-- SIDEBAR -->
+  <!-- ======================================= -->
+
+  <aside class="sidebar">
+
+    <div class="brand">
+
+      <h2>
+        🎓 Course Platform
+      </h2>
+
+      <p>
+        Öğretmen Paneli
+      </p>
+
+    </div>
+
+
+    <nav class="menu">
+
+      <!-- ANA SAYFA -->
+
+      <a
+        routerLink="/teacher/dashboard"
+        routerLinkActive="active"
+      >
+        🏠 Ana Sayfa
+      </a>
+
+
+      <!-- KURSLARIM -->
+
+      <a
+        routerLink="/teacher/courses"
+        routerLinkActive="active"
+      >
+        📚 Kurslarım
+      </a>
+
+
+      <!-- YENİ KURS -->
+
+      <a
+        routerLink="/teacher/create-course"
+        routerLinkActive="active"
+      >
+        ➕ Yeni Kurs Oluştur
+      </a>
+
+
+      <!-- ÖĞRENCİLER -->
+
+      <a
+        routerLink="/teacher/students"
+        routerLinkActive="active"
+      >
+        👥 Öğrencilerim
+      </a>
+
+
+      <!-- İSTATİSTİKLER -->
+
+      <a
+        routerLink="/teacher/analytics"
+        routerLinkActive="active"
+      >
+        📊 İstatistikler
+      </a>
+
+
+      <!-- DEĞERLENDİRMELER -->
+
+      <a
+        routerLink="/teacher/reviews"
+        routerLinkActive="active"
+      >
+        ⭐ Değerlendirmeler
+      </a>
+
+
+      <!-- SATIŞ / GELİR -->
+
+      <a
+        routerLink="/teacher/revenue"
+        routerLinkActive="active"
+      >
+        💰 Satış / Gelir
+      </a>
+
+
+      <!-- ===================================== -->
+      <!-- BİLDİRİMLER -->
+      <!-- ===================================== -->
+
+      <a
+        routerLink="/teacher/notifications"
+        routerLinkActive="active"
+        class="notification-link"
+      >
+
+        <span class="notification-menu-text">
+          🔔 Bildirimler
+        </span>
+
+
+        <!-- OKUNMAMIŞ SAYISI -->
+
+        <span
+          *ngIf="
+            (teacherUnreadCount$ | async)
+              as unreadCount
+          "
+          class="notification-badge"
+        >
+
+          {{
+            unreadCount > 99
+              ? '99+'
+              : unreadCount
+          }}
+
+        </span>
+
+      </a>
+
+
+      <!-- PROFİL -->
+
+      <a
+        routerLink="/teacher/profile"
+        routerLinkActive="active"
+      >
+        👤 Profil
+      </a>
+
+    </nav>
+
+
+    <!-- ======================================= -->
+    <!-- LOGOUT -->
+    <!-- ======================================= -->
+
+    <button
+      type="button"
+      class="logout-button"
+      (click)="logout()"
+    >
+      🚪 Çıkış Yap
+    </button>
+
+  </aside>
+
+
+  <!-- ======================================= -->
+  <!-- MAIN -->
+  <!-- ======================================= -->
+
+  <main class="main-area">
+
+    <!-- ===================================== -->
+    <!-- TOPBAR -->
+    <!-- ===================================== -->
+
+    <header class="topbar">
+
+      <div>
+
+        <h1>
+          Öğretmen Paneli
+        </h1>
+
+
+        <p>
+          Hoş geldin,
+          {{ currentTeacher?.name }}
+        </p>
+
+      </div>
+
+
+      <div class="teacher-info">
+
+        <div class="avatar">
+          👨‍🏫
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ currentTeacher?.name }}
+          </strong>
+
+
+          <span>
+            Öğretmen
+          </span>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- ===================================== -->
+    <!-- PAGE CONTENT -->
+    <!-- ===================================== -->
+
+    <section class="content">
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+  </main>
+
+</div>

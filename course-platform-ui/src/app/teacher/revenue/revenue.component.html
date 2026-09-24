@@ -1,0 +1,580 @@
+<div class="revenue-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        💰 Satış / Gelir
+      </h1>
+
+      <p>
+        Kurs satışlarınızı ve gelir
+        performansınızı buradan takip edin.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Satış verileri hazırlanıyor...
+  </div>
+
+
+  <ng-container *ngIf="!isLoading">
+
+
+    <!-- =================================================== -->
+    <!-- STATS -->
+    <!-- =================================================== -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card revenue-stat">
+
+        <div class="stat-icon">
+          💰
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Gelir
+          </span>
+
+          <strong>
+            {{ formatMoney(totalRevenue) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🛒
+        </div>
+
+        <div>
+
+          <span>
+            Başarılı Satış
+          </span>
+
+          <strong>
+            {{ totalSales }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📚
+        </div>
+
+        <div>
+
+          <span>
+            Satılan Kurs
+          </span>
+
+          <strong>
+            {{ soldCourseCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          👥
+        </div>
+
+        <div>
+
+          <span>
+            Müşteri
+          </span>
+
+          <strong>
+            {{ customerCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- SECOND ROW -->
+    <!-- =================================================== -->
+
+    <div class="summary-grid">
+
+      <!-- COURSE REVENUE -->
+
+      <section class="summary-card">
+
+        <div class="section-header">
+
+          <div>
+
+            <h2>
+              📊 Kurs Bazlı Gelir
+            </h2>
+
+            <p>
+              Tamamlanmış satın alma kayıtları
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div
+          *ngIf="
+            courseRevenueSummary.length === 0
+          "
+          class="mini-empty"
+        >
+          Henüz tamamlanmış satış bulunmuyor.
+        </div>
+
+
+        <div
+          *ngIf="
+            courseRevenueSummary.length > 0
+          "
+          class="course-revenue-list"
+        >
+
+          <div
+            *ngFor="
+              let item of
+              courseRevenueSummary
+            "
+            class="course-revenue-row"
+          >
+
+            <div class="revenue-row-header">
+
+              <div>
+
+                <strong>
+                  {{ item.courseName }}
+                </strong>
+
+                <span>
+                  {{ item.sales }}
+                  satış
+                </span>
+
+              </div>
+
+
+              <strong class="revenue-value">
+
+                {{
+                  formatMoney(
+                    item.revenue
+                  )
+                }}
+
+              </strong>
+
+            </div>
+
+
+            <div class="progress-track">
+
+              <div
+                class="progress-value"
+                [style.width.%]="
+                  getRevenuePercentage(
+                    item.revenue
+                  )
+                "
+              ></div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- AVERAGE -->
+
+      <section class="summary-card">
+
+        <div class="average-sale">
+
+          <div class="average-icon">
+            🧾
+          </div>
+
+
+          <div>
+
+            <span>
+              Ortalama Satış Tutarı
+            </span>
+
+            <strong>
+              {{
+                formatMoney(
+                  averageSale
+                )
+              }}
+            </strong>
+
+            <small>
+              Başarılı işlemler üzerinden
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- FILTER -->
+    <!-- =================================================== -->
+
+    <div class="filter-card">
+
+      <div>
+
+        <strong>
+          Satış Geçmişi
+        </strong>
+
+        <span>
+          Kurs veya ödeme durumuna
+          göre filtreleyebilirsiniz.
+        </span>
+
+      </div>
+
+
+      <div class="filters">
+
+        <select
+          [(ngModel)]="selectedCourseId"
+        >
+
+          <option [ngValue]="null">
+            Tüm Kurslar
+          </option>
+
+
+          <option
+            *ngFor="let course of courses"
+            [ngValue]="course.id"
+          >
+            {{ course.name }}
+          </option>
+
+        </select>
+
+
+        <select
+          [(ngModel)]="selectedStatus"
+        >
+
+          <option value="ALL">
+            Tüm Durumlar
+          </option>
+
+          <option value="COMPLETED">
+            Tamamlandı
+          </option>
+
+          <option value="PENDING">
+            Bekliyor
+          </option>
+
+          <option value="FAILED">
+            Başarısız
+          </option>
+
+          <option value="REFUNDED">
+            İade Edildi
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- EMPTY -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        filteredPayments.length === 0
+      "
+      class="empty-state"
+    >
+
+      <div>
+        💳
+      </div>
+
+      <h2>
+        Satış kaydı bulunmuyor
+      </h2>
+
+      <p>
+        Kurslarınız satın alındığında
+        ödeme kayıtları burada görüntülenecek.
+      </p>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- TABLE -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        filteredPayments.length > 0
+      "
+      class="sales-card"
+    >
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+
+          <tr>
+
+            <th>
+              Öğrenci
+            </th>
+
+            <th>
+              Kurs
+            </th>
+
+            <th>
+              Tutar
+            </th>
+
+            <th>
+              Yöntem
+            </th>
+
+            <th>
+              Durum
+            </th>
+
+            <th>
+              Tarih
+            </th>
+
+            <th>
+              İşlem
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+          <tr
+            *ngFor="
+                let payment of
+                filteredPayments
+              "
+          >
+
+            <!-- STUDENT -->
+
+            <td>
+
+              <div class="student-info">
+
+                <div class="avatar">
+                  👤
+                </div>
+
+
+                <div>
+
+                  <strong>
+                    {{ payment.studentName }}
+                  </strong>
+
+                  <span>
+                      {{ payment.studentEmail }}
+                    </span>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- COURSE -->
+
+            <td>
+
+              <strong class="course-name">
+                {{ payment.courseName }}
+              </strong>
+
+            </td>
+
+
+            <!-- AMOUNT -->
+
+            <td>
+
+              <strong class="amount">
+
+                {{
+                  formatMoney(
+                    payment.amount
+                  )
+                }}
+
+              </strong>
+
+            </td>
+
+
+            <!-- METHOD -->
+
+            <td>
+
+              {{
+                getPaymentMethodText(
+                  payment.paymentMethod
+                )
+              }}
+
+            </td>
+
+
+            <!-- STATUS -->
+
+            <td>
+
+                <span
+                  class="status-badge"
+                  [class.completed]="
+                    payment.status ===
+                    'COMPLETED'
+                  "
+                  [class.pending]="
+                    payment.status ===
+                    'PENDING'
+                  "
+                  [class.failed]="
+                    payment.status ===
+                    'FAILED'
+                  "
+                  [class.refunded]="
+                    payment.status ===
+                    'REFUNDED'
+                  "
+                >
+
+                  {{
+                    getStatusText(
+                      payment.status
+                    )
+                  }}
+
+                </span>
+
+            </td>
+
+
+            <!-- DATE -->
+
+            <td>
+
+              {{
+                payment.purchasedAt
+                  | date:'dd.MM.yyyy HH:mm'
+              }}
+
+            </td>
+
+
+            <!-- CODE -->
+
+            <td>
+
+              <button
+                type="button"
+                class="code-button"
+                (click)="
+                    copyTransactionCode(
+                      payment.transactionCode
+                    )
+                  "
+                [title]="
+                    payment.transactionCode
+                  "
+              >
+                📋 Kod
+              </button>
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

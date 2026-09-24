@@ -1,0 +1,289 @@
+<div class="profile-page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        👤 Profilim
+      </h1>
+
+      <p>
+        Hesap bilgilerinizi görüntüleyin ve düzenleyin.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <div
+    *ngIf="isLoading"
+    class="status-box"
+  >
+    ⏳ Profil yükleniyor...
+  </div>
+
+
+  <div
+    *ngIf="
+      !isLoading &&
+      profile
+    "
+  >
+
+    <!-- PROFİL ÜST KART -->
+
+    <div class="profile-card">
+
+      <div class="large-avatar">
+
+        {{ initials }}
+
+      </div>
+
+
+      <div class="profile-main-info">
+
+        <h2>
+          {{ profile.name }}
+        </h2>
+
+        <p>
+          {{ profile.email }}
+        </p>
+
+        <span class="role-badge">
+          🎓 Öğrenci
+        </span>
+
+      </div>
+
+
+      <button
+        *ngIf="!isEditing"
+        class="edit-button"
+        (click)="startEditing()"
+      >
+        ✏️ Profili Düzenle
+      </button>
+
+    </div>
+
+
+    <!-- İSTATİSTİKLER -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🎓
+        </div>
+
+        <span>
+          Kayıtlı Kurs
+        </span>
+
+        <strong>
+          {{ profile.enrolledCourseCount }}
+        </strong>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          ✅
+        </div>
+
+        <span>
+          Tamamlanan
+        </span>
+
+        <strong>
+          {{ profile.completedCourseCount }}
+        </strong>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🏆
+        </div>
+
+        <span>
+          Sertifika
+        </span>
+
+        <strong>
+          {{ profile.certificateCount }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- MESAJLAR -->
+
+    <div
+      *ngIf="successMessage"
+      class="message success"
+    >
+      ✅ {{ successMessage }}
+    </div>
+
+
+    <div
+      *ngIf="errorMessage"
+      class="message error"
+    >
+      ❌ {{ errorMessage }}
+    </div>
+
+
+    <!-- HESAP BİLGİLERİ -->
+
+    <div class="details-card">
+
+      <div class="details-header">
+
+        <h2>
+          Hesap Bilgileri
+        </h2>
+
+      </div>
+
+
+      <!-- NORMAL GÖRÜNÜM -->
+
+      <div
+        *ngIf="!isEditing"
+        class="details-grid"
+      >
+
+        <div class="detail-item">
+
+          <span>
+            Ad Soyad
+          </span>
+
+          <strong>
+            {{ profile.name }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            E-posta
+          </span>
+
+          <strong>
+            {{ profile.email }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Öğrenci ID
+          </span>
+
+          <strong>
+            #{{ profile.id }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-item">
+
+          <span>
+            Hesap Türü
+          </span>
+
+          <strong>
+            Öğrenci
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- DÜZENLEME -->
+
+      <div
+        *ngIf="isEditing"
+        class="edit-form"
+      >
+
+        <label>
+
+          Ad Soyad
+
+          <input
+            type="text"
+            [(ngModel)]="formName"
+            placeholder="Ad Soyad"
+          >
+
+        </label>
+
+
+        <label>
+
+          E-posta
+
+          <input
+            type="email"
+            [(ngModel)]="formEmail"
+            placeholder="E-posta"
+          >
+
+        </label>
+
+
+        <div class="form-actions">
+
+          <button
+            class="cancel-button"
+            (click)="cancelEditing()"
+            [disabled]="isSaving"
+          >
+            İptal
+          </button>
+
+
+          <button
+            class="save-button"
+            (click)="saveProfile()"
+            [disabled]="isSaving"
+          >
+
+            {{
+              isSaving
+                ? 'Kaydediliyor...'
+                : '💾 Değişiklikleri Kaydet'
+            }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

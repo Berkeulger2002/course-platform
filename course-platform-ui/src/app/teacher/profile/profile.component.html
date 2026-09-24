@@ -1,0 +1,331 @@
+<div class="profile-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        👤 Profil
+      </h1>
+
+      <p>
+        Hesap ve öğretmen bilgilerinizi
+        buradan görüntüleyebilir ve
+        güncelleyebilirsiniz.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-card"
+  >
+    ⏳ Profil bilgileriniz yükleniyor...
+  </div>
+
+
+  <ng-container
+    *ngIf="!isLoading"
+  >
+
+    <!-- =================================================== -->
+    <!-- SUCCESS -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="successMessage"
+      class="alert success-alert"
+    >
+      ✅ {{ successMessage }}
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- ERROR -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="errorMessage"
+      class="alert error-alert"
+    >
+      ⚠️ {{ errorMessage }}
+    </div>
+
+
+    <div class="profile-layout">
+
+      <!-- ================================================= -->
+      <!-- LEFT PROFILE CARD -->
+      <!-- ================================================= -->
+
+      <aside class="profile-summary-card">
+
+        <div class="profile-avatar">
+
+          {{ initials }}
+
+        </div>
+
+
+        <h2>
+          {{ profile.name }}
+        </h2>
+
+
+        <p class="profile-email">
+          {{ profile.email }}
+        </p>
+
+
+        <span class="role-badge">
+          👨‍🏫 {{ roleText }}
+        </span>
+
+
+        <div class="profile-divider"></div>
+
+
+        <div class="profile-info-row">
+
+          <span>
+            Kullanıcı ID
+          </span>
+
+          <strong>
+            #{{ profile.id }}
+          </strong>
+
+        </div>
+
+
+        <div class="profile-info-row">
+
+          <span>
+            Hesap Türü
+          </span>
+
+          <strong>
+            {{ roleText }}
+          </strong>
+
+        </div>
+
+
+        <div class="profile-security">
+
+          <div>
+            🔒
+          </div>
+
+          <p>
+            Hesabınızın şifresi bu sayfada
+            görüntülenmez veya değiştirilmez.
+          </p>
+
+        </div>
+
+      </aside>
+
+
+      <!-- ================================================= -->
+      <!-- EDIT CARD -->
+      <!-- ================================================= -->
+
+      <section class="profile-form-card">
+
+        <div class="form-header">
+
+          <div>
+
+            <h2>
+              Profil Bilgileri
+            </h2>
+
+            <p>
+              Değişiklikler doğrudan
+              hesabınıza kaydedilir.
+            </p>
+
+          </div>
+
+
+          <span
+            class="change-badge"
+            *ngIf="hasChanges"
+          >
+            ● Kaydedilmemiş değişiklik
+          </span>
+
+        </div>
+
+
+        <form
+          (ngSubmit)="saveProfile()"
+        >
+
+          <!-- NAME -->
+
+          <div class="form-group">
+
+            <label for="teacherName">
+
+              Ad Soyad
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              id="teacherName"
+              type="text"
+              name="teacherName"
+              [(ngModel)]="profile.name"
+              maxlength="100"
+              autocomplete="name"
+              placeholder="Adınızı ve soyadınızı giriniz"
+              [disabled]="isSaving"
+              required
+            >
+
+
+            <small>
+              Platform genelinde görüntülenecek
+              öğretmen adınız.
+            </small>
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+
+            <label for="teacherEmail">
+
+              E-posta Adresi
+
+              <span class="required">
+                *
+              </span>
+
+            </label>
+
+
+            <input
+              id="teacherEmail"
+              type="email"
+              name="teacherEmail"
+              [(ngModel)]="profile.email"
+              autocomplete="email"
+              placeholder="ornek@email.com"
+              [disabled]="isSaving"
+              required
+            >
+
+
+            <small>
+              Hesabınızla ilişkili e-posta
+              adresidir.
+            </small>
+
+          </div>
+
+
+          <!-- ROLE -->
+
+          <div class="form-group">
+
+            <label for="teacherRole">
+              Hesap Türü
+            </label>
+
+
+            <div class="readonly-field">
+
+              <span>
+                👨‍🏫
+              </span>
+
+              <div>
+
+                <strong>
+                  {{ roleText }}
+                </strong>
+
+                <small>
+                  Hesap türü değiştirilemez.
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ACTIONS -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="cancel-button"
+              [disabled]="
+                isSaving ||
+                !hasChanges
+              "
+              (click)="resetForm()"
+            >
+              ↩ Değişiklikleri Geri Al
+            </button>
+
+
+            <button
+              type="submit"
+              class="save-button"
+              [disabled]="
+                isSaving ||
+                !hasChanges
+              "
+            >
+
+              <span
+                *ngIf="!isSaving"
+              >
+                💾 Değişiklikleri Kaydet
+              </span>
+
+
+              <span
+                *ngIf="isSaving"
+              >
+                ⏳ Kaydediliyor...
+              </span>
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    </div>
+
+  </ng-container>
+
+</div>

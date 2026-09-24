@@ -1,0 +1,231 @@
+<div class="auth-container">
+
+  <div class="auth-box">
+
+
+    <!-- =====================================================
+         BAŞLIK
+         ===================================================== -->
+
+    <h2>
+
+      {{ role === 'teacher'
+      ? 'Öğretmen Girişi'
+      : (isLoginMode
+        ? 'Öğrenci Girişi'
+        : 'Öğrenci Kaydı')
+      }}
+
+    </h2>
+
+
+    <!-- =====================================================
+         ALT BAŞLIK
+         ===================================================== -->
+
+    <p class="subtitle">
+
+      {{
+        role === 'teacher'
+          ? 'Kurslarınızı yönetmek için öğretmen hesabınızla giriş yapın.'
+          : (
+            isLoginMode
+              ? 'Öğrenmeye devam etmek için giriş yapın.'
+              : 'Yeni şeyler öğrenmek için öğrenci hesabınızı oluşturun.'
+          )
+      }}
+
+    </p>
+
+
+    <!-- =====================================================
+         FORM
+         ===================================================== -->
+
+    <form
+      (ngSubmit)="onSubmit()"
+    >
+
+
+      <!-- ===================================================
+           İSİM
+
+           Yalnızca öğrenci kayıt modunda gösterilir.
+           =================================================== -->
+
+      <div
+        class="form-group"
+
+        *ngIf="
+          role === 'student'
+          &&
+          !isLoginMode
+        "
+      >
+
+        <label>
+          İsim Soyisim
+        </label>
+
+        <input
+
+          type="text"
+
+          name="name"
+
+          [(ngModel)]="name"
+
+          placeholder="Adınız Soyadınız"
+
+          required
+
+        >
+
+      </div>
+
+
+      <!-- ===================================================
+           EMAIL
+           =================================================== -->
+
+      <div class="form-group">
+
+        <label>
+          E-posta Adresi
+        </label>
+
+        <input
+
+          type="email"
+
+          name="email"
+
+          [(ngModel)]="email"
+
+          placeholder="ornek@gmail.com"
+
+          required
+
+        >
+
+      </div>
+
+
+      <!-- ===================================================
+           ŞİFRE
+           =================================================== -->
+
+      <div class="form-group">
+
+        <label>
+          Şifre
+        </label>
+
+        <input
+
+          type="password"
+
+          name="password"
+
+          [(ngModel)]="password"
+
+          placeholder="Şifreniz"
+
+          required
+
+        >
+
+      </div>
+
+
+      <!-- ===================================================
+           SUBMIT
+           =================================================== -->
+
+      <button
+
+        type="submit"
+
+        class="primary-btn"
+
+      >
+
+        {{
+          role === 'teacher'
+            ? 'Öğretmen Olarak Giriş Yap'
+            : (
+              isLoginMode
+                ? 'Öğrenci Olarak Giriş Yap'
+                : 'Öğrenci Olarak Kayıt Ol'
+            )
+        }}
+
+      </button>
+
+
+    </form>
+
+
+    <!-- =====================================================
+         STUDENT MODE SWITCH
+
+         Öğretmende gösterilmez.
+         ===================================================== -->
+
+    <p
+
+      class="switch-mode"
+
+      *ngIf="
+        role === 'student'
+      "
+
+    >
+
+      {{
+        isLoginMode
+          ? 'Hesabınız yok mu?'
+          : 'Zaten hesabınız var mı?'
+      }}
+
+      <a
+
+        href="javascript:void(0)"
+
+        (click)="toggleMode()"
+
+      >
+
+        {{
+          isLoginMode
+            ? 'Kayıt Ol'
+            : 'Giriş Yap'
+        }}
+
+      </a>
+
+    </p>
+
+
+    <!-- =====================================================
+         TEACHER INFO
+         ===================================================== -->
+
+    <p
+
+      class="switch-mode"
+
+      *ngIf="
+        role === 'teacher'
+      "
+
+    >
+
+      Öğretmen hesapları platform yöneticisi tarafından oluşturulur.
+
+    </p>
+
+
+  </div>
+
+</div>

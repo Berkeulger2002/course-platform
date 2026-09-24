@@ -1,0 +1,269 @@
+<div class="edit-course-page">
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        ✏️ Kursu Düzenle
+      </h1>
+
+      <p>
+        Kurs bilgilerinizi, görselinizi ve
+        videonuzu güncelleyebilirsiniz.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="back-button"
+      (click)="cancel()"
+    >
+      ← Kurslarıma Dön
+    </button>
+
+  </div>
+
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Kurs bilgileri yükleniyor...
+  </div>
+
+
+  <form
+    *ngIf="!isLoading"
+    #editForm="ngForm"
+    class="edit-card"
+    (ngSubmit)="saveCourse()"
+  >
+
+    <!-- KURS ADI -->
+
+    <div class="form-group">
+
+      <label>
+        Kurs Adı
+      </label>
+
+      <input
+        type="text"
+        name="name"
+        [(ngModel)]="course.name"
+        required
+      >
+
+    </div>
+
+
+    <!-- DESCRIPTION -->
+
+    <div class="form-group">
+
+      <label>
+        Kurs Açıklaması
+      </label>
+
+      <textarea
+        name="description"
+        [(ngModel)]="course.description"
+        rows="5"
+      ></textarea>
+
+    </div>
+
+
+    <div class="two-column">
+
+      <!-- PRICE -->
+
+      <div class="form-group">
+
+        <label>
+          Fiyat (TL)
+        </label>
+
+        <input
+          type="number"
+          name="price"
+          [(ngModel)]="course.price"
+          min="0"
+          required
+        >
+
+      </div>
+
+
+      <!-- CAPACITY -->
+
+      <div class="form-group">
+
+        <label>
+          Kontenjan
+        </label>
+
+        <input
+          type="number"
+          name="maxCapacity"
+          [(ngModel)]="course.maxCapacity"
+          min="0"
+          required
+        >
+
+        <small>
+          0 = sınırsız kapasite
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <!-- IMAGE -->
+
+    <section class="media-box">
+
+      <div class="media-header">
+
+        <div class="media-icon">
+          🖼️
+        </div>
+
+        <div>
+
+          <strong>
+            Kurs Kapak Görseli
+          </strong>
+
+          <span>
+            Yeni görsel seçmezseniz mevcut
+            kapak korunur.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        *ngIf="imagePreview"
+        class="image-preview"
+      >
+
+        <img
+          [src]="imagePreview"
+          alt="Kurs kapak görseli"
+        >
+
+      </div>
+
+
+      <input
+        type="file"
+        accept="image/*"
+        [disabled]="isSaving"
+        (change)="onImageSelected($event)"
+      >
+
+    </section>
+
+
+    <!-- VIDEO -->
+
+    <section class="media-box">
+
+      <div class="media-header">
+
+        <div class="media-icon">
+          🎥
+        </div>
+
+        <div>
+
+          <strong>
+            Kurs Videosu
+          </strong>
+
+          <span *ngIf="course.videoPath">
+            Mevcut video yüklü. Yeni bir video
+            seçerseniz eski video yerine kullanılacak.
+          </span>
+
+          <span *ngIf="!course.videoPath">
+            Bu kurs için henüz video bulunmuyor.
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        *ngIf="course.videoPath"
+        class="video-status"
+      >
+        ✅ Mevcut kurs videosu bulunuyor
+      </div>
+
+
+      <div
+        *ngIf="selectedVideoName"
+        class="selected-video"
+      >
+        🎬 Yeni video:
+        <strong>
+          {{ selectedVideoName }}
+        </strong>
+      </div>
+
+
+      <input
+        type="file"
+        accept="video/*"
+        [disabled]="isSaving"
+        (change)="onVideoSelected($event)"
+      >
+
+    </section>
+
+
+    <!-- ACTIONS -->
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="cancel-button"
+        [disabled]="isSaving"
+        (click)="cancel()"
+      >
+        İptal
+      </button>
+
+
+      <button
+        type="submit"
+        class="save-button"
+        [disabled]="
+          isSaving ||
+          editForm.invalid
+        "
+      >
+
+        {{
+          isSaving
+            ? '⏳ Kaydediliyor...'
+            : '💾 Değişiklikleri Kaydet'
+        }}
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

@@ -1,0 +1,555 @@
+.reviews-page {
+  width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-bottom: 26px;
+}
+
+
+.page-header h1 {
+  margin: 0 0 7px;
+
+  color: #202939;
+
+  font-size: 29px;
+}
+
+
+.page-header p {
+  margin: 0;
+
+  color: #70798a;
+
+  font-size: 15px;
+}
+
+
+.courses-button {
+  appearance: none;
+
+  border: 1px solid #c8d5ed;
+
+  background: white;
+
+  color: #315b9f;
+
+  border-radius: 9px;
+
+  padding: 11px 15px;
+
+  font-family: inherit;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.courses-button:hover {
+  background: #f1f5fd;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading-box {
+  padding: 35px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 13px;
+
+  text-align: center;
+
+  color: #667085;
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 17px;
+
+  margin-bottom: 21px;
+}
+
+
+.stat-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 19px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 13px;
+
+  box-shadow:
+    0 3px 12px rgba(28, 41, 65, 0.04);
+}
+
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #fff7dd;
+
+  border-radius: 11px;
+
+  font-size: 22px;
+}
+
+
+.stat-card span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #7b8494;
+
+  font-size: 12px;
+}
+
+
+.stat-card strong {
+  color: #263144;
+
+  font-size: 24px;
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+.filter-card {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+
+  padding: 17px 19px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 12px;
+}
+
+
+.filter-card strong {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #303b4c;
+
+  font-size: 14px;
+}
+
+
+.filter-card span {
+  color: #848d9b;
+
+  font-size: 12px;
+}
+
+
+.filter-card select {
+  min-width: 260px;
+
+  padding: 10px 12px;
+
+  border: 1px solid #ccd5e2;
+
+  border-radius: 8px;
+
+  background: white;
+
+  color: #3c4759;
+
+  font-family: inherit;
+
+  outline: none;
+}
+
+
+.filter-card select:focus {
+  border-color: #2f6fed;
+
+  box-shadow:
+    0 0 0 3px rgba(47, 111, 237, 0.1);
+}
+
+
+/* =========================================================
+   REVIEWS
+   ========================================================= */
+
+.reviews-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 13px;
+}
+
+
+.review-card {
+  display: grid;
+
+  grid-template-columns:
+    270px 1fr;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 13px;
+
+  overflow: hidden;
+
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+
+.review-card:hover {
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 15px rgba(30, 43, 68, 0.06);
+}
+
+
+/* =========================================================
+   COURSE
+   ========================================================= */
+
+.course-side {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 17px;
+
+  background: #f8faff;
+
+  border-right: 1px solid #edf0f4;
+}
+
+
+.course-image {
+  width: 65px;
+  height: 52px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 8px;
+
+  background: #eaf0f7;
+}
+
+
+.course-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 24px;
+}
+
+
+.course-side small {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #929aa8;
+
+  font-size: 10px;
+}
+
+
+.course-side strong {
+  display: block;
+
+  color: #344054;
+
+  font-size: 12px;
+
+  line-height: 1.35;
+}
+
+
+/* =========================================================
+   REVIEW MAIN
+   ========================================================= */
+
+.review-main {
+  padding: 17px 19px;
+}
+
+
+.review-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 13px;
+}
+
+
+.student {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.avatar {
+  width: 39px;
+  height: 39px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #edf3ff;
+
+  border-radius: 50%;
+}
+
+
+.student strong {
+  display: block;
+
+  color: #303b4c;
+
+  font-size: 13px;
+}
+
+
+.student span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #9299a5;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   RATING
+   ========================================================= */
+
+.rating {
+  text-align: right;
+}
+
+
+.stars {
+  color: #f4ad20;
+
+  font-size: 17px;
+
+  letter-spacing: 1px;
+
+  white-space: nowrap;
+}
+
+
+.rating strong {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #687386;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+.comment {
+  margin: 0;
+
+  color: #596476;
+
+  font-size: 13px;
+
+  line-height: 1.65;
+
+  font-style: italic;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty-state {
+  padding: 60px 20px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 14px;
+
+  text-align: center;
+}
+
+
+.empty-icon {
+  font-size: 44px;
+}
+
+
+.empty-state h2 {
+  margin-bottom: 8px;
+
+  color: #303b4c;
+}
+
+
+.empty-state p {
+  margin: 0;
+
+  color: #818a98;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+
+  .review-card {
+    grid-template-columns:
+      220px 1fr;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .page-header,
+  .filter-card {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+
+  .filter-card select {
+    min-width: 0;
+
+    width: 100%;
+  }
+
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .review-card {
+    grid-template-columns: 1fr;
+  }
+
+
+  .course-side {
+    border-right: none;
+
+    border-bottom: 1px solid #edf0f4;
+  }
+
+
+  .review-header {
+    align-items: flex-start;
+  }
+}

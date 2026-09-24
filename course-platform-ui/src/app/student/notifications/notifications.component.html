@@ -1,0 +1,178 @@
+<div class="notifications-page">
+
+  <!-- ====================================================== -->
+  <!-- HEADER -->
+  <!-- ====================================================== -->
+
+  <div class="notifications-header">
+
+    <div>
+
+      <h1>
+        🔔 Bildirimler
+      </h1>
+
+      <p>
+        Hesabınız ve eğitimlerinizle ilgili bildirimleri görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      *ngIf="unreadCount > 0"
+      class="read-all-button"
+      (click)="markAllAsRead()"
+    >
+      ✓ Tümünü Okundu Yap
+    </button>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- ÖZET -->
+  <!-- ====================================================== -->
+
+  <div
+    class="notification-summary"
+    *ngIf="!isLoading"
+  >
+
+    <div class="summary-icon">
+      🔔
+    </div>
+
+    <div>
+
+      <strong>
+        {{ unreadCount }}
+      </strong>
+
+      <span>
+        okunmamış bildiriminiz var
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- YÜKLENİYOR -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="empty-state"
+  >
+    ⏳ Bildirimler yükleniyor...
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- BİLDİRİM YOK -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      notifications.length === 0
+    "
+    class="empty-state"
+  >
+
+    <div class="empty-icon">
+      🔔
+    </div>
+
+    <h2>
+      Henüz bildiriminiz yok
+    </h2>
+
+    <p>
+      Kurslarınız, sertifikalarınız ve hesabınızla ilgili
+      yeni gelişmeler burada görünecek.
+    </p>
+
+  </div>
+
+
+  <!-- ====================================================== -->
+  <!-- BİLDİRİMLER -->
+  <!-- ====================================================== -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      notifications.length > 0
+    "
+    class="notification-list"
+  >
+
+    <div
+      *ngFor="let notification of notifications"
+      class="notification-card"
+      [class.unread]="!notification.read"
+      (click)="markAsRead(notification)"
+    >
+
+      <div class="notification-icon">
+
+        {{
+          getNotificationIcon(
+            notification.type
+          )
+        }}
+
+      </div>
+
+
+      <div class="notification-content">
+
+        <div class="notification-title-row">
+
+          <h3>
+            {{ notification.title }}
+          </h3>
+
+
+          <span
+            *ngIf="!notification.read"
+            class="unread-badge"
+          >
+            Yeni
+          </span>
+
+        </div>
+
+
+        <p>
+          {{ notification.message }}
+        </p>
+
+
+        <div class="notification-date">
+
+          🕒
+          {{
+            notification.createdAt
+              | date:'dd.MM.yyyy HH:mm'
+          }}
+
+        </div>
+
+      </div>
+
+
+      <div
+        *ngIf="!notification.read"
+        class="unread-dot"
+      >
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

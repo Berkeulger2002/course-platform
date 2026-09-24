@@ -1,0 +1,204 @@
+<div class="panel-container">
+
+  <!-- SOL SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="logo-area">
+      <h2>🎓 Course Platform</h2>
+      <p>Öğrenci Paneli</p>
+    </div>
+
+
+    <nav class="menu">
+
+      <!-- ANA SAYFA -->
+      <a
+        routerLink="/student/dashboard"
+        routerLinkActive="active"
+      >
+        🏠 Ana Sayfa
+      </a>
+
+
+      <!-- KURSLARIM -->
+      <a
+        routerLink="/student/courses"
+        routerLinkActive="active"
+      >
+        🎓 Kurslarım
+      </a>
+
+
+      <!-- KURS MAĞAZASI -->
+      <a
+        routerLink="/student/marketplace"
+        routerLinkActive="active"
+      >
+        🛍️ Kurs Mağazası
+      </a>
+
+
+      <!-- FAVORİLER -->
+      <a
+        routerLink="/student/favorites"
+        routerLinkActive="active"
+      >
+        ❤️ Favoriler
+      </a>
+
+
+      <!-- İLERLEME -->
+      <a
+        routerLink="/student/progress"
+        routerLinkActive="active"
+      >
+        📈 İlerlemem
+      </a>
+
+
+      <!-- İZLEME GEÇMİŞİ -->
+      <a
+        routerLink="/student/watch-history"
+        routerLinkActive="active"
+      >
+        🕒 İzleme Geçmişi
+      </a>
+
+
+      <!-- SERTİFİKALAR -->
+      <a
+        routerLink="/student/certificates"
+        routerLinkActive="active"
+      >
+        🏆 Sertifikalar
+      </a>
+
+
+      <!-- ================================================= -->
+      <!-- BİLDİRİMLER + OKUNMAMIŞ SAYISI -->
+      <!-- ================================================= -->
+
+      <a
+        routerLink="/student/notifications"
+        routerLinkActive="active"
+        class="notification-menu-link"
+      >
+
+        <span>
+          🔔 Bildirimler
+        </span>
+
+
+        <ng-container
+          *ngIf="unreadCount$ | async as unreadCount"
+        >
+
+          <span
+            *ngIf="unreadCount > 0"
+            class="notification-badge"
+          >
+            {{
+              unreadCount > 99
+                ? '99+'
+                : unreadCount
+            }}
+          </span>
+
+        </ng-container>
+
+      </a>
+
+
+      <!-- ÖDEME GEÇMİŞİ -->
+      <a
+        routerLink="/student/payment-history"
+        routerLinkActive="active"
+      >
+        💳 Ödeme Geçmişi
+      </a>
+
+
+      <!-- PROFİL -->
+      <a
+        routerLink="/student/profile"
+        routerLinkActive="active"
+      >
+        👤 Profil
+      </a>
+
+    </nav>
+
+
+    <!-- ÇIKIŞ -->
+    <button
+      class="logout-button"
+      (click)="logout()"
+    >
+      🚪 Çıkış Yap
+    </button>
+
+  </aside>
+
+
+  <!-- ===================================================== -->
+  <!-- SAĞ TARAF -->
+  <!-- ===================================================== -->
+
+  <main class="main-area">
+
+
+    <!-- ÜST BAR -->
+    <header class="topbar">
+
+      <div>
+
+        <h2>
+          Öğrenci Paneli
+        </h2>
+
+        <p>
+          Hoş geldin,
+          {{ currentStudent?.name }}
+        </p>
+
+      </div>
+
+
+      <div class="profile-area">
+
+        <div class="avatar">
+          👤
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ currentStudent?.name }}
+          </strong>
+
+          <small>
+            Öğrenci
+          </small>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- =================================================== -->
+    <!-- SEÇİLEN SAYFA BURAYA AÇILIR -->
+    <!-- =================================================== -->
+
+    <section class="content-area">
+
+      <router-outlet>
+      </router-outlet>
+
+    </section>
+
+  </main>
+
+</div>

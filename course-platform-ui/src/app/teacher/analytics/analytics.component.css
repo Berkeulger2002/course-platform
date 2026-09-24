@@ -1,0 +1,614 @@
+.analytics-page {
+  width: 100%;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 27px;
+}
+
+
+.page-header h1 {
+  margin: 0 0 7px 0;
+
+  color: #202939;
+
+  font-size: 29px;
+}
+
+
+.page-header p {
+  margin: 0;
+
+  color: #70798a;
+
+  font-size: 15px;
+}
+
+
+.courses-button {
+  border: 1px solid #c8d5ed;
+
+  background: white;
+
+  color: #315b9f;
+
+  border-radius: 9px;
+
+  padding: 11px 16px;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.courses-button:hover {
+  background: #f1f5fd;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.loading-box {
+  padding: 35px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 13px;
+
+  text-align: center;
+
+  color: #667085;
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 18px;
+
+  margin-bottom: 22px;
+}
+
+
+.stat-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 20px;
+
+  background: white;
+
+  border: 1px solid #e0e6ef;
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 3px 12px rgba(28, 41, 65, 0.04);
+}
+
+
+.stat-icon {
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background: #edf3ff;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 23px;
+}
+
+
+.stat-card span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #7c8595;
+
+  font-size: 13px;
+}
+
+
+.stat-card strong {
+  color: #222d3e;
+
+  font-size: 26px;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.summary-grid {
+  display: grid;
+
+  grid-template-columns:
+    2fr 1fr;
+
+  gap: 20px;
+
+  margin-bottom: 22px;
+}
+
+
+.summary-card {
+  background: white;
+
+  border: 1px solid #e0e6ef;
+
+  border-radius: 14px;
+
+  padding: 23px;
+
+  box-shadow:
+    0 3px 12px rgba(28, 41, 65, 0.04);
+}
+
+
+.summary-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 18px;
+}
+
+
+.summary-header h2 {
+  margin: 0 0 5px 0;
+
+  color: #293447;
+
+  font-size: 18px;
+}
+
+
+.summary-header p {
+  margin: 0;
+
+  color: #858d9b;
+
+  font-size: 13px;
+}
+
+
+.large-value {
+  color: #2f6fed;
+
+  font-size: 27px;
+}
+
+
+.large-progress {
+  width: 100%;
+  height: 11px;
+
+  overflow: hidden;
+
+  background: #e9edf4;
+
+  border-radius: 30px;
+}
+
+
+.large-progress-value {
+  height: 100%;
+
+  background: #2f6fed;
+
+  border-radius: 30px;
+
+  transition: width 0.4s;
+}
+
+
+.capacity-numbers {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-top: 12px;
+
+  color: #788191;
+
+  font-size: 12px;
+}
+
+
+.capacity-numbers strong {
+  color: #374254;
+}
+
+
+.price-summary {
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 17px;
+}
+
+
+.price-icon {
+  width: 58px;
+  height: 58px;
+
+  flex-shrink: 0;
+
+  background: #fff6df;
+
+  border-radius: 13px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 28px;
+}
+
+
+.price-summary p {
+  margin: 0 0 4px 0;
+
+  color: #7d8695;
+
+  font-size: 13px;
+}
+
+
+.price-summary h2 {
+  margin: 0 0 5px 0;
+
+  color: #293447;
+
+  font-size: 26px;
+}
+
+
+.price-summary span {
+  color: #929aa7;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   PERFORMANCE
+   ========================================================= */
+
+.performance-card {
+  background: white;
+
+  border: 1px solid #e0e6ef;
+
+  border-radius: 14px;
+
+  padding: 23px;
+
+  box-shadow:
+    0 3px 12px rgba(28, 41, 65, 0.04);
+}
+
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+
+.section-header h2 {
+  margin: 0 0 5px 0;
+
+  color: #293447;
+
+  font-size: 19px;
+}
+
+
+.section-header p {
+  margin: 0;
+
+  color: #828b9b;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   PERFORMANCE ROW
+   ========================================================= */
+
+.course-performance-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+.performance-row {
+  display: flex;
+
+  gap: 16px;
+
+  padding: 14px;
+
+  border: 1px solid #e9edf3;
+
+  border-radius: 11px;
+
+  background: #fcfdff;
+}
+
+
+.course-image {
+  width: 105px;
+  height: 80px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 9px;
+
+  background: #edf1f6;
+}
+
+
+.course-image img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 30px;
+}
+
+
+.course-main {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.course-title-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 15px;
+
+  margin-bottom: 8px;
+}
+
+
+.course-title-row h3 {
+  margin: 0;
+
+  color: #293447;
+
+  font-size: 15px;
+}
+
+
+.status {
+  flex-shrink: 0;
+
+  padding: 4px 9px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+.status.active {
+  color: #237440;
+
+  background: #e9f8ee;
+
+  border: 1px solid #b5dfc1;
+}
+
+
+.status.passive {
+  color: #a23c3c;
+
+  background: #fff0f0;
+
+  border: 1px solid #efbcbc;
+}
+
+
+.course-numbers {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 15px;
+
+  margin-bottom: 11px;
+
+  color: #707a8b;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   COURSE PROGRESS
+   ========================================================= */
+
+.course-progress-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 5px;
+
+  color: #7a8392;
+
+  font-size: 10px;
+}
+
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+
+  overflow: hidden;
+
+  background: #e9edf4;
+
+  border-radius: 20px;
+}
+
+
+.progress-value {
+  height: 100%;
+
+  background: #2f6fed;
+
+  border-radius: 20px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty-state {
+  padding: 45px 20px;
+
+  text-align: center;
+
+  color: #768091;
+}
+
+
+.empty-state > div {
+  font-size: 40px;
+}
+
+
+.empty-state h3 {
+  color: #344054;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .page-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .performance-row {
+    flex-direction: column;
+  }
+
+
+  .course-image {
+    width: 100%;
+    height: 160px;
+  }
+
+
+  .capacity-numbers {
+    flex-direction: column;
+
+    gap: 5px;
+  }
+}

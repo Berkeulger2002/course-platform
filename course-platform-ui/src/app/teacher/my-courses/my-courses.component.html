@@ -1,0 +1,408 @@
+<div class="my-courses-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        📚 Kurslarım
+      </h1>
+
+      <p>
+        Kurslarınızı, öğrenci kayıtlarını ve
+        yayın durumlarını buradan yönetebilirsiniz.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="create-button"
+      (click)="createCourse()"
+    >
+      ➕ Yeni Kurs Oluştur
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Kurslarınız yükleniyor...
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- EMPTY -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      courses.length === 0
+    "
+    class="empty-state"
+  >
+
+    <div class="empty-icon">
+      📚
+    </div>
+
+    <h2>
+      Henüz kursunuz yok
+    </h2>
+
+    <p>
+      İlk kursunuzu oluşturarak öğrencilerinizle
+      buluşturabilirsiniz.
+    </p>
+
+
+    <button
+      type="button"
+      (click)="createCourse()"
+    >
+      ➕ Kurs Oluştur
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- COURSES -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      courses.length > 0
+    "
+    class="courses-grid"
+  >
+
+    <article
+      *ngFor="let course of courses"
+      class="course-card"
+    >
+
+      <!-- ================================================= -->
+      <!-- IMAGE -->
+      <!-- ================================================= -->
+
+      <div class="course-image">
+
+        <img
+          *ngIf="course.imageUrl"
+          [src]="course.imageUrl"
+          [alt]="course.name"
+        >
+
+
+        <div
+          *ngIf="!course.imageUrl"
+          class="image-placeholder"
+        >
+          📚
+        </div>
+
+
+        <span
+          class="status-badge"
+          [class.active]="isPurchasable(course)"
+          [class.passive]="!isPurchasable(course)"
+        >
+
+          {{
+            isPurchasable(course)
+              ? '✅ Satışta'
+              : '⛔ Satış Kapalı'
+          }}
+
+        </span>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- CONTENT -->
+      <!-- ================================================= -->
+
+      <div class="course-content">
+
+        <h2>
+          {{ course.name }}
+        </h2>
+
+
+        <p class="description">
+
+          {{
+            course.description ||
+            'Bu kurs için açıklama bulunmuyor.'
+          }}
+
+        </p>
+
+
+        <!-- ================================================= -->
+        <!-- INFO -->
+        <!-- ================================================= -->
+
+        <div class="course-info-grid">
+
+          <div>
+
+            <span>
+              Öğrenci
+            </span>
+
+            <strong>
+              👥 {{ course.currentEnrolled || 0 }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Kapasite
+            </span>
+
+            <strong>
+              🎯
+              {{
+                course.maxCapacity > 0
+                  ? course.maxCapacity
+                  : 'Sınırsız'
+              }}
+            </strong>
+
+          </div>
+
+
+          <div>
+
+            <span>
+              Fiyat
+            </span>
+
+            <strong>
+              💰 {{ course.price || 0 }} TL
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- CAPACITY -->
+        <!-- ================================================= -->
+
+        <div class="capacity-section">
+
+          <div class="capacity-header">
+
+            <span>
+              Kontenjan Kullanımı
+            </span>
+
+
+            <strong *ngIf="course.maxCapacity > 0">
+
+              {{ course.currentEnrolled || 0 }}
+              /
+              {{ course.maxCapacity }}
+
+            </strong>
+
+
+            <strong *ngIf="!course.maxCapacity || course.maxCapacity <= 0">
+              Sınırsız
+            </strong>
+
+          </div>
+
+
+          <div
+            *ngIf="course.maxCapacity > 0"
+            class="progress-track"
+          >
+
+            <div
+              class="progress-value"
+              [style.width.%]="
+                getCapacityPercentage(course)
+              "
+            ></div>
+
+          </div>
+
+
+          <div
+            *ngIf="!course.maxCapacity || course.maxCapacity <= 0"
+            class="unlimited-capacity"
+          >
+            Bu kurs için öğrenci sınırı bulunmuyor.
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- VIDEO -->
+        <!-- ================================================= -->
+
+        <div class="video-section">
+
+          <!-- VIDEO VAR -->
+          <div
+            *ngIf="course.videoPath"
+            class="video-ok"
+          >
+            🎥 Kurs videosu yüklendi
+          </div>
+
+
+          <!-- VIDEO YOK -->
+          <div
+            *ngIf="!course.videoPath"
+            class="video-missing"
+          >
+
+            <span>
+              ⚠️ Kurs videosu bulunmuyor
+            </span>
+
+
+            <input
+              #videoInput
+              type="file"
+              accept="video/*"
+              hidden
+              (change)="
+                onVideoSelected(
+                  $event,
+                  course
+                )
+              "
+            >
+
+
+            <button
+              type="button"
+              class="video-button"
+              [disabled]="
+                uploadingVideoCourseId ===
+                course.id
+              "
+              (click)="videoInput.click()"
+            >
+
+              {{
+                uploadingVideoCourseId ===
+                course.id
+
+                  ? '⏳ Yükleniyor...'
+
+                  : '🎥 Video Ekle'
+              }}
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- MANAGEMENT -->
+        <!-- ================================================= -->
+
+        <div class="course-actions">
+
+          <!-- DÜZENLE -->
+          <button
+            type="button"
+            class="edit-button"
+            (click)="editCourse(course)"
+          >
+            ✏️ Düzenle
+          </button>
+
+
+          <!-- ÖĞRENCİLER -->
+          <button
+            type="button"
+            class="students-button"
+            (click)="viewStudents(course)"
+          >
+            👥 Öğrenciler
+          </button>
+
+
+          <!-- SATIŞ -->
+          <button
+            type="button"
+            class="sale-button"
+            [class.close-sale]="
+              isPurchasable(course)
+            "
+            [class.open-sale]="
+              !isPurchasable(course)
+            "
+            [disabled]="
+              togglingCourseId ===
+              course.id
+            "
+            (click)="togglePurchasable(course)"
+          >
+
+            <span
+              *ngIf="
+                togglingCourseId !==
+                course.id
+              "
+            >
+
+              {{
+                isPurchasable(course)
+                  ? '⛔ Satışa Kapat'
+                  : '✅ Satışa Aç'
+              }}
+
+            </span>
+
+
+            <span
+              *ngIf="
+                togglingCourseId ===
+                course.id
+              "
+            >
+              ⏳ İşleniyor...
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+</div>

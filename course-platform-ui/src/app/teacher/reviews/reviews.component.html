@@ -1,0 +1,323 @@
+<div class="reviews-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        ⭐ Değerlendirmeler
+      </h1>
+
+      <p>
+        Öğrencilerin kurslarınıza yaptığı
+        değerlendirmeleri ve puanları takip edin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="courses-button"
+      (click)="goToCourses()"
+    >
+      📚 Kursları Yönet
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Değerlendirmeler yükleniyor...
+  </div>
+
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- =================================================== -->
+    <!-- STATS -->
+    <!-- =================================================== -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          💬
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Değerlendirme
+          </span>
+
+          <strong>
+            {{ totalReviews }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          ⭐
+        </div>
+
+        <div>
+
+          <span>
+            Ortalama Puan
+          </span>
+
+          <strong>
+            {{
+              averageRating
+                | number:'1.1-1'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🌟
+        </div>
+
+        <div>
+
+          <span>
+            5 Yıldız
+          </span>
+
+          <strong>
+            {{ fiveStarReviews }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📚
+        </div>
+
+        <div>
+
+          <span>
+            Yorum Alan Kurs
+          </span>
+
+          <strong>
+            {{ reviewedCourseCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- FILTER -->
+    <!-- =================================================== -->
+
+    <div class="filter-card">
+
+      <div>
+
+        <strong>
+          Değerlendirmeleri Filtrele
+        </strong>
+
+        <span>
+          Belirli bir kursun yorumlarını görüntüleyin.
+        </span>
+
+      </div>
+
+
+      <select
+        [(ngModel)]="selectedCourseId"
+      >
+
+        <option [ngValue]="null">
+          Tüm Kurslar
+        </option>
+
+
+        <option
+          *ngFor="let course of courses"
+          [ngValue]="course.id"
+        >
+          {{ course.name }}
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- EMPTY -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="filteredReviews.length === 0"
+      class="empty-state"
+    >
+
+      <div class="empty-icon">
+        ⭐
+      </div>
+
+      <h2>
+        Henüz değerlendirme bulunmuyor
+      </h2>
+
+      <p>
+        Öğrenciler kurslarınıza değerlendirme
+        yaptığında burada görüntülenecek.
+      </p>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- REVIEWS -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="filteredReviews.length > 0"
+      class="reviews-list"
+    >
+
+      <article
+        *ngFor="let review of filteredReviews"
+        class="review-card"
+      >
+
+        <!-- COURSE -->
+
+        <div class="course-side">
+
+          <div class="course-image">
+
+            <img
+              *ngIf="review.courseImageUrl"
+              [src]="review.courseImageUrl"
+              [alt]="review.courseName"
+            >
+
+
+            <div
+              *ngIf="!review.courseImageUrl"
+              class="image-placeholder"
+            >
+              📚
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <small>
+              Kurs
+            </small>
+
+            <strong>
+              {{ review.courseName }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- REVIEW -->
+
+        <div class="review-main">
+
+          <div class="review-header">
+
+            <div class="student">
+
+              <div class="avatar">
+                👤
+              </div>
+
+
+              <div>
+
+                <strong>
+                  {{ getStudentName(review) }}
+                </strong>
+
+
+                <span
+                  *ngIf="getReviewDate(review)"
+                >
+
+                  {{
+                    getReviewDate(review)
+                      | date:'dd.MM.yyyy HH:mm'
+                  }}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="rating">
+
+              <div class="stars">
+                {{ getStars(review) }}
+              </div>
+
+              <strong>
+                {{ getRating(review) }}/5
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <p class="comment">
+            “{{ getComment(review) }}”
+          </p>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </ng-container>
+
+</div>

@@ -1,0 +1,414 @@
+.create-course-page {
+  max-width: 1000px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 20px;
+
+  margin-bottom: 25px;
+}
+
+
+.page-header h1 {
+  margin: 0 0 7px 0;
+
+  color: #202939;
+
+  font-size: 29px;
+}
+
+
+.page-header p {
+  margin: 0;
+
+  color: #6f7888;
+}
+
+
+.cancel-top-button {
+  border: 1px solid #ccd4e0;
+
+  background: white;
+
+  color: #39465a;
+
+  padding: 10px 15px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.course-card {
+  background: white;
+
+  border: 1px solid #e0e5ed;
+
+  border-radius: 14px;
+
+  padding: 30px;
+
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form-group {
+  margin-bottom: 23px;
+}
+
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-weight: 600;
+
+  color: #273245;
+}
+
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ccd4df;
+
+  border-radius: 8px;
+
+  padding: 12px 14px;
+
+  font-size: 15px;
+
+  outline: none;
+
+  font-family: inherit;
+}
+
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #2f6fed;
+
+  box-shadow:
+    0 0 0 3px rgba(47, 111, 237, 0.08);
+}
+
+
+.form-group textarea {
+  resize: vertical;
+}
+
+
+/* =========================================================
+   UPLOAD
+   ========================================================= */
+
+.upload-section {
+  margin-top: 25px;
+
+  padding: 22px;
+
+  border: 1px solid #e0e6ef;
+
+  border-radius: 12px;
+
+  background: #fafbfe;
+}
+
+
+.upload-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 13px;
+
+  margin-bottom: 17px;
+}
+
+
+.upload-icon {
+  width: 45px;
+  height: 45px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  border-radius: 10px;
+
+  background: #edf3ff;
+
+  font-size: 23px;
+}
+
+
+.upload-header h3 {
+  margin: 0 0 4px 0;
+
+  color: #273245;
+
+  font-size: 17px;
+}
+
+
+.upload-header p {
+  margin: 0;
+
+  color: #747e8e;
+
+  font-size: 13px;
+}
+
+
+.file-input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 11px;
+
+  border: 1px solid #ccd5e2;
+
+  border-radius: 8px;
+
+  background: white;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+   ========================================================= */
+
+.image-preview {
+  margin-top: 18px;
+}
+
+
+.image-preview p {
+  color: #596475;
+
+  font-weight: 600;
+
+  font-size: 14px;
+}
+
+
+.image-preview img {
+  max-width: 100%;
+
+  max-height: 350px;
+
+  border-radius: 10px;
+
+  object-fit: cover;
+
+  border: 1px solid #dde2ea;
+}
+
+
+/* =========================================================
+   SELECTED VIDEO
+   ========================================================= */
+
+.selected-file {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 16px;
+
+  padding: 13px;
+
+  border-radius: 8px;
+
+  background: #edf6ff;
+
+  border: 1px solid #c9e2fa;
+}
+
+
+.selected-file span {
+  font-size: 24px;
+}
+
+
+.selected-file strong {
+  color: #244b73;
+
+  font-size: 14px;
+}
+
+
+.selected-file p {
+  margin: 4px 0 0 0;
+
+  color: #526f8c;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   UPLOADING
+   ========================================================= */
+
+.uploading-box {
+  display: flex;
+
+  gap: 14px;
+
+  align-items: center;
+
+  margin-top: 25px;
+
+  padding: 17px;
+
+  border-radius: 10px;
+
+  border: 1px solid #b9d6ff;
+
+  background: #eef6ff;
+}
+
+
+.spinner {
+  font-size: 26px;
+}
+
+
+.uploading-box strong {
+  color: #1f5fa8;
+}
+
+
+.uploading-box p {
+  margin: 4px 0 0 0;
+
+  color: #617895;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 28px;
+}
+
+
+.cancel-button,
+.publish-button {
+  padding: 12px 21px;
+
+  border-radius: 8px;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.cancel-button {
+  border: 1px solid #cbd3df;
+
+  background: white;
+
+  color: #4c5768;
+}
+
+
+.publish-button {
+  min-width: 170px;
+
+  border: none;
+
+  background: #2f6fed;
+
+  color: white;
+}
+
+
+.publish-button:hover:not(:disabled) {
+  background: #245dd1;
+}
+
+
+.publish-button:disabled,
+.cancel-button:disabled,
+.cancel-top-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .page-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+
+  .course-card {
+    padding: 20px;
+  }
+
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+
+  .cancel-button,
+  .publish-button {
+    width: 100%;
+  }
+}

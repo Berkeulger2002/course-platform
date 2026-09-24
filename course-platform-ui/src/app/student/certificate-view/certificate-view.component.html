@@ -1,0 +1,200 @@
+<div class="certificate-page">
+
+  <!-- ÜST BUTONLAR -->
+
+  <div
+    class="certificate-actions no-print"
+  >
+
+    <button
+      class="back-button"
+      (click)="goBack()"
+    >
+      ← Sertifikalara Dön
+    </button>
+
+
+    <button
+      class="print-button"
+      (click)="printCertificate()"
+    >
+      📄 PDF Olarak Kaydet
+    </button>
+
+  </div>
+
+
+  <!-- YÜKLENİYOR -->
+
+  <div
+    *ngIf="isLoading"
+    class="status-box"
+  >
+    ⏳ Sertifika yükleniyor...
+  </div>
+
+
+  <!-- HATA -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      errorMessage
+    "
+    class="status-box error"
+  >
+    {{ errorMessage }}
+  </div>
+
+
+  <!-- SERTİFİKA -->
+
+  <div
+    *ngIf="
+      !isLoading &&
+      certificate
+    "
+    class="certificate-wrapper"
+  >
+
+    <div class="certificate">
+
+      <div class="corner top-left"></div>
+
+      <div class="corner top-right"></div>
+
+      <div class="corner bottom-left"></div>
+
+      <div class="corner bottom-right"></div>
+
+
+      <div class="certificate-content">
+
+        <div class="platform-name">
+
+          🎓 COURSE PLATFORM
+
+        </div>
+
+
+        <div class="trophy">
+
+          🏆
+
+        </div>
+
+
+        <div class="certificate-type">
+
+          KURS TAMAMLAMA SERTİFİKASI
+
+        </div>
+
+
+        <h1>
+
+          Başarı Sertifikası
+
+        </h1>
+
+
+        <div class="separator"></div>
+
+
+        <p class="description">
+
+          Bu sertifika
+
+        </p>
+
+
+        <h2 class="student-name">
+
+          {{ currentStudent?.name }}
+
+        </h2>
+
+
+        <p class="description">
+
+          adlı öğrencinin
+
+        </p>
+
+
+        <h3 class="course-name">
+
+          {{ certificate.courseName }}
+
+        </h3>
+
+
+        <p class="description">
+
+          eğitimini başarıyla tamamladığını
+          belgelemek amacıyla verilmiştir.
+
+        </p>
+
+
+        <div class="certificate-bottom">
+
+          <div class="bottom-item">
+
+            <span>
+              Veriliş Tarihi
+            </span>
+
+            <strong>
+
+              {{
+                certificate.issuedAt
+                  | date:'dd.MM.yyyy'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="seal">
+
+            🏅
+
+          </div>
+
+
+          <div class="bottom-item">
+
+            <span>
+              Sertifika Kodu
+            </span>
+
+            <strong>
+
+              {{
+                certificate.certificateCode
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="verification-text">
+
+          Bu sertifika benzersiz sertifika kodu
+          ile Course Platform sistemi üzerinden
+          doğrulanabilir.
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

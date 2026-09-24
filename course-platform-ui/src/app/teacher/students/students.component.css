@@ -1,0 +1,356 @@
+.students-page {
+  width: 100%;
+}
+
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  margin-bottom: 26px;
+}
+
+
+.page-header h1 {
+  margin: 0 0 7px;
+
+  color: #202939;
+
+  font-size: 29px;
+}
+
+
+.page-header p {
+  margin: 0;
+
+  color: #70798a;
+}
+
+
+.all-students-button {
+  border: 1px solid #c8d5ed;
+
+  background: white;
+
+  color: #315b9f;
+
+  padding: 11px 15px;
+
+  border-radius: 9px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.loading-box {
+  padding: 35px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 13px;
+
+  text-align: center;
+}
+
+
+/* STATS */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 17px;
+
+  margin-bottom: 22px;
+}
+
+
+.stat-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 19px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 13px;
+}
+
+
+.stat-icon {
+  width: 47px;
+  height: 47px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #edf3ff;
+
+  font-size: 21px;
+}
+
+
+.stat-card small {
+  display: block;
+
+  color: #7b8493;
+
+  margin-bottom: 4px;
+}
+
+
+.stat-card strong {
+  font-size: 23px;
+
+  color: #273245;
+}
+
+
+/* TABLE */
+
+.students-card {
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+}
+
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+
+thead {
+  background: #f7f9fc;
+}
+
+
+th {
+  padding: 15px 17px;
+
+  text-align: left;
+
+  color: #667085;
+
+  font-size: 12px;
+}
+
+
+td {
+  padding: 16px 17px;
+
+  border-top: 1px solid #edf0f4;
+
+  color: #394456;
+
+  font-size: 13px;
+}
+
+
+.student-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+}
+
+
+.avatar {
+  width: 39px;
+  height: 39px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #edf3ff;
+}
+
+
+.student-info strong {
+  display: block;
+
+  color: #263144;
+}
+
+
+.student-info span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #8891a0;
+
+  font-size: 11px;
+}
+
+
+.course-name {
+  font-weight: 600;
+}
+
+
+/* PROGRESS */
+
+.progress-info {
+  min-width: 140px;
+}
+
+
+.progress-header {
+  margin-bottom: 6px;
+
+  text-align: right;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  color: #2f6fed;
+}
+
+
+.progress-track {
+  height: 7px;
+
+  overflow: hidden;
+
+  background: #e8edf5;
+
+  border-radius: 20px;
+}
+
+
+.progress-value {
+  height: 100%;
+
+  background: #2f6fed;
+
+  border-radius: 20px;
+}
+
+
+/* STATUS */
+
+.status-badge {
+  display: inline-block;
+
+  padding: 6px 10px;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+.status-badge.completed {
+  color: #247541;
+
+  background: #e9f8ee;
+
+  border: 1px solid #b6dfc1;
+}
+
+
+.status-badge.continuing {
+  color: #8a6718;
+
+  background: #fff8e6;
+
+  border: 1px solid #eddba5;
+}
+
+
+.not-watched {
+  color: #9aa1ad;
+}
+
+
+/* EMPTY */
+
+.empty-state {
+  padding: 60px;
+
+  background: white;
+
+  border: 1px solid #e1e6ef;
+
+  border-radius: 14px;
+
+  text-align: center;
+}
+
+
+.empty-state > div {
+  font-size: 45px;
+}
+
+
+.empty-state h2 {
+  color: #303b4d;
+}
+
+
+.empty-state p {
+  color: #808897;
+}
+
+
+@media (max-width: 1000px) {
+
+  .stats-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .page-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

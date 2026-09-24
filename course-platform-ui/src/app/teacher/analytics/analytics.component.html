@@ -1,0 +1,456 @@
+<div class="analytics-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        📊 İstatistikler
+      </h1>
+
+      <p>
+        Kurslarınızın genel performansını,
+        öğrenci sayılarını ve kapasite kullanımını
+        buradan takip edebilirsiniz.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="courses-button"
+      (click)="goToCourses()"
+    >
+      📚 Kursları Yönet
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ İstatistikler hazırlanıyor...
+  </div>
+
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- =================================================== -->
+    <!-- ÜST İSTATİSTİKLER -->
+    <!-- =================================================== -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          📚
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Kurs
+          </span>
+
+          <strong>
+            {{ totalCourses }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          👥
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Kayıt
+          </span>
+
+          <strong>
+            {{ totalEnrollments }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          ✅
+        </div>
+
+        <div>
+
+          <span>
+            Satışa Açık
+          </span>
+
+          <strong>
+            {{ activeCourses }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🎥
+        </div>
+
+        <div>
+
+          <span>
+            Videolu Kurs
+          </span>
+
+          <strong>
+            {{ coursesWithVideo }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- İKİNCİ ÖZET -->
+    <!-- =================================================== -->
+
+    <div class="summary-grid">
+
+      <!-- DOLULUK -->
+
+      <section class="summary-card">
+
+        <div class="summary-header">
+
+          <div>
+
+            <h2>
+              🎯 Genel Kontenjan Kullanımı
+            </h2>
+
+            <p>
+              Kapasitesi belirlenmiş kurslar
+            </p>
+
+          </div>
+
+
+          <strong class="large-value">
+            {{ occupancyRate | number:'1.0-1' }}%
+          </strong>
+
+        </div>
+
+
+        <div class="large-progress">
+
+          <div
+            class="large-progress-value"
+            [style.width.%]="occupancyRate"
+          ></div>
+
+        </div>
+
+
+        <div class="capacity-numbers">
+
+          <span>
+            Toplam kayıt:
+            <strong>
+              {{ totalEnrollments }}
+            </strong>
+          </span>
+
+
+          <span>
+            Toplam kapasite:
+            <strong>
+              {{ totalCapacity }}
+            </strong>
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <!-- ORTALAMA FİYAT -->
+
+      <section class="summary-card">
+
+        <div class="price-summary">
+
+          <div class="price-icon">
+            💰
+          </div>
+
+          <div>
+
+            <p>
+              Ortalama Kurs Fiyatı
+            </p>
+
+            <h2>
+              {{ averagePrice | number:'1.0-2' }}
+              TL
+            </h2>
+
+            <span>
+              {{ totalCourses }}
+              kurs üzerinden hesaplandı
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- KURS PERFORMANSI -->
+    <!-- =================================================== -->
+
+    <section class="performance-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            📈 Kurs Performansı
+          </h2>
+
+          <p>
+            Kurs bazında kayıt ve kapasite durumu
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- KURS YOK -->
+
+      <div
+        *ngIf="courses.length === 0"
+        class="empty-state"
+      >
+
+        <div>
+          📚
+        </div>
+
+        <h3>
+          Henüz kurs bulunmuyor
+        </h3>
+
+        <p>
+          İstatistik görebilmek için
+          önce bir kurs oluşturmalısınız.
+        </p>
+
+      </div>
+
+
+      <!-- KURSLAR -->
+
+      <div
+        *ngIf="courses.length > 0"
+        class="course-performance-list"
+      >
+
+        <div
+          *ngFor="let course of courses"
+          class="performance-row"
+        >
+
+          <!-- IMAGE -->
+
+          <div class="course-image">
+
+            <img
+              *ngIf="course.imageUrl"
+              [src]="course.imageUrl"
+              [alt]="course.name"
+            >
+
+
+            <div
+              *ngIf="!course.imageUrl"
+              class="image-placeholder"
+            >
+              📚
+            </div>
+
+          </div>
+
+
+          <!-- COURSE -->
+
+          <div class="course-main">
+
+            <div class="course-title-row">
+
+              <h3>
+                {{ course.name }}
+              </h3>
+
+
+              <span
+                class="status"
+                [class.active]="
+                  isPurchasable(course)
+                "
+                [class.passive]="
+                  !isPurchasable(course)
+                "
+              >
+
+                {{
+                  isPurchasable(course)
+                    ? 'Satışta'
+                    : 'Kapalı'
+                }}
+
+              </span>
+
+            </div>
+
+
+            <div class="course-numbers">
+
+              <span>
+                👥
+                {{ course.currentEnrolled || 0 }}
+                kayıt
+              </span>
+
+
+              <span>
+
+                🎯
+
+                <ng-container
+                  *ngIf="
+                    course.maxCapacity > 0
+                  "
+                >
+
+                  {{ course.maxCapacity }}
+                  kapasite
+
+                </ng-container>
+
+
+                <ng-container
+                  *ngIf="
+                    !course.maxCapacity ||
+                    course.maxCapacity === 0
+                  "
+                >
+                  Sınırsız
+                </ng-container>
+
+              </span>
+
+
+              <span>
+                💰
+                {{ course.price || 0 }}
+                TL
+              </span>
+
+
+              <span>
+
+                {{
+                  course.videoPath
+                    ? '🎥 Video hazır'
+                    : '⚠️ Video yok'
+                }}
+
+              </span>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div
+              *ngIf="
+                course.maxCapacity > 0
+              "
+              class="course-progress"
+            >
+
+              <div class="course-progress-header">
+
+                <span>
+                  Kontenjan
+                </span>
+
+                <strong>
+                  {{
+                    getCourseOccupancy(course)
+                      | number:'1.0-1'
+                  }}%
+                </strong>
+
+              </div>
+
+
+              <div class="progress-track">
+
+                <div
+                  class="progress-value"
+                  [style.width.%]="
+                    getCourseOccupancy(course)
+                  "
+                ></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </ng-container>
+
+</div>

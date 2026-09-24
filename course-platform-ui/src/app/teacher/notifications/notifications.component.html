@@ -1,0 +1,389 @@
+<div class="notifications-page">
+
+  <!-- ===================================================== -->
+  <!-- HEADER -->
+  <!-- ===================================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        🔔 Bildirimler
+      </h1>
+
+      <p>
+        Kurslarınızla ilgili satış,
+        öğrenci ve diğer gelişmeleri
+        buradan takip edin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="read-all-button"
+      [disabled]="unreadCount === 0"
+      (click)="markAllAsRead()"
+    >
+      ✓ Tümünü Okundu İşaretle
+    </button>
+
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- LOADING -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="isLoading"
+    class="loading-box"
+  >
+    ⏳ Bildirimler yükleniyor...
+  </div>
+
+
+  <ng-container
+    *ngIf="!isLoading"
+  >
+
+    <!-- =================================================== -->
+    <!-- STATS -->
+    <!-- =================================================== -->
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          🔔
+        </div>
+
+        <div>
+
+          <span>
+            Toplam Bildirim
+          </span>
+
+          <strong>
+            {{ notifications.length }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon unread-icon">
+          🔴
+        </div>
+
+        <div>
+
+          <span>
+            Okunmamış
+          </span>
+
+          <strong>
+            {{ unreadCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon">
+          ✅
+        </div>
+
+        <div>
+
+          <span>
+            Okunmuş
+          </span>
+
+          <strong>
+            {{ readCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="stat-card">
+
+        <div class="stat-icon sale-icon">
+          🛒
+        </div>
+
+        <div>
+
+          <span>
+            Satış Bildirimi
+          </span>
+
+          <strong>
+            {{ saleNotificationCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- FILTER -->
+    <!-- =================================================== -->
+
+    <div class="filter-card">
+
+      <div>
+
+        <strong>
+          Bildirim Geçmişi
+        </strong>
+
+        <span>
+          Bildirimlerinizi durumlarına
+          göre filtreleyin.
+        </span>
+
+      </div>
+
+
+      <div class="filter-buttons">
+
+        <button
+          type="button"
+          [class.active]="
+            selectedFilter === 'ALL'
+          "
+          (click)="setFilter('ALL')"
+        >
+          Tümü
+          <span>
+            {{ notifications.length }}
+          </span>
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="
+            selectedFilter === 'UNREAD'
+          "
+          (click)="setFilter('UNREAD')"
+        >
+          Okunmamış
+          <span>
+            {{ unreadCount }}
+          </span>
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="
+            selectedFilter === 'READ'
+          "
+          (click)="setFilter('READ')"
+        >
+          Okunmuş
+          <span>
+            {{ readCount }}
+          </span>
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- EMPTY -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        filteredNotifications.length === 0
+      "
+      class="empty-state"
+    >
+
+      <div class="empty-icon">
+        🔔
+      </div>
+
+      <h2>
+        Bildirim bulunmuyor
+      </h2>
+
+      <p *ngIf="
+        notifications.length === 0
+      ">
+        Kurslarınızla ilgili yeni gelişmeler
+        olduğunda burada görüntülenecek.
+      </p>
+
+
+      <p *ngIf="
+        notifications.length > 0
+      ">
+        Seçtiğiniz filtreye uygun
+        bildirim bulunmuyor.
+      </p>
+
+    </div>
+
+
+    <!-- =================================================== -->
+    <!-- LIST -->
+    <!-- =================================================== -->
+
+    <div
+      *ngIf="
+        filteredNotifications.length > 0
+      "
+      class="notification-list"
+    >
+
+      <article
+        *ngFor="
+          let notification of
+          filteredNotifications
+        "
+        class="notification-card"
+        [class.unread]="
+          !notification.read
+        "
+        (click)="
+          markAsRead(notification)
+        "
+      >
+
+        <!-- ICON -->
+
+        <div
+          class="notification-icon"
+          [class.sale]="
+            notification.type === 'SALE'
+          "
+          [class.review]="
+            notification.type === 'REVIEW'
+          "
+          [class.student]="
+            notification.type === 'STUDENT'
+          "
+          [class.completed]="
+            notification.type ===
+            'COURSE_COMPLETED'
+          "
+        >
+
+          {{
+            getNotificationIcon(
+              notification.type
+            )
+          }}
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="notification-content">
+
+          <div class="notification-top">
+
+            <div>
+
+              <div class="notification-meta">
+
+                <span class="type-badge">
+
+                  {{
+                    getTypeText(
+                      notification.type
+                    )
+                  }}
+
+                </span>
+
+
+                <span
+                  *ngIf="
+                    !notification.read
+                  "
+                  class="new-badge"
+                >
+                  Yeni
+                </span>
+
+              </div>
+
+
+              <h2>
+                {{ notification.title }}
+              </h2>
+
+            </div>
+
+
+            <span class="notification-date">
+
+              {{
+                notification.createdAt
+                  | date:'dd.MM.yyyy HH:mm'
+              }}
+
+            </span>
+
+          </div>
+
+
+          <p>
+            {{ notification.message }}
+          </p>
+
+        </div>
+
+
+        <!-- READ INDICATOR -->
+
+        <div
+          class="read-indicator"
+          [class.is-read]="
+            notification.read
+          "
+          [title]="
+            notification.read
+              ? 'Okundu'
+              : 'Okundu işaretlemek için tıklayın'
+          "
+        >
+
+          {{
+            notification.read
+              ? '✓'
+              : '●'
+          }}
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </ng-container>
+
+</div>
