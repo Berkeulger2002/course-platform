@@ -1,0 +1,491 @@
+.sessions-page {
+  box-sizing: border-box;
+
+  max-width: 1500px;
+
+  margin: 0 auto;
+
+  padding: 32px;
+
+  color: #172033;
+}
+
+
+.sessions-page *,
+.sessions-page *::before,
+.sessions-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 28px;
+}
+
+
+.eyebrow {
+  color: #6d5ce7;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+}
+
+
+.page-header h1 {
+  margin: 7px 0;
+
+  font-size: 30px;
+}
+
+
+.page-header p {
+  margin: 0;
+
+  color: #718096;
+
+  font-size: 13px;
+}
+
+
+.refresh-button {
+  padding: 10px 17px;
+
+  border: 1px solid #dedafc;
+  border-radius: 10px;
+
+  background: #f4f2ff;
+  color: #5845c8;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+.metric-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      5,
+      minmax(0, 1fr)
+    );
+
+  gap: 15px;
+
+  margin-bottom: 24px;
+}
+
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 135px;
+
+  padding: 20px;
+
+  border: 1px solid #e9edf4;
+  border-radius: 15px;
+
+  background: white;
+
+  box-shadow:
+    0 5px 22px
+    rgba(28, 39, 66, 0.04);
+}
+
+
+.metric-label {
+  color: #68748a;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.metric-value {
+  margin: 13px 0 7px;
+
+  font-size: 29px;
+}
+
+
+.online-value {
+  color: #16a34a;
+}
+
+
+.duration-value {
+  font-size: 21px;
+}
+
+
+.metric-description {
+  margin-top: auto;
+
+  color: #8a95a5;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+
+.panel {
+  overflow: hidden;
+
+  border: 1px solid #e9edf4;
+  border-radius: 17px;
+
+  background: white;
+
+  box-shadow:
+    0 8px 30px
+    rgba(28, 39, 66, 0.05);
+}
+
+
+.panel-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 24px;
+}
+
+
+.panel-header h2 {
+  margin: 0 0 5px;
+
+  font-size: 18px;
+}
+
+
+.panel-header p {
+  margin: 0;
+
+  color: #8a95a5;
+
+  font-size: 11px;
+}
+
+
+.result-count {
+  color: #64748b;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+.filters {
+  display: grid;
+
+  grid-template-columns:
+    minmax(240px, 1fr)
+    160px
+    160px;
+
+  gap: 12px;
+
+  padding:
+    0
+    24px
+    20px;
+}
+
+
+.filters input,
+.filters select {
+  height: 40px;
+
+  padding:
+    0
+    12px;
+
+  border: 1px solid #dce2eb;
+  border-radius: 9px;
+
+  background: white;
+  color: #334155;
+
+  font-family: inherit;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+
+th,
+td {
+  padding:
+    14px
+    18px;
+
+  border-top: 1px solid #eef1f5;
+
+  text-align: left;
+
+  vertical-align: middle;
+
+  font-size: 11px;
+}
+
+
+th {
+  color: #718096;
+
+  font-size: 9px;
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+}
+
+
+tbody tr:hover {
+  background: #fafbfc;
+}
+
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.user-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 190px;
+}
+
+
+.avatar {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: #f0edff;
+  color: #6250cf;
+
+  font-weight: 800;
+}
+
+
+.user-cell strong {
+  display: block;
+
+  color: #1d2540;
+
+  font-size: 11px;
+}
+
+
+.user-cell span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #98a1af;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.role-badge,
+.status-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding:
+    5px
+    8px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+
+.role-badge.student {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+
+.role-badge.teacher {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+
+
+.status-badge {
+  gap: 5px;
+}
+
+
+.status-badge.online {
+  background: #ecfdf3;
+  color: #15803d;
+}
+
+
+.status-badge.offline {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+}
+
+
+.duration {
+  color: #5542c6;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   STATES
+   ========================================================= */
+
+.loading,
+.empty-state,
+.error-message {
+  padding: 28px;
+
+  text-align: center;
+
+  font-size: 12px;
+}
+
+
+.error-message {
+  margin-bottom: 20px;
+
+  border-radius: 9px;
+
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (
+max-width: 1200px
+) {
+
+  .metric-grid {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+
+@media (
+max-width: 800px
+) {
+
+  .metric-grid {
+    grid-template-columns:
+      1fr
+      1fr;
+  }
+
+
+  .filters {
+    grid-template-columns:
+      1fr;
+  }
+}
+
+
+@media (
+max-width: 600px
+) {
+
+  .sessions-page {
+    padding: 20px;
+  }
+
+
+  .metric-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .page-header {
+    flex-direction: column;
+  }
+}

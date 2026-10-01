@@ -33,6 +33,10 @@ import {
   AuthUser
 } from '../../services/auth.service';
 
+import {
+  UserActivityService
+} from '../../services/user-activity.service';
+
 
 @Component({
   selector:
@@ -87,7 +91,10 @@ export class TeacherLayoutComponent
     TeacherService,
 
     private authService:
-    AuthService
+    AuthService,
+
+    private userActivityService:
+    UserActivityService
 
   ) {
 
@@ -147,11 +154,23 @@ export class TeacherLayoutComponent
           );
 
 
+          // =================================================
+          // USER ACTIVITY TRACKING
+          // =================================================
+
+          this.userActivityService
+            .start();
+
+
           this.initializeTeacherPanel();
         },
 
 
         error: () => {
+
+
+          this.userActivityService
+            .stop();
 
 
           localStorage.removeItem(
@@ -200,6 +219,7 @@ export class TeacherLayoutComponent
             !this.currentTeacher
           ) {
 
+
             return;
           }
 
@@ -237,13 +257,15 @@ export class TeacherLayoutComponent
 
 
     // =====================================================
-    // POLLING
+    // NOTIFICATION POLLING
     // =====================================================
 
     this.notificationPollingId =
+
       setInterval(
 
         () => {
+
 
           this.refreshNotificationCount();
 
@@ -266,6 +288,7 @@ export class TeacherLayoutComponent
       !this.currentTeacher?.id
     ) {
 
+
       return;
     }
 
@@ -284,6 +307,10 @@ export class TeacherLayoutComponent
   logout(): void {
 
 
+    this.userActivityService
+      .stop();
+
+
     this.authService
       .logout()
       .subscribe({
@@ -291,15 +318,15 @@ export class TeacherLayoutComponent
 
         next: () => {
 
-          this.finishLogout();
 
+          this.finishLogout();
         },
 
 
         error: () => {
 
-          this.finishLogout();
 
+          this.finishLogout();
         }
 
       });
@@ -335,6 +362,10 @@ export class TeacherLayoutComponent
   // =========================================================
 
   ngOnDestroy(): void {
+
+
+    this.userActivityService
+      .stop();
 
 
     if (

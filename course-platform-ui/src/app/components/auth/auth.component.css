@@ -1,97 +1,365 @@
-/* Sayfayı tam ekran yapıp formu tam ortaya alıyoruz */
+/* =========================================================
+   PAGE
+   ========================================================= */
+
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
+
   min-height: 100vh;
-  background-color: #f8f9fa; /* Hafif gri, göz yormayan arka plan */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  padding: 24px;
+
+  box-sizing: border-box;
+
+  background-color: #f8f9fa;
+
+  font-family:
+    'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
 }
 
-/* Formun içindeki beyaz kutu */
+
+/* =========================================================
+   BOX
+   ========================================================= */
+
 .auth-box {
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+
+  padding: 40px;
+
+  background: white;
+
+  border-radius: 12px;
+
+  box-shadow:
+    0 8px 24px
+    rgba(0, 0, 0, 0.1);
+
   text-align: center;
 }
 
+
 .auth-box h2 {
   margin-top: 0;
+  margin-bottom: 10px;
+
   color: #2c3e50;
+
   font-size: 24px;
 }
 
+
+/* =========================================================
+   SUBTITLE
+   ========================================================= */
+
 .subtitle {
-  color: #7f8c8d;
   margin-bottom: 25px;
+
+  color: #7f8c8d;
+
   font-size: 14px;
+  line-height: 1.5;
 }
 
-/* Input (Giriş) Alanları */
+
+/* =========================================================
+   TEACHER INFO
+   ========================================================= */
+
+.teacher-info {
+  margin-bottom: 24px;
+
+  padding: 16px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 10px;
+
+  background: #eff6ff;
+  color: #334155;
+
+  text-align: left;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+
+.teacher-info strong {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #1e3a8a;
+}
+
+
+.teacher-info p {
+  margin: 0;
+}
+
+
+/* =========================================================
+   COMPLETION INFO
+   ========================================================= */
+
+.completion-info {
+  border-color: #bbf7d0;
+
+  background: #f0fdf4;
+}
+
+
+.completion-info strong {
+  color: #166534;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
 .form-group {
   margin-bottom: 18px;
+
   text-align: left;
 }
 
+
 .form-group label {
   display: block;
+
   margin-bottom: 8px;
-  font-weight: 600;
+
   color: #34495e;
+
   font-size: 14px;
+  font-weight: 600;
 }
+
 
 .form-group input {
   width: 100%;
+
   padding: 12px;
+
+  box-sizing: border-box;
+
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  box-sizing: border-box;
+
   font-size: 14px;
-  transition: border-color 0.3s;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
+
 
 .form-group input:focus {
   outline: none;
+
   border-color: #007bff;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(0, 123, 255, 0.1);
 }
 
-/* Buton Tasarımı */
+
+/* =========================================================
+   PRIMARY BUTTON
+   ========================================================= */
+
 .primary-btn {
   width: 100%;
+
   padding: 14px;
-  background-color: #007bff;
-  color: white;
+
+  margin-top: 10px;
+
   border: none;
   border-radius: 8px;
+
+  background-color: #007bff;
+  color: white;
+
   cursor: pointer;
+
   font-size: 16px;
   font-weight: 600;
-  margin-top: 10px;
-  transition: background-color 0.3s;
+
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
 }
 
-.primary-btn:hover {
+
+.primary-btn:hover:not(:disabled) {
   background-color: #0056b3;
 }
 
-/* Alt kısımdaki kayıt ol yazısı */
-.switch-mode {
-  margin-top: 25px;
-  font-size: 14px;
-  color: #7f8c8d;
+
+.primary-btn:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
 }
 
-.switch-mode a {
+
+/* =========================================================
+   TEACHER ACTIONS
+   ========================================================= */
+
+.teacher-actions {
+  margin-top: 26px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+
+.teacher-action {
+  margin: 0;
+}
+
+
+.teacher-action p {
+  margin:
+    0
+    0
+    12px;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+.completion-action {
+  margin-top: 20px;
+
+  padding-top: 20px;
+
+  border-top: 1px solid #f1f5f9;
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+   ========================================================= */
+
+.secondary-btn {
+  width: 100%;
+
+  padding: 12px;
+
+  border: 1px solid #007bff;
+  border-radius: 8px;
+
+  background: white;
   color: #007bff;
-  text-decoration: none;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+
+.secondary-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+
+/* =========================================================
+   COMPLETE BUTTON
+   ========================================================= */
+
+.complete-btn {
+  border-color: #16a34a;
+
+  color: #15803d;
+}
+
+
+.complete-btn:hover {
+  border-color: #15803d;
+
+  background-color: #15803d;
+  color: white;
+}
+
+
+/* =========================================================
+   SWITCH MODE
+   ========================================================= */
+
+.switch-mode {
+  margin-top: 25px;
+
+  color: #7f8c8d;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   LINK BUTTON
+   ========================================================= */
+
+.link-button {
+  padding: 0;
+
+  margin-left: 4px;
+
+  border: none;
+
+  background: transparent;
+  color: #007bff;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 14px;
   font-weight: 600;
 }
 
-.switch-mode a:hover {
+
+.link-button:hover {
   text-decoration: underline;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (
+max-width: 520px
+) {
+
+  .auth-container {
+    padding: 16px;
+  }
+
+
+  .auth-box {
+    padding: 28px 22px;
+  }
 }

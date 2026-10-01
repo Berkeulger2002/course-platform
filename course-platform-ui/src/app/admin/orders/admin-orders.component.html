@@ -1,0 +1,482 @@
+<div class="orders-page">
+
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        PLATFORM
+      </span>
+
+      <h1>
+        Siparişler & Satış
+      </h1>
+
+      <p>
+        Platformdaki siparişleri, satış hacmini
+        ve satın alınan kursları görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="isLoading"
+    >
+      Yenile
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       METRICS
+       ===================================================== -->
+
+  <section class="metric-grid">
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Toplam Sipariş
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.totalOrders }}
+      </strong>
+
+      <span class="metric-description">
+        Tamamlanan sipariş sayısı
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Toplam Ciro
+      </span>
+
+      <strong class="metric-value money-value">
+        {{ formatMoney(summary.totalRevenue) }}
+      </strong>
+
+      <span class="metric-description">
+        Sipariş toplamlarının toplamı
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Satılan Kurs
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.totalItemsSold }}
+      </strong>
+
+      <span class="metric-description">
+        Toplam OrderItem satış adedi
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Ortalama Sipariş
+      </span>
+
+      <strong class="metric-value money-value">
+        {{ formatMoney(summary.averageOrderValue) }}
+      </strong>
+
+      <span class="metric-description">
+        Sipariş başına ortalama tutar
+      </span>
+
+    </article>
+
+
+  </section>
+
+
+  <!-- =====================================================
+       ORDER LIST
+       ===================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>
+          Sipariş Geçmişi
+        </h2>
+
+        <p>
+          En yeni siparişler önce gösterilir
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         SEARCH
+         =================================================== -->
+
+    <div class="filter-bar">
+
+      <div class="search-wrapper">
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilter()"
+          placeholder="Sipariş kodu, öğrenci, e-posta veya kurs ara..."
+        >
+
+      </div>
+
+
+      <span class="result-count">
+
+        {{ filteredOrders.length }}
+        sipariş
+
+      </span>
+
+    </div>
+
+
+    <!-- ===================================================
+         STATE
+         =================================================== -->
+
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Siparişler yükleniyor...
+    </div>
+
+
+    <div
+      class="error-message"
+      *ngIf="
+        !isLoading
+        &&
+        errorMessage
+      "
+    >
+      {{ errorMessage }}
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredOrders.length === 0
+      "
+    >
+      Sipariş bulunamadı.
+    </div>
+
+
+    <!-- ===================================================
+         TABLE
+         =================================================== -->
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredOrders.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            Sipariş
+          </th>
+
+          <th>
+            Öğrenci
+          </th>
+
+          <th>
+            Tarih
+          </th>
+
+          <th>
+            Kurs
+          </th>
+
+          <th>
+            Tutar
+          </th>
+
+          <th>
+            Detay
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <ng-container
+          *ngFor="
+            let order
+            of
+            filteredOrders
+          "
+        >
+
+
+          <!-- ===============================================
+               MAIN ROW
+               =============================================== -->
+
+          <tr>
+
+            <td>
+
+              <div class="order-code">
+                {{ order.orderCode }}
+              </div>
+
+              <div class="order-id">
+                ID #{{ order.id }}
+              </div>
+
+            </td>
+
+
+            <td>
+
+              <div class="student-name">
+                {{ order.studentName }}
+              </div>
+
+              <div class="student-email">
+                {{ order.studentEmail }}
+              </div>
+
+            </td>
+
+
+            <td>
+
+              {{
+                order.createdAt
+                  | date:'dd.MM.yyyy HH:mm'
+              }}
+
+            </td>
+
+
+            <td>
+
+              <span class="item-count">
+
+                {{ order.itemCount }}
+                kurs
+
+              </span>
+
+            </td>
+
+
+            <td class="price-cell">
+
+              {{ formatMoney(order.totalPrice) }}
+
+            </td>
+
+
+            <td>
+
+              <button
+                type="button"
+                class="detail-button"
+                (click)="toggleOrderDetail(order.id)"
+              >
+
+                {{
+                  isExpanded(order.id)
+                    ? 'Kapat'
+                    : 'Detay'
+                }}
+
+              </button>
+
+            </td>
+
+          </tr>
+
+
+          <!-- ===============================================
+               DETAIL ROW
+               =============================================== -->
+
+          <tr
+            class="detail-row"
+
+            *ngIf="
+              isExpanded(order.id)
+            "
+          >
+
+            <td colspan="6">
+
+
+              <div class="order-detail">
+
+
+                <div class="detail-header">
+
+                  <div>
+
+                    <strong>
+                      {{ order.orderCode }}
+                    </strong>
+
+                    <span>
+                      içindeki satın alınan kurslar
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <div
+                  class="order-items"
+
+                  *ngIf="
+                    order.items.length > 0
+                  "
+                >
+
+
+                  <div
+                    class="order-item"
+
+                    *ngFor="
+                      let item
+                      of
+                      order.items
+                    "
+                  >
+
+
+                    <div class="course-info">
+
+                      <div class="course-name">
+                        {{ item.courseName }}
+                      </div>
+
+
+                      <div class="course-meta">
+
+                        Kurs ID:
+                        #{{ item.courseId }}
+
+                        <ng-container
+                          *ngIf="
+                            item.teacherName
+                          "
+                        >
+
+                          <span class="separator">
+                            •
+                          </span>
+
+                          Öğretmen:
+                          {{ item.teacherName }}
+
+                        </ng-container>
+
+                      </div>
+
+                    </div>
+
+
+                    <strong class="item-price">
+
+                      {{
+                        formatMoney(
+                          item.priceAtPurchase
+                        )
+                      }}
+
+                    </strong>
+
+                  </div>
+
+
+                </div>
+
+
+                <div
+                  class="no-items"
+
+                  *ngIf="
+                    order.items.length === 0
+                  "
+                >
+                  Bu siparişte ürün kaydı bulunmuyor.
+                </div>
+
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+        </ng-container>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

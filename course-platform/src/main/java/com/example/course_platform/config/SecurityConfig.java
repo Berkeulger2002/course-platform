@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.HttpMethod;
 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
@@ -30,6 +31,7 @@ import java.util.List;
 
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
 
@@ -43,21 +45,6 @@ public class SecurityConfig {
 
     // =========================================================
     // CORS ORIGINS
-    //
-    // application.properties:
-    //
-    // app.cors.allowed-origins=
-    // ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
-    //
-    // Local:
-    // http://localhost:4200
-    //
-    // Production:
-    // https://course-platform.example.com
-    //
-    // Birden fazla origin:
-    //
-    // https://site1.com,https://site2.com
     // =========================================================
 
     private final String corsAllowedOrigins;
@@ -186,33 +173,6 @@ public class SecurityConfig {
                                 // =================================
                                 // FRONTEND / SPA / STATIC FILES
                                 // =================================
-                                //
-                                // Backend endpointlerinin tamamı:
-                                //
-                                // /api/**
-                                //
-                                // altında.
-                                //
-                                // /api dışındaki yollar Angular
-                                // uygulamasına veya static dosyalara
-                                // aittir.
-                                //
-                                // Böylece:
-                                //
-                                // /
-                                // /index.html
-                                // /main-xxx.js
-                                // /styles-xxx.css
-                                // /student/dashboard
-                                // /teacher/dashboard
-                                // /error
-                                //
-                                // gibi yollar JWT istemez.
-                                //
-                                // API güvenliği ise aşağıdaki
-                                // kurallarla devam eder.
-                                //
-                                // =================================
 
                                 .requestMatchers(request -> {
 
@@ -237,6 +197,36 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/api/auth/login",
                                         "/api/auth/register"
+                                )
+                                .permitAll()
+
+
+                                // =================================
+                                // TEACHER REGISTRATION - PUBLIC
+                                // =================================
+                                //
+                                // /request:
+                                //
+                                // Öğretmenlik başvurusu oluşturur.
+                                //
+                                // /complete:
+                                //
+                                // Admin tarafından gönderilen
+                                // doğrulama koduyla Teacher
+                                // hesabını tamamlar.
+                                //
+                                // Bu aşamalarda kullanıcı henüz
+                                // login olmadığı için public
+                                // olmaları gerekir.
+                                // =================================
+
+                                .requestMatchers(
+
+                                        HttpMethod.POST,
+
+                                        "/api/teacher-registration/request",
+
+                                        "/api/teacher-registration/complete"
                                 )
                                 .permitAll()
 
@@ -330,6 +320,18 @@ public class SecurityConfig {
                                         "/api/teachers/*"
                                 )
                                 .denyAll()
+
+
+                                // =================================
+                                // ADMIN
+                                // =================================
+
+                                .requestMatchers(
+                                        "/api/admin/**"
+                                )
+                                .hasRole(
+                                        "ADMIN"
+                                )
 
 
                                 // =================================
@@ -531,14 +533,6 @@ public class SecurityConfig {
                                 // =================================
                                 // DİĞER TÜM API ENDPOINTLERİ
                                 // =================================
-                                //
-                                // Buraya kadar eşleşmeyen API
-                                // endpointi public olmaz.
-                                //
-                                // En azından giriş yapmış kullanıcı
-                                // gerekir.
-                                //
-                                // =================================
 
                                 .anyRequest()
                                 .authenticated()
@@ -593,9 +587,6 @@ public class SecurityConfig {
 
                 // =================================================
                 // JWT FILTER
-                //
-                // JWT authentication,
-                // CSRF kontrolünden önce hazırlanır.
                 // =================================================
 
                 .addFilterBefore(
@@ -615,7 +606,8 @@ public class SecurityConfig {
     // =========================================================
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource
+    corsConfigurationSource() {
 
 
         CorsConfiguration configuration =
@@ -624,18 +616,6 @@ public class SecurityConfig {
 
         // =====================================================
         // ALLOWED ORIGINS
-        // =====================================================
-        //
-        // Virgülle ayrılmış environment variable desteklenir.
-        //
-        // Local:
-        //
-        // http://localhost:4200
-        //
-        // Production örneği:
-        //
-        // https://course-platform.onrender.com
-        //
         // =====================================================
 
         List<String> allowedOrigins =
@@ -680,8 +660,6 @@ public class SecurityConfig {
 
         // =====================================================
         // HEADERS
-        //
-        // X-XSRF-TOKEN dahil.
         // =====================================================
 
         configuration.setAllowedHeaders(

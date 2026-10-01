@@ -1,0 +1,531 @@
+<div class="system-page">
+
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        OPERATIONS
+      </span>
+
+      <h1>
+        Sistem
+      </h1>
+
+      <p>
+        Backend, veritabanları ve JVM çalışma durumunu
+        gerçek zamanlı olarak görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="isLoading"
+    >
+      Durumu Yenile
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  <div
+    class="error-message"
+    *ngIf="errorMessage"
+  >
+    {{ errorMessage }}
+  </div>
+
+
+  <!-- =====================================================
+       OVERALL STATUS
+       ===================================================== -->
+
+  <section
+    class="overall-card"
+
+    [class.healthy]="
+      system.overallStatus === 'UP'
+    "
+
+    [class.degraded]="
+      system.overallStatus !== 'UP'
+    "
+  >
+
+    <div class="overall-left">
+
+      <div
+        class="overall-indicator"
+      >
+      </div>
+
+
+      <div>
+
+        <span class="overall-label">
+          PLATFORM STATUS
+        </span>
+
+        <h2>
+
+          {{
+            isLoading
+              ? 'Kontrol ediliyor...'
+              : getOverallStatusLabel()
+          }}
+
+        </h2>
+
+        <p>
+          Sistem bileşenleri doğrudan backend tarafından kontrol edilir.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <span
+      class="overall-badge"
+
+      [class.up]="
+        system.overallStatus === 'UP'
+      "
+
+      [class.down]="
+        system.overallStatus !== 'UP'
+      "
+    >
+
+      {{
+        isLoading
+          ? '...'
+          : system.overallStatus
+      }}
+
+    </span>
+
+  </section>
+
+
+  <!-- =====================================================
+       RUNTIME METRICS
+       ===================================================== -->
+
+  <section class="metric-grid">
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Uptime
+      </span>
+
+      <strong class="metric-value">
+
+        {{
+          isLoading
+            ? '...'
+            : formatUptime(
+              system.uptimeSeconds
+            )
+        }}
+
+      </strong>
+
+      <span class="metric-description">
+        Mevcut backend process çalışma süresi
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        JVM Memory
+      </span>
+
+      <strong class="metric-value">
+
+        {{
+          isLoading
+            ? '...'
+            : system.usedMemoryMb + ' MB'
+        }}
+
+      </strong>
+
+      <span class="metric-description">
+
+        {{
+          isLoading
+            ? 'Kontrol ediliyor'
+            : system.maxMemoryMb + ' MB maksimum'
+        }}
+
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Java
+      </span>
+
+      <strong class="metric-value small-value">
+
+        {{
+          isLoading
+            ? '...'
+            : system.javaVersion
+        }}
+
+      </strong>
+
+      <span class="metric-description">
+        Backend JVM sürümü
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Flyway
+      </span>
+
+      <strong class="metric-value">
+
+        {{
+          isLoading
+            ? '...'
+            : system.flywayVersion
+        }}
+
+      </strong>
+
+      <span class="metric-description">
+        PostgreSQL mevcut migration sürümü
+      </span>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       SERVICES
+       ===================================================== -->
+
+  <section class="panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>
+          Servis Durumu
+        </h2>
+
+        <p>
+          Uygulamanın bağlı olduğu ana servislerin canlı kontrolleri
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Sistem bileşenleri kontrol ediliyor...
+    </div>
+
+
+    <div
+      class="service-grid"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+      "
+    >
+
+      <article
+        class="service-card"
+
+        *ngFor="
+          let component
+          of
+          system.components
+        "
+      >
+
+        <div class="service-top">
+
+          <div>
+
+            <span class="service-name">
+              {{ component.name }}
+            </span>
+
+            <div class="service-detail">
+              {{ component.detail }}
+            </div>
+
+          </div>
+
+
+          <span
+            class="status-badge"
+
+            [class.up]="
+              isComponentUp(
+                component
+              )
+            "
+
+            [class.down]="
+              !isComponentUp(
+                component
+              )
+            "
+          >
+
+            {{ component.status }}
+
+          </span>
+
+        </div>
+
+
+        <div class="service-footer">
+
+          <span>
+            Yanıt süresi
+          </span>
+
+
+          <strong
+            *ngIf="
+              component.responseTimeMs !== null
+            "
+          >
+
+            {{ component.responseTimeMs }} ms
+
+          </strong>
+
+
+          <strong
+            *ngIf="
+              component.responseTimeMs === null
+            "
+          >
+            —
+          </strong>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       JVM / RUNTIME
+       ===================================================== -->
+
+  <section class="runtime-grid">
+
+
+    <article class="panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <h2>
+            JVM Memory
+          </h2>
+
+          <p>
+            Backend process bellek kullanımı
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="memory-values">
+
+        <div>
+
+          <span>
+            Kullanılan
+          </span>
+
+          <strong>
+            {{ system.usedMemoryMb }} MB
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Maksimum
+          </span>
+
+          <strong>
+            {{ system.maxMemoryMb }} MB
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Kullanım
+          </span>
+
+          <strong>
+            {{ getMemoryPercentageLabel() }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="memory-track">
+
+        <div
+          class="memory-fill"
+
+          [style.width.%]="
+            getMemoryPercentage()
+          "
+        >
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <article class="panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <h2>
+            Runtime Bilgisi
+          </h2>
+
+          <p>
+            Çalışan backend instance bilgileri
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="runtime-list">
+
+        <div class="runtime-row">
+
+          <span>
+            Server Time
+          </span>
+
+          <strong>
+            {{ getServerTime() }}
+          </strong>
+
+        </div>
+
+
+        <div class="runtime-row">
+
+          <span>
+            Java Version
+          </span>
+
+          <strong>
+            {{ system.javaVersion }}
+          </strong>
+
+        </div>
+
+
+        <div class="runtime-row">
+
+          <span>
+            Flyway
+          </span>
+
+          <strong>
+            {{ system.flywayVersion }}
+          </strong>
+
+        </div>
+
+
+        <div class="runtime-row">
+
+          <span>
+            API Status
+          </span>
+
+          <strong
+            class="runtime-status"
+
+            [class.up-text]="
+              system.overallStatus === 'UP'
+            "
+
+            [class.down-text]="
+              system.overallStatus !== 'UP'
+            "
+          >
+
+            {{ system.overallStatus }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+</div>

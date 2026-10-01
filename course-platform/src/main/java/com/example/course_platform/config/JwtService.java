@@ -31,7 +31,7 @@ public class JwtService {
 
 
     // =========================================================
-    // TOKEN SÜRESİ
+    // TOKEN EXPIRATION
     // =========================================================
 
     private final long expirationMs;
@@ -51,6 +51,7 @@ public class JwtService {
 
     ) {
 
+
         byte[] keyBytes =
                 Decoders.BASE64.decode(
                         secret
@@ -69,11 +70,35 @@ public class JwtService {
 
 
     // =========================================================
-    // TOKEN OLUŞTUR
+    // LEGACY TOKEN GENERATION
+    //
+    // Başka bir mevcut kod çağırıyorsa bozulmasın.
+    // Yeni login akışı alttaki sessionId'li metodu kullanacak.
     // =========================================================
 
     public String generateToken(
             User user
+    ) {
+
+
+        return generateToken(
+
+                user,
+
+                null
+        );
+    }
+
+
+    // =========================================================
+    // TOKEN + SESSION ID
+    // =========================================================
+
+    public String generateToken(
+
+            User user,
+
+            String sessionId
     ) {
 
 
@@ -83,26 +108,50 @@ public class JwtService {
 
         Date expiration =
                 new Date(
+
                         now.getTime()
-                                + expirationMs
+                                +
+                                expirationMs
                 );
 
 
-        return Jwts.builder()
+        var builder =
 
-                .subject(
-                        user.getEmail()
-                )
+                Jwts.builder()
 
-                .claim(
-                        "userId",
-                        user.getId()
-                )
+                        .subject(
+                                user.getEmail()
+                        )
 
-                .claim(
-                        "role",
-                        user.getRole().name()
-                )
+                        .claim(
+                                "userId",
+                                user.getId()
+                        )
+
+                        .claim(
+                                "role",
+                                user.getRole()
+                                        .name()
+                        );
+
+
+        if (
+                sessionId != null
+                        &&
+                        !sessionId.isBlank()
+        ) {
+
+
+            builder.claim(
+
+                    "sid",
+
+                    sessionId
+            );
+        }
+
+
+        return builder
 
                 .issuedAt(
                         now
@@ -121,7 +170,7 @@ public class JwtService {
 
 
     // =========================================================
-    // TOKEN İÇİNDEN EMAIL
+    // EMAIL
     // =========================================================
 
     public String extractEmail(
@@ -137,7 +186,26 @@ public class JwtService {
 
 
     // =========================================================
-    // TOKEN GEÇERLİ Mİ?
+    // SESSION ID
+    // =========================================================
+
+    public String extractSessionId(
+            String token
+    ) {
+
+
+        return extractAllClaims(
+                token
+        )
+                .get(
+                        "sid",
+                        String.class
+                );
+    }
+
+
+    // =========================================================
+    // VALIDATE
     // =========================================================
 
     public boolean isTokenValid(
@@ -147,7 +215,9 @@ public class JwtService {
 
         try {
 
+
             Claims claims =
+
                     extractAllClaims(
                             token
                     );
@@ -165,6 +235,7 @@ public class JwtService {
                 |
                 IllegalArgumentException exception
         ) {
+
 
             return false;
         }
@@ -202,6 +273,7 @@ public class JwtService {
     // =========================================================
 
     public long getExpirationMs() {
+
 
         return expirationMs;
     }

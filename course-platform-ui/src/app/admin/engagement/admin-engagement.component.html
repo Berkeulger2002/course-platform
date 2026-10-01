@@ -1,0 +1,616 @@
+<div class="engagement-page">
+
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ANALYTICS
+      </span>
+
+      <h1>
+        Engagement
+      </h1>
+
+      <p>
+        Öğrencilerin kurs kullanımını, tamamlanma oranlarını,
+        yorumları ve platform aktivitesini görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="isLoading"
+    >
+      Yenile
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  <div
+    class="error-message"
+    *ngIf="errorMessage"
+  >
+    {{ errorMessage }}
+  </div>
+
+
+  <!-- =====================================================
+       PRIMARY METRICS
+       ===================================================== -->
+
+  <section class="metric-grid">
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Son 7 Gün Aktif Öğrenci
+      </span>
+
+      <strong class="metric-value">
+        {{
+          isLoading
+            ? '...'
+            : engagement.activeStudentsLast7Days
+        }}
+      </strong>
+
+      <span class="metric-description">
+        En az bir kurs izleyen benzersiz öğrenci
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Tamamlanma Oranı
+      </span>
+
+      <strong class="metric-value">
+        {{
+          isLoading
+            ? '...'
+            : formatPercentage(
+              engagement.completionRate
+            )
+        }}
+      </strong>
+
+      <span class="metric-description">
+        İlerleme kayıtlarının tamamlanma oranı
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Ortalama İlerleme
+      </span>
+
+      <strong class="metric-value">
+        {{
+          isLoading
+            ? '...'
+            : formatPercentage(
+              engagement.averageProgressPercentage
+            )
+        }}
+      </strong>
+
+      <span class="metric-description">
+        Tüm kurs ilerlemelerinin ortalaması
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Ortalama Puan
+      </span>
+
+      <strong class="metric-value">
+
+        {{
+          isLoading
+            ? '...'
+            : formatRating(
+              engagement.averageRating
+            )
+        }}
+
+        <span class="rating-star">
+          ★
+        </span>
+
+      </strong>
+
+      <span class="metric-description">
+        MongoDB üzerindeki kurs değerlendirmeleri
+      </span>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       ACTIVITY CARDS
+       ===================================================== -->
+
+  <section class="activity-grid">
+
+
+    <!-- PROGRESS -->
+
+    <article class="activity-card">
+
+      <div class="activity-heading">
+
+        <div class="activity-icon progress-icon">
+          ↗
+        </div>
+
+        <div>
+
+          <span class="activity-title">
+            Kurs İlerlemesi
+          </span>
+
+          <span class="activity-subtitle">
+            Video izleme aktivitesi
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="activity-stats">
+
+        <div>
+
+          <strong>
+            {{ engagement.totalProgressRecords }}
+          </strong>
+
+          <span>
+            İlerleme kaydı
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ engagement.completedProgressRecords }}
+          </strong>
+
+          <span>
+            Tamamlanan
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- REVIEWS -->
+
+    <article class="activity-card">
+
+      <div class="activity-heading">
+
+        <div class="activity-icon review-icon">
+          ★
+        </div>
+
+        <div>
+
+          <span class="activity-title">
+            Yorumlar
+          </span>
+
+          <span class="activity-subtitle">
+            MongoDB review aktivitesi
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="activity-stats">
+
+        <div>
+
+          <strong>
+            {{ engagement.totalReviews }}
+          </strong>
+
+          <span>
+            Toplam yorum
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ engagement.reviewsLast7Days }}
+          </strong>
+
+          <span>
+            Son 7 gün
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <article class="activity-card">
+
+      <div class="activity-heading">
+
+        <div class="activity-icon notification-icon">
+          ◉
+        </div>
+
+        <div>
+
+          <span class="activity-title">
+            Bildirimler
+          </span>
+
+          <span class="activity-subtitle">
+            Platform aktivite bildirimleri
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="activity-stats">
+
+        <div>
+
+          <strong>
+            {{ engagement.totalNotifications }}
+          </strong>
+
+          <span>
+            Toplam bildirim
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ engagement.unreadNotifications }}
+          </strong>
+
+          <span>
+            Okunmamış
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ engagement.notificationsLast7Days }}
+          </strong>
+
+          <span>
+            Son 7 gün
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       COURSE ENGAGEMENT
+       ===================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>
+          Kurs Engagement
+        </h2>
+
+        <p>
+          Kurs bazında ilerleme, tamamlanma ve değerlendirme verileri
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="filter-bar">
+
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilter()"
+        placeholder="Kurs adı veya ID ara..."
+      >
+
+
+      <span class="result-count">
+
+        {{ filteredCourses.length }}
+        kurs
+
+      </span>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Engagement verileri yükleniyor...
+    </div>
+
+
+    <!-- EMPTY -->
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredCourses.length === 0
+      "
+    >
+      Gösterilecek kurs engagement verisi bulunmuyor.
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredCourses.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            Kurs
+          </th>
+
+          <th>
+            İzleyen
+          </th>
+
+          <th>
+            Tamamlayan
+          </th>
+
+          <th>
+            Tamamlanma
+          </th>
+
+          <th>
+            Ort. İlerleme
+          </th>
+
+          <th>
+            Yorum
+          </th>
+
+          <th>
+            Puan
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let course
+            of
+            filteredCourses
+          "
+        >
+
+          <td>
+
+            <div class="course-cell">
+
+              <div class="course-icon">
+                ▣
+              </div>
+
+              <div>
+
+                <div class="course-name">
+                  {{ course.courseName }}
+                </div>
+
+                <div class="course-id">
+                  ID #{{ course.courseId }}
+                </div>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <td>
+            {{ course.progressRecords }}
+          </td>
+
+
+          <td>
+            {{ course.completedRecords }}
+          </td>
+
+
+          <td>
+
+            <span
+              class="completion-badge"
+
+              [class.good]="
+                course.completionRate >= 70
+              "
+
+              [class.medium]="
+                course.completionRate >= 30
+                &&
+                course.completionRate < 70
+              "
+
+              [class.low]="
+                course.completionRate < 30
+              "
+            >
+
+              {{
+                formatPercentage(
+                  course.completionRate
+                )
+              }}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <div class="progress-cell">
+
+              <div class="progress-track">
+
+                <div
+                  class="progress-fill"
+
+                  [style.width.%]="
+                    getProgressWidth(
+                      course.averageProgress
+                    )
+                  "
+                >
+                </div>
+
+              </div>
+
+
+              <span>
+
+                {{
+                  formatPercentage(
+                    course.averageProgress
+                  )
+                }}
+
+              </span>
+
+            </div>
+
+          </td>
+
+
+          <td>
+            {{ course.reviewCount }}
+          </td>
+
+
+          <td>
+
+            <span class="rating">
+
+              {{
+                formatRating(
+                  course.averageRating
+                )
+              }}
+
+              ★
+
+            </span>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

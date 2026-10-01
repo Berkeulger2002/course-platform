@@ -1,0 +1,357 @@
+.admin-shell {
+  display: flex;
+
+  min-height: 100vh;
+
+  background: #f5f7fa;
+  color: #172033;
+
+  font-family:
+    'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.admin-sidebar {
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 260px;
+  height: 100vh;
+
+  box-sizing: border-box;
+
+  padding: 24px 18px;
+
+  background: #111827;
+  color: white;
+
+  flex-shrink: 0;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 0 8px 24px;
+
+  border-bottom: 1px solid #263244;
+}
+
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 10px;
+
+  background: #2563eb;
+  color: white;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+
+.brand-subtitle {
+  margin-top: 3px;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.sidebar-nav {
+  flex: 1;
+
+  padding-top: 24px;
+}
+
+
+.nav-section-title {
+  padding: 0 10px;
+
+  margin-bottom: 8px;
+
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+
+.secondary-section {
+  margin-top: 28px;
+}
+
+
+.nav-item {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  min-height: 42px;
+
+  box-sizing: border-box;
+
+  padding: 0 11px;
+
+  margin-bottom: 4px;
+
+  border-radius: 8px;
+
+  color: #cbd5e1;
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+
+a.nav-item:hover {
+  background: #1f2937;
+  color: white;
+}
+
+
+.nav-item.active {
+  background: #1e3a8a;
+  color: white;
+}
+
+
+.nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+
+  font-size: 15px;
+}
+
+
+.nav-item.disabled {
+  cursor: default;
+
+  color: #64748b;
+}
+
+
+.coming-soon {
+  margin-left: auto;
+
+  padding: 3px 6px;
+
+  border-radius: 999px;
+
+  background: #1f2937;
+  color: #64748b;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.sidebar-footer {
+  padding-top: 18px;
+
+  border-top: 1px solid #263244;
+}
+
+
+.admin-profile {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 14px;
+}
+
+
+.admin-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background: #334155;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+
+.admin-name {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.admin-role {
+  margin-top: 2px;
+
+  color: #64748b;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+
+.logout-button {
+  width: 100%;
+
+  padding: 10px;
+
+  border: 1px solid #374151;
+  border-radius: 7px;
+
+  background: transparent;
+  color: #cbd5e1;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.logout-button:hover {
+  background: #1f2937;
+  color: white;
+}
+
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
+
+.admin-workspace {
+  min-width: 0;
+
+  flex: 1;
+
+  background: #f5f7fa;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (
+max-width: 900px
+) {
+
+  .admin-sidebar {
+    width: 210px;
+  }
+}
+
+
+@media (
+max-width: 650px
+) {
+
+  .admin-sidebar {
+    width: 72px;
+
+    padding: 20px 10px;
+  }
+
+
+  .sidebar-brand {
+    justify-content: center;
+
+    padding: 0 0 22px;
+  }
+
+
+  .sidebar-brand > div:last-child,
+  .nav-section-title,
+  .nav-item span:not(.nav-icon),
+  .admin-profile > div:not(.admin-avatar),
+  .coming-soon {
+    display: none;
+  }
+
+
+  .nav-item {
+    justify-content: center;
+
+    padding: 0;
+  }
+
+
+  .admin-profile {
+    justify-content: center;
+  }
+
+
+  .logout-button {
+    font-size: 0;
+  }
+
+
+  .logout-button::after {
+    content: '↪';
+
+    font-size: 18px;
+  }
+}

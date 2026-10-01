@@ -1,0 +1,357 @@
+<div class="courses-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        PLATFORM
+      </span>
+
+      <h1>
+        Kurslar
+      </h1>
+
+      <p>
+        Platformdaki kursları, öğretmenleri,
+        kontenjanları ve satış durumlarını görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="isLoading"
+    >
+      Yenile
+    </button>
+
+  </header>
+
+
+  <section class="metric-grid">
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Toplam Kurs
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.totalCourses }}
+      </strong>
+
+      <span class="metric-description">
+        Sistemdeki tüm kurslar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Satışa Açık
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.purchasableCourses }}
+      </strong>
+
+      <span class="metric-description">
+        Satın alınabilen kurslar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Satışa Kapalı
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.closedCourses }}
+      </strong>
+
+      <span class="metric-description">
+        Satın alıma kapalı kurslar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Toplam Kurs Kaydı
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.totalEnrollments }}
+      </strong>
+
+      <span class="metric-description">
+        Kurslardaki toplam öğrenci kaydı
+      </span>
+
+    </article>
+
+  </section>
+
+
+  <section class="panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>
+          Kurs Listesi
+        </h2>
+
+        <p>
+          PostgreSQL courses tablosundaki gerçek kurslar
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div class="filter-bar">
+
+      <div class="search-wrapper">
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          placeholder="Kurs adı, öğretmen veya ID ara..."
+        >
+
+      </div>
+
+
+      <select
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="applyFilters()"
+      >
+
+        <option value="ALL">
+          Tüm Durumlar
+        </option>
+
+        <option value="OPEN">
+          Satışa Açık
+        </option>
+
+        <option value="CLOSED">
+          Satışa Kapalı
+        </option>
+
+      </select>
+
+
+      <span class="result-count">
+
+        {{ filteredCourses.length }}
+        kurs
+
+      </span>
+
+    </div>
+
+
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Kurslar yükleniyor...
+    </div>
+
+
+    <div
+      class="error-message"
+      *ngIf="
+        !isLoading
+        &&
+        errorMessage
+      "
+    >
+      {{ errorMessage }}
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredCourses.length === 0
+      "
+    >
+      Filtreye uygun kurs bulunamadı.
+    </div>
+
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredCourses.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            ID
+          </th>
+
+          <th>
+            Kurs
+          </th>
+
+          <th>
+            Öğretmen
+          </th>
+
+          <th>
+            Fiyat
+          </th>
+
+          <th>
+            Kayıt / Kapasite
+          </th>
+
+          <th>
+            Durum
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let course
+            of
+            filteredCourses
+          "
+        >
+
+          <td class="course-id">
+            #{{ course.id }}
+          </td>
+
+
+          <td>
+
+            <div class="course-name">
+              {{ course.name }}
+            </div>
+
+          </td>
+
+
+          <td>
+
+            <div class="teacher-cell">
+
+              <div class="teacher-avatar">
+
+                {{
+                  course.teacherName
+                    .charAt(0)
+                    .toUpperCase()
+                }}
+
+              </div>
+
+
+              <div>
+
+                <div class="teacher-name">
+                  {{ course.teacherName }}
+                </div>
+
+                <div
+                  class="teacher-id"
+                  *ngIf="course.teacherId"
+                >
+                  ID #{{ course.teacherId }}
+                </div>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <td class="price-cell">
+
+            {{ formatPrice(course.price) }}
+
+          </td>
+
+
+          <td>
+
+            {{ getCapacityText(course) }}
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="status-badge"
+
+              [class.open]="
+                course.purchasable
+              "
+
+              [class.closed]="
+                !course.purchasable
+              "
+            >
+
+              {{
+                course.purchasable
+                  ? 'Satışta'
+                  : 'Kapalı'
+              }}
+
+            </span>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

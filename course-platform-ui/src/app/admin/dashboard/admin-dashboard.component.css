@@ -1,0 +1,512 @@
+.admin-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  color: #172033;
+
+  font-family:
+    'Segoe UI',
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 22px 32px;
+
+  background: #172033;
+  color: white;
+}
+
+
+.brand {
+  margin-bottom: 3px;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+.page-title {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+.logout-button {
+  padding: 10px 16px;
+
+  border: 1px solid #475569;
+  border-radius: 7px;
+
+  background: transparent;
+  color: white;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+.logout-button:hover {
+  background: #25334d;
+  border-color: #64748b;
+}
+
+
+/* =========================================================
+   PAGE CONTENT
+   ========================================================= */
+
+.content {
+  max-width: 1300px;
+
+  margin: 0 auto;
+
+  padding: 32px;
+}
+
+
+/* =========================================================
+   KPI
+   ========================================================= */
+
+.kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(240px, 1fr)
+    );
+
+  gap: 18px;
+
+  margin-bottom: 28px;
+}
+
+
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+
+  padding: 22px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  background: white;
+}
+
+
+.kpi-label {
+  margin-bottom: 12px;
+
+  color: #64748b;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.kpi-value {
+  margin-bottom: 7px;
+
+  color: #172033;
+
+  font-size: 32px;
+}
+
+
+.kpi-description {
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   SUCCESS MESSAGE
+   ========================================================= */
+
+.success-message {
+  margin-bottom: 18px;
+
+  padding: 14px 16px;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 9px;
+
+  background: #f0fdf4;
+  color: #166534;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+
+.panel {
+  padding: 24px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  background: white;
+}
+
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+
+.panel-header h2 {
+  margin:
+    0
+    0
+    5px;
+
+  font-size: 20px;
+}
+
+
+.panel-header p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   REFRESH
+   ========================================================= */
+
+.refresh-button {
+  padding: 9px 15px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: white;
+  color: #334155;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+
+.refresh-button:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+
+.refresh-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+
+th,
+td {
+  padding: 14px 12px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  text-align: left;
+
+  font-size: 13px;
+
+  vertical-align: middle;
+}
+
+
+th {
+  color: #64748b;
+
+  font-size: 12px;
+
+  text-transform: uppercase;
+}
+
+
+tbody tr {
+  transition: background 0.15s ease;
+}
+
+
+tbody tr:hover {
+  background: #fafbfc;
+}
+
+
+.action-column {
+  min-width: 310px;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+.status.pending {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+
+.status.code-sent {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  white-space: nowrap;
+}
+
+
+.action-button {
+  height: 38px;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+
+.action-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+
+.action-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+
+.action-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   APPROVE
+   ========================================================= */
+
+.approve-button {
+  min-width: 180px;
+
+  padding: 0 16px;
+
+  border: 1px solid #86efac;
+
+  background: #f0fdf4;
+  color: #166534;
+}
+
+
+.approve-button:hover:not(:disabled) {
+  border-color: #22c55e;
+
+  background: #dcfce7;
+  color: #14532d;
+}
+
+
+/* =========================================================
+   RESEND
+   ========================================================= */
+
+.resend-button {
+  min-width: 165px;
+
+  padding: 0 16px;
+
+  border: 1px solid #93c5fd;
+
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+
+.resend-button:hover:not(:disabled) {
+  border-color: #3b82f6;
+
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+
+/* =========================================================
+   REJECT
+   ========================================================= */
+
+.reject-button {
+  min-width: 82px;
+
+  padding: 0 14px;
+
+  border: 1px solid #fecaca;
+
+  background: #fff7f7;
+  color: #b91c1c;
+}
+
+
+.reject-button:hover:not(:disabled) {
+  border-color: #ef4444;
+
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+
+/* =========================================================
+   LOADING / EMPTY / ERROR
+   ========================================================= */
+
+.loading,
+.empty-state,
+.error {
+  padding: 28px;
+
+  text-align: center;
+
+  border-radius: 8px;
+}
+
+
+.loading,
+.empty-state {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (
+max-width: 700px
+) {
+
+  .topbar,
+  .panel-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+
+  .content {
+    padding: 18px;
+  }
+
+
+  .action-buttons {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+
+  .approve-button,
+  .resend-button,
+  .reject-button {
+    width: 100%;
+  }
+}

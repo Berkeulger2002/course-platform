@@ -19,13 +19,33 @@ import {
 } from '../services/auth.service';
 
 
+// =========================================================
+// ROLE TYPE
+// =========================================================
+
+type UserRole =
+  'STUDENT'
+  | 'TEACHER'
+  | 'ADMIN';
+
+
+type LoginRole =
+  'student'
+  | 'teacher'
+  | 'admin';
+
+
+// =========================================================
+// COMMON ROLE CHECK
+// =========================================================
+
 function checkRole(
 
   expectedRole:
-    'STUDENT' | 'TEACHER',
+  UserRole,
 
   loginRole:
-    'student' | 'teacher'
+  LoginRole
 
 ) {
 
@@ -50,6 +70,10 @@ function checkRole(
       map(user => {
 
 
+        // =====================================================
+        // DOĞRU ROLE
+        // =====================================================
+
         if (
           user.role ===
           expectedRole
@@ -71,6 +95,28 @@ function checkRole(
         }
 
 
+        // =====================================================
+        // ADMIN
+        // =====================================================
+
+        if (
+          user.role ===
+          'ADMIN'
+        ) {
+
+
+          return router.createUrlTree([
+
+            '/admin/dashboard'
+
+          ]);
+        }
+
+
+        // =====================================================
+        // TEACHER
+        // =====================================================
+
         if (
           user.role ===
           'TEACHER'
@@ -84,6 +130,10 @@ function checkRole(
           ]);
         }
 
+
+        // =====================================================
+        // STUDENT
+        // =====================================================
 
         if (
           user.role ===
@@ -99,20 +149,20 @@ function checkRole(
         }
 
 
-        return router.createUrlTree(
+        // =====================================================
+        // BİLİNMEYEN ROLE
+        // =====================================================
 
-          ['/auth'],
-
-          {
-            queryParams: {
-              role:
-              loginRole
-            }
-          }
-
+        return createLoginRedirect(
+          router,
+          loginRole
         );
       }),
 
+
+      // =======================================================
+      // AUTH YOK / COOKIE GEÇERSİZ
+      // =======================================================
 
       catchError(() => {
 
@@ -124,23 +174,69 @@ function checkRole(
 
         return of(
 
-          router.createUrlTree(
-
-            ['/auth'],
-
-            {
-              queryParams: {
-                role:
-                loginRole
-              }
-            }
-
+          createLoginRedirect(
+            router,
+            loginRole
           )
 
         );
       })
 
     );
+}
+
+
+// =========================================================
+// LOGIN REDIRECT
+// =========================================================
+
+function createLoginRedirect(
+
+  router:
+  Router,
+
+  loginRole:
+  LoginRole
+
+) {
+
+
+  // =========================================================
+  // ADMIN LOGIN
+  // =========================================================
+
+  if (
+    loginRole ===
+    'admin'
+  ) {
+
+
+    return router.createUrlTree([
+
+      '/admin/login'
+
+    ]);
+  }
+
+
+  // =========================================================
+  // STUDENT / TEACHER LOGIN
+  // =========================================================
+
+  return router.createUrlTree(
+
+    ['/auth'],
+
+    {
+      queryParams: {
+
+        role:
+        loginRole
+
+      }
+    }
+
+  );
 }
 
 
@@ -193,4 +289,32 @@ export const teacherChildGuard:
     'TEACHER',
     'teacher'
   );
+};
+
+// =========================================================
+// ADMIN CHILD
+// =========================================================
+
+export const adminChildGuard:
+  CanActivateChildFn = () => {
+
+
+  return checkRole(
+    'ADMIN',
+    'admin'
+  );
+};
+// =========================================================
+// ADMIN
+// =========================================================
+
+export const adminGuard:
+  CanActivateFn = () => {
+
+
+  return checkRole(
+    'ADMIN',
+    'admin'
+  );
+
 };

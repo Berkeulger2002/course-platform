@@ -1,0 +1,74 @@
+<div class="admin-login-page">
+
+  <div class="admin-login-box">
+
+    <div class="admin-badge">
+      COURSE PLATFORM
+    </div>
+
+    <h1>
+      Yönetici Girişi
+    </h1>
+
+    <p class="subtitle">
+      Course Platform yönetim paneline erişmek için
+      admin hesabınızla giriş yapın.
+    </p>
+
+
+    <form
+      (ngSubmit)="login()"
+    >
+
+      <div class="form-group">
+
+        <label>
+          E-posta
+        </label>
+
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="admin@example.com"
+          required
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Şifre
+        </label>
+
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Şifreniz"
+          required
+        >
+
+      </div>
+
+
+      <button
+        type="submit"
+        [disabled]="isSubmitting"
+      >
+
+        {{
+          isSubmitting
+            ? 'Giriş yapılıyor...'
+            : 'Admin Olarak Giriş Yap'
+        }}
+
+      </button>
+
+    </form>
+
+  </div>
+
+</div>

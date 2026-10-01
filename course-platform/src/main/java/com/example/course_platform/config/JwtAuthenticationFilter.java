@@ -5,6 +5,8 @@ import com.example.course_platform.entity.User;
 
 import com.example.course_platform.repository.UserRepository;
 
+import com.example.course_platform.service.UserSessionService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -44,6 +46,8 @@ public class JwtAuthenticationFilter
 
     private final UserRepository userRepository;
 
+    private final UserSessionService userSessionService;
+
 
     // =========================================================
     // COOKIE NAME
@@ -62,6 +66,8 @@ public class JwtAuthenticationFilter
 
             UserRepository userRepository,
 
+            UserSessionService userSessionService,
+
             @Value("${app.auth.cookie-name}")
             String cookieName
 
@@ -72,6 +78,9 @@ public class JwtAuthenticationFilter
 
         this.userRepository =
                 userRepository;
+
+        this.userSessionService =
+                userSessionService;
 
         this.cookieName =
                 cookieName;
@@ -120,56 +129,76 @@ public class JwtAuthenticationFilter
                     );
 
 
-            Optional<User> userOptional =
-                    userRepository
-                            .findByEmailIgnoreCase(
+            String sessionId =
+                    jwtService.extractSessionId(
+                            token
+                    );
+
+
+            boolean activeSession =
+                    userSessionService
+                            .isSessionActive(
+                                    sessionId,
                                     email
                             );
 
 
             if (
-                    userOptional.isPresent()
+                    activeSession
             ) {
 
 
-                User user =
-                        userOptional.get();
+                Optional<User> userOptional =
+                        userRepository
+                                .findByEmailIgnoreCase(
+                                        email
+                                );
 
 
-                SimpleGrantedAuthority authority =
-                        new SimpleGrantedAuthority(
-                                "ROLE_"
-                                        + user.getRole().name()
-                        );
+                if (
+                        userOptional.isPresent()
+                ) {
 
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-
-                                user.getEmail(),
-
-                                null,
-
-                                List.of(
-                                        authority
-                                )
-                        );
+                    User user =
+                            userOptional.get();
 
 
-                authentication.setDetails(
-
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(
-                                        request
-                                )
-                );
+                    SimpleGrantedAuthority authority =
+                            new SimpleGrantedAuthority(
+                                    "ROLE_"
+                                            + user.getRole().name()
+                            );
 
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(
-                                authentication
-                        );
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(
+
+                                    user.getEmail(),
+
+                                    null,
+
+                                    List.of(
+                                            authority
+                                    )
+                            );
+
+
+                    authentication.setDetails(
+
+                            new WebAuthenticationDetailsSource()
+                                    .buildDetails(
+                                            request
+                                    )
+                    );
+
+
+                    SecurityContextHolder
+                            .getContext()
+                            .setAuthentication(
+                                    authentication
+                            );
+                }
             }
         }
 

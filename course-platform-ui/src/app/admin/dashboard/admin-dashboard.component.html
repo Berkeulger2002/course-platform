@@ -1,0 +1,402 @@
+<div class="admin-page">
+
+  <header class="topbar">
+
+    <div>
+
+      <div class="brand">
+        Course Platform
+      </div>
+
+      <div class="page-title">
+        Yönetim Paneli
+      </div>
+
+    </div>
+
+
+    <button
+      class="logout-button"
+      type="button"
+      (click)="logout()"
+    >
+      Çıkış Yap
+    </button>
+
+  </header>
+
+
+  <main class="content">
+
+
+    <!-- =====================================================
+         KPI
+         ===================================================== -->
+
+    <section class="kpi-grid">
+
+
+      <div class="kpi-card">
+
+        <span class="kpi-label">
+          Bekleyen Başvurular
+        </span>
+
+        <strong class="kpi-value">
+
+          {{
+            isLoading
+              ? '...'
+              : pendingCount
+          }}
+
+        </strong>
+
+        <span class="kpi-description">
+          Yönetici onayı bekleyen öğretmen adayları
+        </span>
+
+      </div>
+
+
+      <div class="kpi-card">
+
+        <span class="kpi-label">
+          Kod Gönderilenler
+        </span>
+
+        <strong class="kpi-value">
+
+          {{
+            isLoading
+              ? '...'
+              : codeSentCount
+          }}
+
+        </strong>
+
+        <span class="kpi-description">
+          Hesap oluşturmayı bekleyen öğretmen adayları
+        </span>
+
+      </div>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         SUCCESS
+         ===================================================== -->
+
+    <div
+      class="success-message"
+      *ngIf="successMessage"
+    >
+      {{ successMessage }}
+    </div>
+
+
+    <!-- =====================================================
+         TEACHER REQUESTS
+         ===================================================== -->
+
+    <section class="panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <h2>
+            Öğretmen Başvuruları
+          </h2>
+
+          <p>
+            Onay bekleyen ve doğrulama kodu gönderilmiş aktif başvurular
+          </p>
+
+        </div>
+
+
+        <button
+          class="refresh-button"
+          type="button"
+          (click)="loadTeacherRequests()"
+          [disabled]="processingRequestId !== null"
+        >
+          Yenile
+        </button>
+
+      </div>
+
+
+      <div
+        class="loading"
+        *ngIf="isLoading"
+      >
+        Başvurular yükleniyor...
+      </div>
+
+
+      <div
+        class="error"
+        *ngIf="!isLoading && errorMessage"
+      >
+        {{ errorMessage }}
+      </div>
+
+
+      <div
+        class="empty-state"
+        *ngIf="
+          !isLoading
+          &&
+          !errorMessage
+          &&
+          teacherRequests.length === 0
+        "
+      >
+        Aktif öğretmen başvurusu bulunmuyor.
+      </div>
+
+
+      <div
+        class="table-wrapper"
+        *ngIf="
+          !isLoading
+          &&
+          teacherRequests.length > 0
+        "
+      >
+
+        <table>
+
+          <thead>
+
+          <tr>
+
+            <th>
+              Başvuru No
+            </th>
+
+            <th>
+              Ad Soyad
+            </th>
+
+            <th>
+              E-posta
+            </th>
+
+            <th>
+              Tarih
+            </th>
+
+            <th>
+              Durum
+            </th>
+
+            <th class="action-column">
+              İşlem
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+          <tr
+            *ngFor="
+              let request
+              of
+              teacherRequests
+            "
+          >
+
+            <td>
+              #{{ request.id }}
+            </td>
+
+
+            <td>
+              {{ request.name }}
+            </td>
+
+
+            <td>
+              {{ request.email }}
+            </td>
+
+
+            <td>
+
+              {{
+                request.requestedAt
+                  | date:'dd.MM.yyyy HH:mm'
+              }}
+
+            </td>
+
+
+            <td>
+
+              <span
+                class="status"
+
+                [class.pending]="
+                  request.status === 'PENDING'
+                "
+
+                [class.code-sent]="
+                  request.status === 'CODE_SENT'
+                "
+              >
+
+                {{ getStatusLabel(request.status) }}
+
+              </span>
+
+            </td>
+
+
+            <td>
+
+              <!-- =============================================
+                   PENDING ACTIONS
+                   ============================================= -->
+
+              <div
+                class="action-buttons"
+
+                *ngIf="
+                  request.status === 'PENDING'
+                "
+              >
+
+
+                <button
+                  class="action-button approve-button"
+                  type="button"
+                  [disabled]="processingRequestId !== null"
+                  (click)="approveRequest(request)"
+                >
+
+                  <ng-container
+                    *ngIf="
+                      !isProcessing(request.id)
+                      ||
+                      processingAction !== 'approve'
+                    "
+                  >
+                    Onayla ve Kod Gönder
+                  </ng-container>
+
+
+                  <ng-container
+                    *ngIf="
+                      isProcessing(request.id)
+                      &&
+                      processingAction === 'approve'
+                    "
+                  >
+                    Gönderiliyor...
+                  </ng-container>
+
+                </button>
+
+
+                <button
+                  class="action-button reject-button"
+                  type="button"
+                  [disabled]="processingRequestId !== null"
+                  (click)="rejectRequest(request)"
+                >
+
+                  <ng-container
+                    *ngIf="
+                      !isProcessing(request.id)
+                      ||
+                      processingAction !== 'reject'
+                    "
+                  >
+                    Reddet
+                  </ng-container>
+
+
+                  <ng-container
+                    *ngIf="
+                      isProcessing(request.id)
+                      &&
+                      processingAction === 'reject'
+                    "
+                  >
+                    Reddediliyor...
+                  </ng-container>
+
+                </button>
+
+
+              </div>
+
+
+              <!-- =============================================
+                   CODE_SENT ACTION
+                   ============================================= -->
+
+              <div
+                class="action-buttons"
+
+                *ngIf="
+                  request.status === 'CODE_SENT'
+                "
+              >
+
+                <button
+                  class="action-button resend-button"
+                  type="button"
+                  [disabled]="processingRequestId !== null"
+                  (click)="resendCode(request)"
+                >
+
+                  <ng-container
+                    *ngIf="
+                      !isProcessing(request.id)
+                      ||
+                      processingAction !== 'resend'
+                    "
+                  >
+                    Kodu Yeniden Gönder
+                  </ng-container>
+
+
+                  <ng-container
+                    *ngIf="
+                      isProcessing(request.id)
+                      &&
+                      processingAction === 'resend'
+                    "
+                  >
+                    Gönderiliyor...
+                  </ng-container>
+
+                </button>
+
+              </div>
+
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

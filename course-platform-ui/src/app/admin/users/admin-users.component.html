@@ -1,0 +1,577 @@
+<div class="users-page">
+
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        PLATFORM
+      </span>
+
+      <h1>
+        Kullanıcılar
+      </h1>
+
+      <p>
+        Platformdaki öğrenci, öğretmen ve admin hesaplarını görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="isLoading"
+    >
+      Yenile
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       SUCCESS
+       ===================================================== -->
+
+  <div
+    class="success-message"
+    *ngIf="mailSuccessMessage"
+  >
+    {{ mailSuccessMessage }}
+  </div>
+
+
+  <!-- =====================================================
+       METRICS
+       ===================================================== -->
+
+  <section class="metric-grid">
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Toplam Kullanıcı
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.totalUsers }}
+      </strong>
+
+      <span class="metric-description">
+        Tüm kayıtlı hesaplar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Öğrenciler
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.students }}
+      </strong>
+
+      <span class="metric-description">
+        STUDENT rolündeki hesaplar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Öğretmenler
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.teachers }}
+      </strong>
+
+      <span class="metric-description">
+        TEACHER rolündeki hesaplar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Admin
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.admins }}
+      </strong>
+
+      <span class="metric-description">
+        Yönetici hesapları
+      </span>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       USERS
+       ===================================================== -->
+
+  <section class="panel">
+
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>
+          Kullanıcı Listesi
+        </h2>
+
+        <p>
+          PostgreSQL users tablosundaki gerçek kullanıcılar
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         FILTERS
+         =================================================== -->
+
+    <div class="filter-bar">
+
+
+      <div class="search-wrapper">
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilters()"
+          placeholder="İsim, e-posta veya ID ara..."
+        >
+
+      </div>
+
+
+      <select
+        [(ngModel)]="selectedRole"
+        (ngModelChange)="applyFilters()"
+      >
+
+        <option value="ALL">
+          Tüm Roller
+        </option>
+
+        <option value="STUDENT">
+          Öğrenciler
+        </option>
+
+        <option value="TEACHER">
+          Öğretmenler
+        </option>
+
+        <option value="ADMIN">
+          Admin
+        </option>
+
+      </select>
+
+
+      <span class="result-count">
+
+        {{ filteredUsers.length }}
+        kullanıcı
+
+      </span>
+
+    </div>
+
+
+    <!-- ===================================================
+         STATES
+         =================================================== -->
+
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Kullanıcılar yükleniyor...
+    </div>
+
+
+    <div
+      class="error-message"
+      *ngIf="
+        !isLoading
+        &&
+        errorMessage
+      "
+    >
+      {{ errorMessage }}
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredUsers.length === 0
+      "
+    >
+      Filtreye uygun kullanıcı bulunamadı.
+    </div>
+
+
+    <!-- ===================================================
+         TABLE
+         =================================================== -->
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredUsers.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            ID
+          </th>
+
+          <th>
+            Kullanıcı
+          </th>
+
+          <th>
+            E-posta
+          </th>
+
+          <th>
+            Rol
+          </th>
+
+          <th>
+            İşlem
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let user
+            of
+            filteredUsers
+          "
+        >
+
+          <td class="user-id">
+            #{{ user.id }}
+          </td>
+
+
+          <td>
+
+            <div class="user-cell">
+
+              <div class="user-avatar">
+
+                {{
+                  user.name
+                    .charAt(0)
+                    .toUpperCase()
+                }}
+
+              </div>
+
+
+              <div>
+
+                <div class="user-name">
+                  {{ user.name }}
+                </div>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <td class="email-cell">
+            {{ user.email }}
+          </td>
+
+
+          <td>
+
+            <span
+              class="role-badge"
+
+              [class.student]="
+                user.role === 'STUDENT'
+              "
+
+              [class.teacher]="
+                user.role === 'TEACHER'
+              "
+
+              [class.admin]="
+                user.role === 'ADMIN'
+              "
+            >
+
+              {{ getRoleLabel(user.role) }}
+
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <button
+              *ngIf="canSendEmail(user)"
+              type="button"
+              class="mail-button"
+              (click)="openMailModal(user)"
+            >
+              Mail Gönder
+            </button>
+
+
+            <span
+              class="no-action"
+              *ngIf="!canSendEmail(user)"
+            >
+              —
+            </span>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       MAIL MODAL
+       ===================================================== -->
+
+  <div
+    class="modal-backdrop"
+    *ngIf="selectedMailUser"
+    (click)="closeMailModal()"
+  >
+
+
+    <section
+      class="mail-modal"
+      (click)="$event.stopPropagation()"
+    >
+
+
+      <header class="mail-modal-header">
+
+        <div>
+
+          <span class="mail-modal-eyebrow">
+            ADMIN MESSAGE
+          </span>
+
+          <h2>
+            Kullanıcıya Mail Gönder
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="modal-close-button"
+          (click)="closeMailModal()"
+          [disabled]="isSendingMail"
+        >
+          ×
+        </button>
+
+      </header>
+
+
+      <!-- =================================================
+           RECIPIENT
+           ================================================= -->
+
+      <div class="recipient-card">
+
+        <div class="user-avatar">
+
+          {{
+            selectedMailUser
+              .name
+              .charAt(0)
+              .toUpperCase()
+          }}
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            {{ selectedMailUser.name }}
+          </strong>
+
+          <span>
+            {{ selectedMailUser.email }}
+          </span>
+
+          <small>
+            {{ getRoleLabel(selectedMailUser.role) }}
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           ERROR
+           ================================================= -->
+
+      <div
+        class="mail-error-message"
+        *ngIf="mailErrorMessage"
+      >
+        {{ mailErrorMessage }}
+      </div>
+
+
+      <!-- =================================================
+           SUBJECT
+           ================================================= -->
+
+      <label class="form-field">
+
+        <span>
+          Konu
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="mailSubject"
+          maxlength="150"
+          placeholder="Örn. Hesabınız hakkında"
+          [disabled]="isSendingMail"
+        >
+
+        <small>
+          {{ mailSubject.length }} / 150
+        </small>
+
+      </label>
+
+
+      <!-- =================================================
+           MESSAGE
+           ================================================= -->
+
+      <label class="form-field">
+
+        <span>
+          Mesaj
+        </span>
+
+        <textarea
+          [(ngModel)]="mailMessage"
+          maxlength="5000"
+          rows="9"
+          placeholder="Kullanıcıya göndermek istediğiniz mesajı yazın..."
+          [disabled]="isSendingMail"
+        ></textarea>
+
+        <small>
+          {{ mailMessage.length }} / 5000
+        </small>
+
+      </label>
+
+
+      <!-- =================================================
+           ACTIONS
+           ================================================= -->
+
+      <div class="modal-actions">
+
+
+        <button
+          type="button"
+          class="cancel-button"
+          (click)="closeMailModal()"
+          [disabled]="isSendingMail"
+        >
+          İptal
+        </button>
+
+
+        <button
+          type="button"
+          class="send-mail-button"
+          (click)="sendMail()"
+          [disabled]="
+            isSendingMail
+            ||
+            !mailSubject.trim()
+            ||
+            !mailMessage.trim()
+          "
+        >
+
+          {{
+            isSendingMail
+              ? 'Gönderiliyor...'
+              : 'Mail Gönder'
+          }}
+
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

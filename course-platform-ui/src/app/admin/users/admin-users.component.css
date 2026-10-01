@@ -1,0 +1,864 @@
+.users-page {
+  padding: 34px;
+
+  color: #172033;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  margin-bottom: 30px;
+}
+
+
+.eyebrow {
+  color: #64748b;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+
+.page-header h1 {
+  margin: 7px 0;
+
+  font-size: 28px;
+}
+
+
+.page-header p {
+  margin: 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+
+.refresh-button {
+  padding: 10px 16px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: white;
+  color: #334155;
+
+  cursor: pointer;
+
+  font-weight: 700;
+}
+
+
+.refresh-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.success-message {
+  margin-bottom: 20px;
+
+  padding: 13px 15px;
+
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+
+  background: #f0fdf4;
+  color: #166534;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   METRICS
+   ========================================================= */
+
+.metric-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(0, 1fr)
+    );
+
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 125px;
+
+  box-sizing: border-box;
+
+  padding: 20px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+
+  background: white;
+}
+
+
+.metric-label {
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.metric-value {
+  margin: 12px 0 5px;
+
+  font-size: 30px;
+}
+
+
+.metric-description {
+  margin-top: auto;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+
+.panel {
+  padding: 22px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 11px;
+
+  background: white;
+}
+
+
+.panel-header {
+  margin-bottom: 20px;
+}
+
+
+.panel-header h2 {
+  margin: 0 0 5px;
+
+  font-size: 16px;
+}
+
+
+.panel-header p {
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 18px;
+}
+
+
+.search-wrapper {
+  flex: 1;
+}
+
+
+.search-wrapper input,
+.filter-bar select {
+  height: 40px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+
+  background: white;
+  color: #334155;
+
+  font-family: inherit;
+  font-size: 12px;
+}
+
+
+.search-wrapper input {
+  width: 100%;
+
+  padding: 0 13px;
+}
+
+
+.filter-bar select {
+  min-width: 150px;
+
+  padding: 0 10px;
+}
+
+
+.search-wrapper input:focus,
+.filter-bar select:focus {
+  outline: none;
+
+  border-color: #3b82f6;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(59, 130, 246, 0.08);
+}
+
+
+.result-count {
+  color: #64748b;
+
+  white-space: nowrap;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+
+table {
+  width: 100%;
+
+  border-collapse: collapse;
+}
+
+
+th,
+td {
+  padding: 13px 11px;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  text-align: left;
+
+  font-size: 12px;
+
+  vertical-align: middle;
+}
+
+
+th {
+  color: #64748b;
+
+  font-size: 10px;
+
+  letter-spacing: 0.03em;
+
+  text-transform: uppercase;
+}
+
+
+tbody tr {
+  transition:
+    background 0.15s ease;
+}
+
+
+tbody tr:hover {
+  background: #f8fafc;
+}
+
+
+.user-id {
+  color: #64748b;
+
+  font-weight: 700;
+}
+
+
+.user-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #e2e8f0;
+  color: #334155;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.user-name {
+  color: #172033;
+
+  font-weight: 700;
+}
+
+
+.email-cell {
+  color: #475569;
+}
+
+
+/* =========================================================
+   ROLE BADGES
+   ========================================================= */
+
+.role-badge {
+  display: inline-block;
+
+  padding: 5px 9px;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.role-badge.student {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+
+.role-badge.teacher {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+
+.role-badge.admin {
+  background: #f3e8ff;
+  color: #7e22ce;
+}
+
+
+/* =========================================================
+   MAIL BUTTON
+   ========================================================= */
+
+.mail-button {
+  padding: 7px 11px;
+
+  border: 1px solid #c7d2fe;
+  border-radius: 7px;
+
+  background: #eef2ff;
+  color: #4338ca;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+.mail-button:hover {
+  border-color: #818cf8;
+
+  background: #e0e7ff;
+}
+
+
+.no-action {
+  color: #cbd5e1;
+}
+
+
+/* =========================================================
+   STATES
+   ========================================================= */
+
+.loading,
+.empty-state,
+.error-message {
+  padding: 28px;
+
+  border-radius: 8px;
+
+  text-align: center;
+
+  font-size: 12px;
+}
+
+
+.loading,
+.empty-state {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+
+.error-message {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+
+/* =========================================================
+   MODAL BACKDROP
+   ========================================================= */
+
+.modal-backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  padding: 24px;
+
+  background:
+    rgba(
+      15,
+      23,
+      42,
+      0.58
+    );
+
+  backdrop-filter:
+    blur(2px);
+}
+
+
+/* =========================================================
+   MAIL MODAL
+   ========================================================= */
+
+.mail-modal {
+  width: min(
+    560px,
+    100%
+  );
+
+  max-height: calc(
+    100vh - 48px
+  );
+
+  overflow-y: auto;
+
+  box-sizing: border-box;
+
+  padding: 24px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+
+  background: white;
+
+  box-shadow:
+    0 24px 60px
+    rgba(
+      15,
+      23,
+      42,
+      0.25
+    );
+}
+
+
+.mail-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 20px;
+}
+
+
+.mail-modal-eyebrow {
+  color: #6366f1;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+
+.mail-modal-header h2 {
+  margin: 5px 0 0;
+
+  color: #172033;
+
+  font-size: 20px;
+}
+
+
+.modal-close-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #f1f5f9;
+  color: #475569;
+
+  cursor: pointer;
+
+  font-size: 21px;
+}
+
+
+/* =========================================================
+   RECIPIENT
+   ========================================================= */
+
+.recipient-card {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-bottom: 20px;
+
+  padding: 13px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+
+  background: #f8fafc;
+}
+
+
+.recipient-card strong,
+.recipient-card span,
+.recipient-card small {
+  display: block;
+}
+
+
+.recipient-card strong {
+  color: #1e293b;
+
+  font-size: 12px;
+}
+
+
+.recipient-card span {
+  margin-top: 3px;
+
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+
+.recipient-card small {
+  margin-top: 4px;
+
+  color: #6366f1;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 18px;
+}
+
+
+.form-field > span {
+  color: #334155;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  background: white;
+  color: #172033;
+
+  font-family: inherit;
+  font-size: 12px;
+}
+
+
+.form-field input {
+  height: 42px;
+
+  padding:
+    0
+    12px;
+}
+
+
+.form-field textarea {
+  min-height: 155px;
+
+  padding: 12px;
+
+  resize: vertical;
+
+  line-height: 1.6;
+}
+
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+
+  border-color: #6366f1;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      99,
+      102,
+      241,
+      0.09
+    );
+}
+
+
+.form-field small {
+  align-self: flex-end;
+
+  color: #94a3b8;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   MAIL ERROR
+   ========================================================= */
+
+.mail-error-message {
+  margin-bottom: 18px;
+
+  padding: 11px 13px;
+
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+
+  background: #fef2f2;
+  color: #b91c1c;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   MODAL ACTIONS
+   ========================================================= */
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 6px;
+}
+
+
+.cancel-button,
+.send-mail-button {
+  height: 40px;
+
+  padding:
+    0
+    16px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+.cancel-button {
+  border: 1px solid #cbd5e1;
+
+  background: white;
+  color: #475569;
+}
+
+
+.send-mail-button {
+  border: 1px solid #4f46e5;
+
+  background: #4f46e5;
+  color: white;
+}
+
+
+.send-mail-button:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+
+.cancel-button:disabled,
+.send-mail-button:disabled,
+.modal-close-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (
+max-width: 1100px
+) {
+
+  .metric-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
+  }
+}
+
+
+@media (
+max-width: 700px
+) {
+
+  .users-page {
+    padding: 20px;
+  }
+
+
+  .page-header {
+    flex-direction: column;
+  }
+
+
+  .metric-grid {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .filter-bar {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+
+  .filter-bar select {
+    width: 100%;
+  }
+
+
+  .modal-backdrop {
+    padding: 12px;
+  }
+
+
+  .mail-modal {
+    padding: 18px;
+  }
+
+
+  .modal-actions {
+    align-items: stretch;
+
+    flex-direction: column-reverse;
+  }
+
+
+  .cancel-button,
+  .send-mail-button {
+    width: 100%;
+  }
+}

@@ -10,9 +10,16 @@ import com.example.course_platform.dto.RegisterRequest;
 import com.example.course_platform.entity.Role;
 import com.example.course_platform.entity.Student;
 import com.example.course_platform.entity.User;
+import com.example.course_platform.entity.UserSession;
 
 import com.example.course_platform.repository.StudentRepository;
 import com.example.course_platform.repository.UserRepository;
+
+import com.example.course_platform.service.LoginAttemptService;
+import com.example.course_platform.service.UserSessionService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 import jakarta.validation.Valid;
 
@@ -37,7 +44,9 @@ import java.util.regex.Pattern;
 
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping(
+        "/api/auth"
+)
 public class AuthController {
 
 
@@ -46,12 +55,12 @@ public class AuthController {
     // =========================================================
 
     private static final Pattern GMAIL_PATTERN =
+
             Pattern.compile(
 
                     "^[A-Za-z0-9._%+-]+@gmail\\.com$",
 
                     Pattern.CASE_INSENSITIVE
-
             );
 
 
@@ -62,22 +71,34 @@ public class AuthController {
     private final StudentRepository
             studentRepository;
 
+
     private final UserRepository
             userRepository;
 
+
     private final PasswordEncoder
             passwordEncoder;
+
 
     private final JwtService
             jwtService;
 
 
+    private final UserSessionService
+            userSessionService;
+
+
+    private final LoginAttemptService
+            loginAttemptService;
+
+
     // =========================================================
-    // COOKIE SETTINGS
+    // COOKIE
     // =========================================================
 
     private final String
             cookieName;
+
 
     private final boolean
             cookieSecure;
@@ -97,12 +118,15 @@ public class AuthController {
 
             JwtService jwtService,
 
+            UserSessionService userSessionService,
+
+            LoginAttemptService loginAttemptService,
+
             @Value("${app.auth.cookie-name}")
             String cookieName,
 
             @Value("${app.auth.cookie-secure}")
             boolean cookieSecure
-
     ) {
 
 
@@ -122,6 +146,14 @@ public class AuthController {
                 jwtService;
 
 
+        this.userSessionService =
+                userSessionService;
+
+
+        this.loginAttemptService =
+                loginAttemptService;
+
+
         this.cookieName =
                 cookieName;
 
@@ -134,38 +166,37 @@ public class AuthController {
     // =========================================================
     // REGISTER
     //
-    // PUBLIC REGISTRATION SADECE STUDENT OLUŞTURUR.
-    //
-    // İstemci artık rol göndermez.
-    //
-    // Böylece bir kullanıcı request body değiştirerek
-    // kendisini TEACHER yapamaz.
+    // PUBLIC REGISTER = STUDENT ONLY
     // =========================================================
 
-    @PostMapping("/register")
-    public ResponseEntity<String> register(
+    @PostMapping(
+            "/register"
+    )
+    public ResponseEntity<String>
+    register(
 
             @Valid
             @RequestBody
             RegisterRequest request
-
     ) {
 
 
         String name =
+
                 request
                         .name()
                         .trim();
 
 
         String email =
+
                 normalizeEmail(
                         request.email()
                 );
 
 
         // =====================================================
-        // GMAIL CONTROL
+        // GMAIL
         // =====================================================
 
         if (
@@ -186,7 +217,7 @@ public class AuthController {
 
 
         // =====================================================
-        // DUPLICATE EMAIL
+        // DUPLICATE
         // =====================================================
 
         if (
@@ -208,17 +239,18 @@ public class AuthController {
 
 
         // =====================================================
-        // PASSWORD HASH
+        // PASSWORD
         // =====================================================
 
         String encodedPassword =
+
                 passwordEncoder.encode(
                         request.password()
                 );
 
 
         // =====================================================
-        // PUBLIC REGISTER -> ALWAYS STUDENT
+        // STUDENT
         // =====================================================
 
         Student student =
@@ -251,9 +283,11 @@ public class AuthController {
 
 
         return ResponseEntity
+
                 .status(
                         HttpStatus.CREATED
                 )
+
                 .body(
                         "Öğrenci başarıyla kaydedildi!"
                 );
@@ -262,27 +296,72 @@ public class AuthController {
 
     // =========================================================
     // LOGIN
-    //
-    // STUDENT ve TEACHER giriş yapabilir.
     // =========================================================
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(
+    @PostMapping(
+            "/login"
+    )
+    public ResponseEntity<?>
+    login(
 
             @Valid
             @RequestBody
-            LoginRequest request
+            LoginRequest request,
 
+            HttpServletRequest httpRequest
     ) {
 
 
         String email =
+
                 normalizeEmail(
                         request.email()
                 );
 
 
+
+        String clientIp =
+                httpRequest.getRemoteAddr();
+
+
+        if (
+                loginAttemptService
+                        .isBlocked(
+                                email,
+                                clientIp
+                        )
+        ) {
+
+
+            long retryAfterSeconds =
+                    loginAttemptService
+                            .retryAfterSeconds(
+                                    email,
+                                    clientIp
+                            );
+
+
+            return ResponseEntity
+
+                    .status(
+                            HttpStatus.TOO_MANY_REQUESTS
+                    )
+
+                    .header(
+                            HttpHeaders.RETRY_AFTER,
+                            String.valueOf(
+                                    retryAfterSeconds
+                            )
+                    )
+
+                    .body(
+                            "Çok fazla başarısız giriş denemesi. Lütfen daha sonra tekrar deneyin."
+                    );
+        }
+
+
         Optional<User> userOptional =
+
                 userRepository
                         .findByEmailIgnoreCase(
                                 email
@@ -294,10 +373,19 @@ public class AuthController {
         ) {
 
 
+            loginAttemptService
+                    .loginFailed(
+                            email,
+                            clientIp
+                    );
+
+
             return ResponseEntity
+
                     .status(
                             HttpStatus.UNAUTHORIZED
                     )
+
                     .body(
                             "E-posta veya şifre hatalı!"
                     );
@@ -314,36 +402,71 @@ public class AuthController {
                         request.password(),
 
                         user.getPassword()
-
                 )
         ) {
 
 
+            loginAttemptService
+                    .loginFailed(
+                            email,
+                            clientIp
+                    );
+
+
             return ResponseEntity
+
                     .status(
                             HttpStatus.UNAUTHORIZED
                     )
+
                     .body(
                             "E-posta veya şifre hatalı!"
                     );
         }
 
 
-        // =====================================================
-        // JWT
-        // =====================================================
-
-        String token =
-                jwtService.generateToken(
-                        user
+        loginAttemptService
+                .loginSucceeded(
+                        email
                 );
 
 
         // =====================================================
-        // HTTP ONLY COOKIE
+        // CREATE DATABASE SESSION
+        // =====================================================
+
+        UserSession session =
+
+                userSessionService
+                        .createSession(
+
+                                user,
+
+                                jwtService
+                                        .getExpirationMs()
+                        );
+
+
+        // =====================================================
+        // JWT + SID
+        // =====================================================
+
+        String token =
+
+                jwtService.generateToken(
+
+                        user,
+
+                        session.getSessionId()
+                );
+
+
+        // =====================================================
+        // COOKIE
         // =====================================================
 
         ResponseCookie cookie =
+
                 createLoginCookie(
                         token
                 );
@@ -354,16 +477,20 @@ public class AuthController {
         // =====================================================
 
         AuthMeResponse response =
+
                 createUserResponse(
                         user
                 );
 
 
         return ResponseEntity
+
                 .ok()
 
                 .header(
+
                         HttpHeaders.SET_COOKIE,
+
                         cookie.toString()
                 )
 
@@ -374,14 +501,16 @@ public class AuthController {
 
 
     // =========================================================
-    // ME
+    // CURRENT USER
     // =========================================================
 
-    @GetMapping("/me")
-    public ResponseEntity<?> me(
+    @GetMapping(
+            "/me"
+    )
+    public ResponseEntity<?>
+    me(
 
             Authentication authentication
-
     ) {
 
 
@@ -399,9 +528,12 @@ public class AuthController {
 
 
         Optional<User> userOptional =
+
                 userRepository
                         .findByEmailIgnoreCase(
-                                authentication.getName()
+
+                                authentication
+                                        .getName()
                         );
 
 
@@ -421,10 +553,59 @@ public class AuthController {
         return ResponseEntity.ok(
 
                 createUserResponse(
+
                         userOptional.get()
                 )
-
         );
+    }
+
+
+    // =========================================================
+    // HEARTBEAT
+    //
+    // Frontend kullanıcı gerçekten aktifken
+    // yaklaşık 60 saniyede bir çağıracak.
+    // =========================================================
+
+    @PostMapping(
+            "/heartbeat"
+    )
+    public ResponseEntity<Void>
+    heartbeat(
+
+            HttpServletRequest request
+    ) {
+
+
+        String sessionId =
+
+                extractSessionIdFromRequest(
+                        request
+                );
+
+
+        if (
+                sessionId == null
+        ) {
+
+
+            return ResponseEntity
+                    .status(
+                            HttpStatus.UNAUTHORIZED
+                    )
+                    .build();
+        }
+
+
+        userSessionService
+                .heartbeat(
+                        sessionId
+                );
+
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 
 
@@ -432,11 +613,45 @@ public class AuthController {
     // LOGOUT
     // =========================================================
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
+    @PostMapping(
+            "/logout"
+    )
+    public ResponseEntity<Void>
+    logout(
 
+            HttpServletRequest request
+    ) {
+
+
+        String sessionId =
+
+                extractSessionIdFromRequest(
+                        request
+                );
+
+
+        // =====================================================
+        // SESSION HISTORY
+        // =====================================================
+
+        if (
+                sessionId != null
+        ) {
+
+
+            userSessionService
+                    .logout(
+                            sessionId
+                    );
+        }
+
+
+        // =====================================================
+        // DELETE COOKIE
+        // =====================================================
 
         ResponseCookie deleteCookie =
+
                 ResponseCookie
 
                         .from(
@@ -472,7 +687,9 @@ public class AuthController {
                 .noContent()
 
                 .header(
+
                         HttpHeaders.SET_COOKIE,
+
                         deleteCookie.toString()
                 )
 
@@ -481,13 +698,109 @@ public class AuthController {
 
 
     // =========================================================
-    // CREATE LOGIN COOKIE
+    // SESSION ID FROM JWT COOKIE
     // =========================================================
 
-    private ResponseCookie createLoginCookie(
+    private String extractSessionIdFromRequest(
+
+            HttpServletRequest request
+    ) {
+
+
+        String token =
+
+                extractTokenFromCookie(
+                        request
+                );
+
+
+        if (
+                token == null
+                        ||
+                        !jwtService
+                                .isTokenValid(
+                                        token
+                                )
+        ) {
+
+
+            return null;
+        }
+
+
+        try {
+
+
+            return jwtService
+                    .extractSessionId(
+                            token
+                    );
+
+
+        } catch (
+                Exception exception
+        ) {
+
+
+            return null;
+        }
+    }
+
+
+    // =========================================================
+    // TOKEN FROM COOKIE
+    // =========================================================
+
+    private String extractTokenFromCookie(
+
+            HttpServletRequest request
+    ) {
+
+
+        Cookie[] cookies =
+                request.getCookies();
+
+
+        if (
+                cookies == null
+        ) {
+
+
+            return null;
+        }
+
+
+        for (
+                Cookie cookie
+                :
+                cookies
+        ) {
+
+
+            if (
+                    cookieName.equals(
+                            cookie.getName()
+                    )
+            ) {
+
+
+                return cookie.getValue();
+            }
+        }
+
+
+        return null;
+    }
+
+
+    // =========================================================
+    // LOGIN COOKIE
+    // =========================================================
+
+    private ResponseCookie
+    createLoginCookie(
 
             String token
-
     ) {
 
 
@@ -515,7 +828,9 @@ public class AuthController {
                 )
 
                 .maxAge(
+
                         Duration.ofMillis(
+
                                 jwtService
                                         .getExpirationMs()
                         )
@@ -529,10 +844,10 @@ public class AuthController {
     // RESPONSE
     // =========================================================
 
-    private AuthMeResponse createUserResponse(
+    private AuthMeResponse
+    createUserResponse(
 
             User user
-
     ) {
 
 
@@ -544,8 +859,8 @@ public class AuthController {
 
                 user.getEmail(),
 
-                user.getRole().name()
-
+                user.getRole()
+                        .name()
         );
     }
 
@@ -557,7 +872,6 @@ public class AuthController {
     private String normalizeEmail(
 
             String email
-
     ) {
 
 

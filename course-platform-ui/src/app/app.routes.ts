@@ -3,6 +3,10 @@ import {
 } from '@angular/router';
 
 
+// =========================================================
+// PUBLIC
+// =========================================================
+
 import {
   HomeComponent
 } from './home/home.component';
@@ -11,6 +15,10 @@ import {
   AuthComponent
 } from './components/auth/auth.component';
 
+
+// =========================================================
+// DASHBOARDS
+// =========================================================
 
 import {
   TeacherDashboardComponent
@@ -21,6 +29,10 @@ import {
 } from './student-dashboard/student-dashboard.component';
 
 
+// =========================================================
+// LAYOUTS
+// =========================================================
+
 import {
   StudentLayoutComponent
 } from './layouts/student-layout/student-layout.component';
@@ -29,13 +41,60 @@ import {
   TeacherLayoutComponent
 } from './layouts/teacher-layout/teacher-layout.component';
 
+import {
+  AdminLayoutComponent
+} from './admin/layout/admin-layout.component';
+
+
+// =========================================================
+// GUARDS
+// =========================================================
 
 import {
   studentGuard,
   studentChildGuard,
   teacherGuard,
-  teacherChildGuard
+  teacherChildGuard,
+  adminGuard,
+  adminChildGuard
 } from './guards/auth.guard';
+
+
+// =========================================================
+// ADMIN
+// =========================================================
+
+import {
+  AdminLoginComponent
+} from './admin/admin-login/admin-login.component';
+
+import {
+  AdminDashboardComponent
+} from './admin/dashboard/admin-dashboard.component';
+
+import {
+  AdminOverviewComponent
+} from './admin/overview/admin-overview.component';
+
+import {
+  AdminUsersComponent
+} from './admin/users/admin-users.component';
+
+import {
+  AdminCoursesComponent
+} from './admin/courses/admin-courses.component';
+
+import {
+  AdminOrdersComponent
+} from './admin/orders/admin-orders.component';
+
+import {
+  AdminEngagementComponent
+} from './admin/engagement/admin-engagement.component';
+
+import {
+  AdminSystemComponentPage
+} from './admin/system/admin-system.component';
 
 
 // =========================================================
@@ -153,11 +212,156 @@ export const routes:
 
 
   // =========================================================
+  // ADMIN LOGIN
+  // =========================================================
+
+  {
+    path:
+      'admin/login',
+
+    component:
+    AdminLoginComponent
+  },
+
+
+  // =========================================================
+  // ADMIN
+  // =========================================================
+
+  {
+    path:
+      'admin',
+
+    component:
+    AdminLayoutComponent,
+
+    canActivate: [
+      adminGuard
+    ],
+
+    canActivateChild: [
+      adminChildGuard
+    ],
+
+    children: [
+
+
+      // =====================================================
+      // ADMIN ROOT
+      // =====================================================
+
+      {
+        path: '',
+
+        redirectTo:
+          'dashboard',
+
+        pathMatch:
+          'full'
+      },
+
+
+      // =====================================================
+      // OVERVIEW
+      // =====================================================
+
+      {
+        path:
+          'dashboard',
+
+        component:
+        AdminOverviewComponent
+      },
+
+
+      // =====================================================
+      // TEACHER APPLICATIONS
+      // =====================================================
+
+      {
+        path:
+          'teacher-applications',
+
+        component:
+        AdminDashboardComponent
+      },
+
+
+      // =====================================================
+      // USERS
+      // =====================================================
+
+      {
+        path:
+          'users',
+
+        component:
+        AdminUsersComponent
+      },
+
+
+      // =====================================================
+      // COURSES
+      // =====================================================
+
+      {
+        path:
+          'courses',
+
+        component:
+        AdminCoursesComponent
+      },
+
+
+      // =====================================================
+      // ORDERS
+      // =====================================================
+
+      {
+        path:
+          'orders',
+
+        component:
+        AdminOrdersComponent
+      },
+
+
+      // =====================================================
+      // ENGAGEMENT
+      // =====================================================
+
+      {
+        path:
+          'engagement',
+
+        component:
+        AdminEngagementComponent
+      },
+
+
+      // =====================================================
+      // SYSTEM
+      // =====================================================
+
+      {
+        path:
+          'system',
+
+        component:
+        AdminSystemComponentPage
+      }
+
+    ]
+  },
+
+
+  // =========================================================
   // STUDENT
   // =========================================================
 
   {
-    path: 'student',
+    path:
+      'student',
 
     component:
     StudentLayoutComponent,

@@ -19,7 +19,10 @@ export interface AuthUser {
 
   email: string;
 
-  role: 'STUDENT' | 'TEACHER';
+  role:
+    'STUDENT'
+    | 'TEACHER'
+    | 'ADMIN';
 }
 
 
@@ -41,6 +44,40 @@ export interface LoginRequest {
 }
 
 
+export interface TeacherRegistrationCreateRequest {
+
+  name: string;
+
+  email: string;
+}
+
+
+export interface TeacherRegistrationCompleteRequest {
+
+  email: string;
+
+  verificationCode: string;
+
+  password: string;
+
+  confirmPassword: string;
+}
+
+
+export interface TeacherRegistrationRequestResponse {
+
+  id: number;
+
+  name: string;
+
+  email: string;
+
+  status: string;
+
+  requestedAt: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,14 +85,19 @@ export class AuthService {
 
 
   // =========================================================
-  // API
-  //
-  // Production'da credentials interceptor
-  // localhost URL'sini gerçek API origin'ine dönüştürür.
+  // AUTH API
   // =========================================================
 
-  private readonly apiUrl =
+  private readonly authApiUrl =
     'http://localhost:8081/api/auth';
+
+
+  // =========================================================
+  // TEACHER REGISTRATION API
+  // =========================================================
+
+  private readonly teacherRegistrationApiUrl =
+    'http://localhost:8081/api/teacher-registration';
 
 
   constructor(
@@ -65,11 +107,7 @@ export class AuthService {
 
 
   // =========================================================
-  // REGISTER
-  //
-  // Public register yalnızca STUDENT oluşturur.
-  //
-  // Frontend artık role göndermez.
+  // STUDENT REGISTER
   // =========================================================
 
   register(
@@ -79,7 +117,7 @@ export class AuthService {
 
     return this.http.post(
 
-      `${this.apiUrl}/register`,
+      `${this.authApiUrl}/register`,
 
       userData,
 
@@ -102,9 +140,55 @@ export class AuthService {
 
     return this.http.post<AuthUser>(
 
-      `${this.apiUrl}/login`,
+      `${this.authApiUrl}/login`,
 
       credentials
+
+    );
+  }
+
+
+  // =========================================================
+  // TEACHER REGISTRATION REQUEST
+  //
+  // Henüz TEACHER hesabı oluşturmaz.
+  //
+  // Admin paneline PENDING başvuru gönderir.
+  // =========================================================
+
+  requestTeacherRegistration(
+    request: TeacherRegistrationCreateRequest
+  ): Observable<TeacherRegistrationRequestResponse> {
+
+
+    return this.http.post<TeacherRegistrationRequestResponse>(
+
+      `${this.teacherRegistrationApiUrl}/request`,
+
+      request
+
+    );
+  }
+
+
+  // =========================================================
+  // COMPLETE TEACHER REGISTRATION
+  //
+  // Admin tarafından gönderilen doğrulama kodu kullanılır.
+  //
+  // Başarılı olduğunda gerçek TEACHER hesabı oluşturulur.
+  // =========================================================
+
+  completeTeacherRegistration(
+    request: TeacherRegistrationCompleteRequest
+  ): Observable<TeacherRegistrationRequestResponse> {
+
+
+    return this.http.post<TeacherRegistrationRequestResponse>(
+
+      `${this.teacherRegistrationApiUrl}/complete`,
+
+      request
 
     );
   }
@@ -119,7 +203,7 @@ export class AuthService {
 
     return this.http.get<AuthUser>(
 
-      `${this.apiUrl}/me`
+      `${this.authApiUrl}/me`
 
     );
   }
@@ -134,7 +218,7 @@ export class AuthService {
 
     return this.http.post<void>(
 
-      `${this.apiUrl}/logout`,
+      `${this.authApiUrl}/logout`,
 
       {}
 

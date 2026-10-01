@@ -1,0 +1,724 @@
+<div class="overview-page">
+
+  <header class="overview-header">
+
+    <div>
+
+      <span class="eyebrow">
+        ADMIN CONSOLE
+      </span>
+
+      <h1>
+        Overview
+      </h1>
+
+      <p>
+        Platform yönetimi, öğretmen onboarding ve
+        kullanıcı aktivitelerinin güncel görünümü.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="loadOverview()"
+      [disabled]="isLoading"
+    >
+      Yenile
+    </button>
+
+  </header>
+
+
+  <div
+    class="error-message"
+    *ngIf="errorMessage"
+  >
+    {{ errorMessage }}
+  </div>
+
+
+  <!-- =====================================================
+       TEACHER APPLICATION METRICS
+       ===================================================== -->
+
+  <section class="metric-grid">
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Toplam Başvuru
+      </span>
+
+      <strong class="metric-value">
+        {{ isLoading ? '...' : totalApplications }}
+      </strong>
+
+      <span class="metric-description">
+        Tüm öğretmenlik başvuruları
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Onay Bekleyen
+      </span>
+
+      <strong class="metric-value">
+        {{ isLoading ? '...' : pendingCount }}
+      </strong>
+
+      <span class="metric-description">
+        Admin aksiyonu gerekiyor
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Kod Gönderilen
+      </span>
+
+      <strong class="metric-value">
+        {{ isLoading ? '...' : codeSentCount }}
+      </strong>
+
+      <span class="metric-description">
+        Hesap oluşturmayı bekliyor
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Tamamlanan
+      </span>
+
+      <strong class="metric-value">
+        {{ isLoading ? '...' : completedCount }}
+      </strong>
+
+      <span class="metric-description">
+        TEACHER hesabına dönüşenler
+      </span>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       MAIN PANELS
+       ===================================================== -->
+
+  <section class="overview-grid">
+
+
+    <!-- ===================================================
+         TEACHER ONBOARDING
+         =================================================== -->
+
+    <article class="panel">
+
+      <div class="panel-heading">
+
+        <div>
+
+          <h2>
+            Teacher Onboarding
+          </h2>
+
+          <p>
+            Başvuruların mevcut durum dağılımı
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="pipeline-list">
+
+
+        <div class="pipeline-item">
+
+          <div class="pipeline-label">
+
+            <span class="status-dot pending-dot"></span>
+
+            Onay Bekliyor
+
+          </div>
+
+          <strong>
+            {{ pendingCount }}
+          </strong>
+
+        </div>
+
+
+        <div class="pipeline-item">
+
+          <div class="pipeline-label">
+
+            <span class="status-dot code-dot"></span>
+
+            Kod Gönderildi
+
+          </div>
+
+          <strong>
+            {{ codeSentCount }}
+          </strong>
+
+        </div>
+
+
+        <div class="pipeline-item">
+
+          <div class="pipeline-label">
+
+            <span class="status-dot completed-dot"></span>
+
+            Tamamlandı
+
+          </div>
+
+          <strong>
+            {{ completedCount }}
+          </strong>
+
+        </div>
+
+
+        <div class="pipeline-item">
+
+          <div class="pipeline-label">
+
+            <span class="status-dot rejected-dot"></span>
+
+            Reddedildi
+
+          </div>
+
+          <strong>
+            {{ rejectedCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </article>
+
+
+    <!-- ===================================================
+         USER ACTIVITY
+         =================================================== -->
+
+    <article class="panel activity-panel">
+
+      <div class="panel-heading">
+
+        <div>
+
+          <h2>
+            Kullanıcı Aktivitesi
+          </h2>
+
+          <p>
+            Öğrenci ve öğretmenlerin güncel oturum durumu
+          </p>
+
+        </div>
+
+
+        <span class="live-badge">
+          LIVE
+        </span>
+
+      </div>
+
+
+      <div class="activity-summary">
+
+
+        <div class="activity-summary-item">
+
+          <div>
+
+            <span class="activity-label">
+              Şu An Online
+            </span>
+
+            <span class="activity-description">
+              Öğrenci + öğretmen
+            </span>
+
+          </div>
+
+          <strong class="online-number">
+            {{ isLoading ? '...' : activitySummary.onlineNow }}
+          </strong>
+
+        </div>
+
+
+        <div class="activity-summary-item">
+
+          <div>
+
+            <span class="activity-label">
+              Online Öğrenci
+            </span>
+
+            <span class="activity-description">
+              Son 2 dakika aktif
+            </span>
+
+          </div>
+
+          <strong>
+            {{ isLoading ? '...' : activitySummary.onlineStudents }}
+          </strong>
+
+        </div>
+
+
+        <div class="activity-summary-item">
+
+          <div>
+
+            <span class="activity-label">
+              Online Öğretmen
+            </span>
+
+            <span class="activity-description">
+              Son 2 dakika aktif
+            </span>
+
+          </div>
+
+          <strong>
+            {{ isLoading ? '...' : activitySummary.onlineTeachers }}
+          </strong>
+
+        </div>
+
+
+        <div class="activity-summary-item">
+
+          <div>
+
+            <span class="activity-label">
+              Bugünkü Girişler
+            </span>
+
+            <span class="activity-description">
+              Bugün açılan oturumlar
+            </span>
+
+          </div>
+
+          <strong>
+            {{ isLoading ? '...' : activitySummary.todayLogins }}
+          </strong>
+
+        </div>
+
+
+        <div class="activity-summary-item">
+
+          <div>
+
+            <span class="activity-label">
+              Ortalama Aktif Süre
+            </span>
+
+            <span class="activity-description">
+              Kaydedilen oturumların ortalaması
+            </span>
+
+          </div>
+
+          <strong>
+            {{
+              isLoading
+                ? '...'
+                : formatDuration(
+                  activitySummary.averageActiveSeconds
+                )
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =====================================================
+       RECENT USER ACTIVITY
+       ===================================================== -->
+
+  <section class="panel recent-panel">
+
+    <div class="panel-heading">
+
+      <div>
+
+        <h2>
+          Son Kullanıcı Aktiviteleri
+        </h2>
+
+        <p>
+          En son öğrenci ve öğretmen oturumları
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        recentActivities.length === 0
+      "
+    >
+      Henüz kullanıcı aktivitesi bulunmuyor.
+    </div>
+
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        recentActivities.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            Kullanıcı
+          </th>
+
+          <th>
+            Rol
+          </th>
+
+          <th>
+            Giriş
+          </th>
+
+          <th>
+            Son Aktivite
+          </th>
+
+          <th>
+            Aktif Süre
+          </th>
+
+          <th>
+            Durum
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let activity
+            of
+            recentActivities
+          "
+        >
+
+          <td>
+
+            <div class="activity-user">
+
+              <div class="activity-avatar">
+
+                {{
+                  activity.userName
+                    ?.charAt(0)
+                    ?.toUpperCase()
+                }}
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  {{ activity.userName }}
+                </strong>
+
+                <span>
+                  {{ activity.userEmail }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="role-badge"
+
+              [class.student]="
+                activity.role === 'STUDENT'
+              "
+
+              [class.teacher]="
+                activity.role === 'TEACHER'
+              "
+            >
+              {{ getRoleLabel(activity.role) }}
+            </span>
+
+          </td>
+
+
+          <td>
+
+            {{
+              activity.loginAt
+                | date:'dd.MM.yyyy HH:mm'
+            }}
+
+          </td>
+
+
+          <td>
+
+            {{
+              activity.lastSeenAt
+                | date:'dd.MM.yyyy HH:mm'
+            }}
+
+          </td>
+
+
+          <td>
+
+            <strong class="duration-value">
+
+              {{
+                formatDuration(
+                  activity.activeSeconds
+                )
+              }}
+
+            </strong>
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="activity-status"
+
+              [class.online]="
+                activity.status === 'ONLINE'
+              "
+
+              [class.offline]="
+                activity.status !== 'ONLINE'
+              "
+            >
+
+              <span class="activity-status-dot"></span>
+
+              {{
+                getActivityStatusLabel(
+                  activity.status
+                )
+              }}
+
+            </span>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       RECENT TEACHER APPLICATIONS
+       ===================================================== -->
+
+  <section class="panel recent-panel">
+
+    <div class="panel-heading">
+
+      <div>
+
+        <h2>
+          Son Öğretmen Başvuruları
+        </h2>
+
+        <p>
+          En son oluşturulan 5 başvuru
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        recentRequests.length === 0
+      "
+    >
+      Henüz öğretmenlik başvurusu bulunmuyor.
+    </div>
+
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        recentRequests.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            Aday
+          </th>
+
+          <th>
+            E-posta
+          </th>
+
+          <th>
+            Tarih
+          </th>
+
+          <th>
+            Durum
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let request
+            of
+            recentRequests
+          "
+        >
+
+          <td>
+            {{ request.name }}
+          </td>
+
+
+          <td>
+            {{ request.email }}
+          </td>
+
+
+          <td>
+
+            {{
+              request.requestedAt
+                | date:'dd.MM.yyyy HH:mm'
+            }}
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="status"
+
+              [class.pending]="
+                request.status === 'PENDING'
+              "
+
+              [class.code-sent]="
+                request.status === 'CODE_SENT'
+              "
+
+              [class.completed]="
+                request.status === 'COMPLETED'
+              "
+
+              [class.rejected]="
+                request.status === 'REJECTED'
+              "
+            >
+
+              {{ getStatusLabel(request.status) }}
+
+            </span>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

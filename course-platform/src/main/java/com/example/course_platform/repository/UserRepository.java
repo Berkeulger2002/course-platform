@@ -1,10 +1,15 @@
 package com.example.course_platform.repository;
 
+
+import com.example.course_platform.entity.Role;
 import com.example.course_platform.entity.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.stereotype.Repository;
 
+
+import java.util.List;
 import java.util.Optional;
 
 
@@ -17,28 +22,43 @@ public interface UserRepository
     // EMAIL İLE KULLANICI BUL
     // =========================================================
 
-    Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(
+            String email
+    );
 
 
     // =========================================================
-    // BÜYÜK / KÜÇÜK HARF DUYARSIZ EMAIL ARAMA
+    // CASE INSENSITIVE EMAIL
     // =========================================================
+
+    Optional<User> findByEmailIgnoreCase(
+            String email
+    );
+
+
+    // =========================================================
+    // EMAIL VAR MI?
+    // =========================================================
+
+    boolean existsByEmailIgnoreCase(
+            String email
+    );
+
+
+    // =========================================================
+    // ADMIN - TÜM KULLANICILAR
     //
-    // Örnek:
-    //
-    // osman@gmail.com
-    // OSMAN@GMAIL.COM
-    //
-    // aynı kullanıcı olarak değerlendirilir.
-    //
+    // En yeni ID önce gelir.
     // =========================================================
 
-    Optional<User> findByEmailIgnoreCase(String email);
+    List<User> findAllByOrderByIdDesc();
 
 
     // =========================================================
-    // EMAIL DAHA ÖNCE KULLANILMIŞ MI?
+    // ADMIN - ROLE COUNT
     // =========================================================
 
-    boolean existsByEmailIgnoreCase(String email);
+    long countByRole(
+            Role role
+    );
 }

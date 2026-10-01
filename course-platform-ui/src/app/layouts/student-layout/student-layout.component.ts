@@ -28,11 +28,17 @@ import {
   AuthUser
 } from '../../services/auth.service';
 
+import {
+  UserActivityService
+} from '../../services/user-activity.service';
+
 
 @Component({
-  selector: 'app-student-layout',
+  selector:
+    'app-student-layout',
 
-  standalone: true,
+  standalone:
+    true,
 
   imports: [
     CommonModule,
@@ -59,15 +65,6 @@ export class StudentLayoutComponent
     Observable<number>;
 
 
-  /*
-   * Okunmamış bildirim sayısını
-   * otomatik kontrol etmek için.
-   */
-  private notificationPollingId:
-    ReturnType<typeof setInterval>
-    | null = null;
-
-
   constructor(
 
     private router:
@@ -77,7 +74,10 @@ export class StudentLayoutComponent
     NotificationService,
 
     private authService:
-    AuthService
+    AuthService,
+
+    private userActivityService:
+    UserActivityService
 
   ) {
 
@@ -105,10 +105,6 @@ export class StudentLayoutComponent
         ) => {
 
 
-          // =================================================
-          // ROLE KONTROLÜ
-          // =================================================
-
           if (
             user.role !==
             'STUDENT'
@@ -116,17 +112,15 @@ export class StudentLayoutComponent
 
 
             this.router.navigate([
+
               '/teacher/dashboard'
+
             ]);
 
 
             return;
           }
 
-
-          // =================================================
-          // CURRENT STUDENT
-          // =================================================
 
           this.currentStudent =
             user;
@@ -148,37 +142,29 @@ export class StudentLayoutComponent
 
 
           // =================================================
-          // İLK SAYIYI HEMEN AL
+          // USER ACTIVITY TRACKING
           // =================================================
 
-          this.refreshNotificationCount();
+          this.userActivityService
+            .start();
 
 
           // =================================================
-          // OTOMATİK BİLDİRİM KONTROLÜ
-          //
-          // Bildirimler sayfasına girmeye gerek kalmadan
-          // sidebar sayısı güncellenir.
-          //
-          // 2000 ms = 2 saniye
+          // NOTIFICATION COUNT
           // =================================================
 
-          this.notificationPollingId =
-            setInterval(
-
-              () => {
-
-                this.refreshNotificationCount();
-
-              },
-
-              2000
-
+          this.notificationService
+            .refreshUnreadCount(
+              user.id
             );
         },
 
 
         error: () => {
+
+
+          this.userActivityService
+            .stop();
 
 
           localStorage.removeItem(
@@ -192,7 +178,8 @@ export class StudentLayoutComponent
 
             {
               queryParams: {
-                role: 'student'
+                role:
+                  'student'
               }
             }
 
@@ -204,32 +191,21 @@ export class StudentLayoutComponent
 
 
   // =========================================================
-  // BİLDİRİM SAYISINI BACKEND'DEN YENİLE
-  // =========================================================
-
-  refreshNotificationCount(): void {
-
-
-    if (
-      !this.currentStudent?.id
-    ) {
-
-      return;
-    }
-
-
-    this.notificationService
-      .refreshUnreadCount(
-        this.currentStudent.id
-      );
-  }
-
-
-  // =========================================================
   // LOGOUT
   // =========================================================
 
   logout(): void {
+
+
+    // =====================================================
+    // FRONTEND HEARTBEAT DURDUR
+    //
+    // Backend logout son heartbeat ile logout arasındaki
+    // son makul süreyi ayrıca hesaplayacak.
+    // =====================================================
+
+    this.userActivityService
+      .stop();
 
 
     this.authService
@@ -239,15 +215,15 @@ export class StudentLayoutComponent
 
         next: () => {
 
-          this.finishLogout();
 
+          this.finishLogout();
         },
 
 
         error: () => {
 
-          this.finishLogout();
 
+          this.finishLogout();
         }
 
       });
@@ -279,26 +255,13 @@ export class StudentLayoutComponent
 
 
   // =========================================================
-  // COMPONENT KAPANIRKEN POLLING'İ DURDUR
+  // DESTROY
   // =========================================================
 
   ngOnDestroy(): void {
 
 
-    if (
-      this.notificationPollingId
-      !==
-      null
-    ) {
-
-
-      clearInterval(
-        this.notificationPollingId
-      );
-
-
-      this.notificationPollingId =
-        null;
-    }
+    this.userActivityService
+      .stop();
   }
 }

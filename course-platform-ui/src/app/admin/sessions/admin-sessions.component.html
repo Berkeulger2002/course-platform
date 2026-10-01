@@ -1,0 +1,415 @@
+<div class="sessions-page">
+
+
+  <header class="page-header">
+
+    <div>
+
+      <span class="eyebrow">
+        USER ACTIVITY
+      </span>
+
+      <h1>
+        Oturumlar
+      </h1>
+
+      <p>
+        Öğrenci ve öğretmen girişlerini, aktif sürelerini
+        ve son aktivitelerini görüntüleyin.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="refresh-button"
+      (click)="refresh()"
+      [disabled]="isLoading"
+    >
+      Yenile
+    </button>
+
+  </header>
+
+
+  <div
+    class="error-message"
+    *ngIf="errorMessage"
+  >
+    {{ errorMessage }}
+  </div>
+
+
+  <section class="metric-grid">
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Şu An Online
+      </span>
+
+      <strong class="metric-value online-value">
+        {{ summary.onlineNow }}
+      </strong>
+
+      <span class="metric-description">
+        Aktif öğrenci + öğretmen
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Online Öğrenci
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.onlineStudents }}
+      </strong>
+
+      <span class="metric-description">
+        Son 2 dakika içinde aktif
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Online Öğretmen
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.onlineTeachers }}
+      </strong>
+
+      <span class="metric-description">
+        Son 2 dakika içinde aktif
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Bugünkü Girişler
+      </span>
+
+      <strong class="metric-value">
+        {{ summary.todayLogins }}
+      </strong>
+
+      <span class="metric-description">
+        Bugün oluşturulan oturumlar
+      </span>
+
+    </article>
+
+
+    <article class="metric-card">
+
+      <span class="metric-label">
+        Ortalama Aktif Süre
+      </span>
+
+      <strong class="metric-value duration-value">
+        {{
+          formatDuration(
+            summary.averageActiveSeconds
+          )
+        }}
+      </strong>
+
+      <span class="metric-description">
+        Tüm kayıtlı oturumların ortalaması
+      </span>
+
+    </article>
+
+  </section>
+
+
+  <section class="panel">
+
+
+    <div class="panel-header">
+
+      <div>
+
+        <h2>
+          Oturum Geçmişi
+        </h2>
+
+        <p>
+          Yeni girişlerden itibaren tutulan öğrenci ve öğretmen oturumları
+        </p>
+
+      </div>
+
+
+      <span class="result-count">
+        {{ filteredSessions.length }} kayıt
+      </span>
+
+    </div>
+
+
+    <div class="filters">
+
+
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilter()"
+        placeholder="İsim, e-posta veya kullanıcı ID ara..."
+      >
+
+
+      <select
+        [(ngModel)]="roleFilter"
+        (ngModelChange)="applyFilter()"
+      >
+
+        <option value="ALL">
+          Tüm Roller
+        </option>
+
+        <option value="STUDENT">
+          Öğrenci
+        </option>
+
+        <option value="TEACHER">
+          Öğretmen
+        </option>
+
+      </select>
+
+
+      <select
+        [(ngModel)]="statusFilter"
+        (ngModelChange)="applyFilter()"
+      >
+
+        <option value="ALL">
+          Tüm Durumlar
+        </option>
+
+        <option value="ONLINE">
+          Online
+        </option>
+
+        <option value="OFFLINE">
+          Offline
+        </option>
+
+        <option value="LOGGED_OUT">
+          Çıkış Yaptı
+        </option>
+
+        <option value="EXPIRED">
+          Süresi Doldu
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      class="loading"
+      *ngIf="isLoading"
+    >
+      Oturumlar yükleniyor...
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredSessions.length === 0
+      "
+    >
+      Henüz gösterilecek oturum bulunmuyor.
+    </div>
+
+
+    <div
+      class="table-wrapper"
+      *ngIf="
+        !isLoading
+        &&
+        !errorMessage
+        &&
+        filteredSessions.length > 0
+      "
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>
+            Kullanıcı
+          </th>
+
+          <th>
+            Rol
+          </th>
+
+          <th>
+            Durum
+          </th>
+
+          <th>
+            Giriş
+          </th>
+
+          <th>
+            Son Aktivite
+          </th>
+
+          <th>
+            Çıkış
+          </th>
+
+          <th>
+            Aktif Süre
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+            let session
+            of
+            filteredSessions
+          "
+        >
+
+          <td>
+
+            <div class="user-cell">
+
+              <div class="avatar">
+                {{
+                  session.userName
+                    ?.charAt(0)
+                    ?.toUpperCase()
+                }}
+              </div>
+
+
+              <div>
+
+                <strong>
+                  {{ session.userName }}
+                </strong>
+
+                <span>
+                  {{ session.userEmail }}
+                </span>
+
+              </div>
+
+            </div>
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="role-badge"
+
+              [class.student]="
+                session.role === 'STUDENT'
+              "
+
+              [class.teacher]="
+                session.role === 'TEACHER'
+              "
+            >
+              {{ getRoleLabel(session.role) }}
+            </span>
+
+          </td>
+
+
+          <td>
+
+            <span
+              class="status-badge"
+
+              [class.online]="
+                session.status === 'ONLINE'
+              "
+
+              [class.offline]="
+                session.status !== 'ONLINE'
+              "
+            >
+
+              <span class="status-dot"></span>
+
+              {{ getStatusLabel(session.status) }}
+
+            </span>
+
+          </td>
+
+
+          <td>
+            {{ formatDate(session.loginAt) }}
+          </td>
+
+
+          <td>
+            {{ formatDate(session.lastSeenAt) }}
+          </td>
+
+
+          <td>
+            {{ formatDate(session.logoutAt) }}
+          </td>
+
+
+          <td>
+
+            <strong class="duration">
+              {{
+                formatDuration(
+                  session.activeSeconds
+                )
+              }}
+            </strong>
+
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>

@@ -4,30 +4,49 @@
 
 
     <!-- =====================================================
-         BAŞLIK
+         TITLE
          ===================================================== -->
 
     <h2>
 
-      {{ role === 'teacher'
-      ? 'Öğretmen Girişi'
-      : (isLoginMode
-        ? 'Öğrenci Girişi'
-        : 'Öğrenci Kaydı')
+      {{
+        role === 'teacher'
+          ? (
+            isTeacherApplicationMode
+              ? 'Öğretmenlik Başvurusu'
+              : (
+                isTeacherCompletionMode
+                  ? 'Öğretmen Hesabını Tamamla'
+                  : 'Öğretmen Girişi'
+              )
+          )
+          : (
+            isLoginMode
+              ? 'Öğrenci Girişi'
+              : 'Öğrenci Kaydı'
+          )
       }}
 
     </h2>
 
 
     <!-- =====================================================
-         ALT BAŞLIK
+         SUBTITLE
          ===================================================== -->
 
     <p class="subtitle">
 
       {{
         role === 'teacher'
-          ? 'Kurslarınızı yönetmek için öğretmen hesabınızla giriş yapın.'
+          ? (
+            isTeacherApplicationMode
+              ? 'Öğretmen hesabı oluşturmak için başvurunuzu gönderin.'
+              : (
+                isTeacherCompletionMode
+                  ? 'E-postanıza gelen doğrulama koduyla öğretmen hesabınızı oluşturun.'
+                  : 'Kurslarınızı yönetmek için öğretmen hesabınızla giriş yapın.'
+              )
+          )
           : (
             isLoginMode
               ? 'Öğrenmeye devam etmek için giriş yapın.'
@@ -36,6 +55,64 @@
       }}
 
     </p>
+
+
+    <!-- =====================================================
+         TEACHER APPLICATION INFO
+         ===================================================== -->
+
+    <div
+
+      class="teacher-info"
+
+      *ngIf="
+        role === 'teacher'
+        &&
+        isTeacherApplicationMode
+      "
+
+    >
+
+      <strong>
+        Başvuru süreci nasıl çalışır?
+      </strong>
+
+      <p>
+        Başvurunuz yönetici tarafından incelenir.
+        Onaylandıktan sonra e-posta adresinize
+        tek kullanımlık doğrulama kodu gönderilir.
+      </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         TEACHER COMPLETION INFO
+         ===================================================== -->
+
+    <div
+
+      class="teacher-info completion-info"
+
+      *ngIf="
+        role === 'teacher'
+        &&
+        isTeacherCompletionMode
+      "
+
+    >
+
+      <strong>
+        Doğrulama kodunuz hazır mı?
+      </strong>
+
+      <p>
+        Yönetici tarafından onaylandıktan sonra
+        e-posta adresinize gönderilen 6 haneli kodu girin.
+        Kod 15 dakika geçerlidir.
+      </p>
+
+    </div>
 
 
     <!-- =====================================================
@@ -48,19 +125,27 @@
 
 
       <!-- ===================================================
-           İSİM
-
-           Yalnızca öğrenci kayıt modunda gösterilir.
+           NAME
            =================================================== -->
 
       <div
+
         class="form-group"
 
         *ngIf="
-          role === 'student'
-          &&
-          !isLoginMode
+          (
+            role === 'student'
+            &&
+            !isLoginMode
+          )
+          ||
+          (
+            role === 'teacher'
+            &&
+            isTeacherApplicationMode
+          )
         "
+
       >
 
         <label>
@@ -76,6 +161,8 @@
           [(ngModel)]="name"
 
           placeholder="Adınız Soyadınız"
+
+          maxlength="255"
 
           required
 
@@ -104,6 +191,8 @@
 
           placeholder="ornek@gmail.com"
 
+          maxlength="255"
+
           required
 
         >
@@ -112,13 +201,78 @@
 
 
       <!-- ===================================================
-           ŞİFRE
+           VERIFICATION CODE
            =================================================== -->
 
-      <div class="form-group">
+      <div
+
+        class="form-group"
+
+        *ngIf="
+          role === 'teacher'
+          &&
+          isTeacherCompletionMode
+        "
+
+      >
 
         <label>
-          Şifre
+          6 Haneli Doğrulama Kodu
+        </label>
+
+        <input
+
+          type="text"
+
+          name="verificationCode"
+
+          [(ngModel)]="verificationCode"
+
+          placeholder="123456"
+
+          inputmode="numeric"
+
+          pattern="[0-9]{6}"
+
+          minlength="6"
+
+          maxlength="6"
+
+          autocomplete="one-time-code"
+
+          required
+
+        >
+
+      </div>
+
+
+      <!-- ===================================================
+           PASSWORD
+           =================================================== -->
+
+      <div
+
+        class="form-group"
+
+        *ngIf="
+          !(
+            role === 'teacher'
+            &&
+            isTeacherApplicationMode
+          )
+        "
+
+      >
+
+        <label>
+
+          {{
+            isTeacherCompletionMode
+              ? 'Yeni Şifre'
+              : 'Şifre'
+          }}
+
         </label>
 
         <input
@@ -129,7 +283,56 @@
 
           [(ngModel)]="password"
 
-          placeholder="Şifreniz"
+          [placeholder]="
+            isTeacherCompletionMode
+              ? 'Yeni şifrenizi belirleyin'
+              : 'Şifreniz'
+          "
+
+          minlength="5"
+
+          maxlength="72"
+
+          required
+
+        >
+
+      </div>
+
+
+      <!-- ===================================================
+           CONFIRM PASSWORD
+           =================================================== -->
+
+      <div
+
+        class="form-group"
+
+        *ngIf="
+          role === 'teacher'
+          &&
+          isTeacherCompletionMode
+        "
+
+      >
+
+        <label>
+          Yeni Şifre Tekrar
+        </label>
+
+        <input
+
+          type="password"
+
+          name="confirmPassword"
+
+          [(ngModel)]="confirmPassword"
+
+          placeholder="Yeni şifrenizi tekrar girin"
+
+          minlength="5"
+
+          maxlength="72"
 
           required
 
@@ -148,17 +351,36 @@
 
         class="primary-btn"
 
+        [disabled]="isSubmitting"
+
       >
 
-        {{
-          role === 'teacher'
-            ? 'Öğretmen Olarak Giriş Yap'
-            : (
-              isLoginMode
-                ? 'Öğrenci Olarak Giriş Yap'
-                : 'Öğrenci Olarak Kayıt Ol'
-            )
-        }}
+        <span *ngIf="!isSubmitting">
+
+          {{
+            role === 'teacher'
+              ? (
+                isTeacherApplicationMode
+                  ? 'Başvuruyu Gönder'
+                  : (
+                    isTeacherCompletionMode
+                      ? 'Öğretmen Hesabını Oluştur'
+                      : 'Öğretmen Olarak Giriş Yap'
+                  )
+              )
+              : (
+                isLoginMode
+                  ? 'Öğrenci Olarak Giriş Yap'
+                  : 'Öğrenci Olarak Kayıt Ol'
+              )
+          }}
+
+        </span>
+
+
+        <span *ngIf="isSubmitting">
+          İşlem yapılıyor...
+        </span>
 
       </button>
 
@@ -168,8 +390,6 @@
 
     <!-- =====================================================
          STUDENT MODE SWITCH
-
-         Öğretmende gösterilmez.
          ===================================================== -->
 
     <p
@@ -188,9 +408,11 @@
           : 'Zaten hesabınız var mı?'
       }}
 
-      <a
+      <button
 
-        href="javascript:void(0)"
+        type="button"
+
+        class="link-button"
 
         (click)="toggleMode()"
 
@@ -202,13 +424,81 @@
             : 'Giriş Yap'
         }}
 
-      </a>
+      </button>
 
     </p>
 
 
     <!-- =====================================================
-         TEACHER INFO
+         TEACHER LOGIN ACTIONS
+         ===================================================== -->
+
+    <div
+
+      class="teacher-actions"
+
+      *ngIf="
+        role === 'teacher'
+        &&
+        !isTeacherApplicationMode
+        &&
+        !isTeacherCompletionMode
+      "
+
+    >
+
+
+      <div class="teacher-action">
+
+        <p>
+          Henüz öğretmen hesabınız yok mu?
+        </p>
+
+        <button
+
+          type="button"
+
+          class="secondary-btn"
+
+          (click)="openTeacherApplication()"
+
+        >
+
+          Öğretmenlik Başvurusu Yap
+
+        </button>
+
+      </div>
+
+
+      <div class="teacher-action completion-action">
+
+        <p>
+          Başvurunuz onaylandı ve kodunuz geldi mi?
+        </p>
+
+        <button
+
+          type="button"
+
+          class="secondary-btn complete-btn"
+
+          (click)="openTeacherCompletion()"
+
+        >
+
+          Hesabımı Tamamla
+
+        </button>
+
+      </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         TEACHER BACK
          ===================================================== -->
 
     <p
@@ -217,11 +507,31 @@
 
       *ngIf="
         role === 'teacher'
+        &&
+        (
+          isTeacherApplicationMode
+          ||
+          isTeacherCompletionMode
+        )
       "
 
     >
 
-      Öğretmen hesapları platform yöneticisi tarafından oluşturulur.
+      Öğretmen giriş ekranına dönmek ister misiniz?
+
+      <button
+
+        type="button"
+
+        class="link-button"
+
+        (click)="returnToTeacherLogin()"
+
+      >
+
+        Giriş Ekranına Dön
+
+      </button>
 
     </p>
 
