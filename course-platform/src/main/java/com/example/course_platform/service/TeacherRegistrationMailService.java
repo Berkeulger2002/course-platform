@@ -1,18 +1,20 @@
 package com.example.course_platform.service;
 
-
 import org.springframework.beans.factory.annotation.Value;
 
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.http.MediaType;
 
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailSendException;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.web.client.RestClient;
 
 import java.time.LocalDateTime;
-
 import java.time.format.DateTimeFormatter;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -20,19 +22,28 @@ public class TeacherRegistrationMailService {
 
 
     // =========================================================
-    // MAIL SENDER
+    // BREVO
     // =========================================================
 
-    private final JavaMailSender
-            mailSender;
+    private static final String
+            BREVO_API_URL =
+            "https://api.brevo.com";
 
-
-    // =========================================================
-    // FROM ADDRESS
-    // =========================================================
 
     private final String
-            mailFrom;
+            brevoApiKey;
+
+
+    private final String
+            senderEmail;
+
+
+    private final String
+            senderName;
+
+
+    private final RestClient
+            restClient;
 
 
     // =========================================================
@@ -53,21 +64,42 @@ public class TeacherRegistrationMailService {
 
     public TeacherRegistrationMailService(
 
-            JavaMailSender mailSender,
+            @Value(
+                    "${app.brevo.api-key:}"
+            )
+            String brevoApiKey,
 
             @Value(
-                    "${app.mail.from:}"
+                    "${app.brevo.sender-email:}"
             )
-            String mailFrom
+            String senderEmail,
+
+            @Value(
+                    "${app.brevo.sender-name:Course Platform}"
+            )
+            String senderName
     ) {
 
 
-        this.mailSender =
-                mailSender;
+        this.brevoApiKey =
+                brevoApiKey;
 
 
-        this.mailFrom =
-                mailFrom;
+        this.senderEmail =
+                senderEmail;
+
+
+        this.senderName =
+                senderName;
+
+
+        this.restClient =
+                RestClient
+                        .builder()
+                        .baseUrl(
+                                BREVO_API_URL
+                        )
+                        .build();
     }
 
 
@@ -87,47 +119,38 @@ public class TeacherRegistrationMailService {
     ) {
 
 
-        SimpleMailMessage message =
-                new SimpleMailMessage();
-
-
         // =====================================================
-        // FROM
+        // CONFIG CHECK
         // =====================================================
 
         if (
-                mailFrom != null
-                        &&
-                        !mailFrom.isBlank()
+                brevoApiKey == null
+                        ||
+                        brevoApiKey.isBlank()
         ) {
 
 
-            message.setFrom(
-                    mailFrom
+            throw new MailSendException(
+                    "BREVO_API_KEY tanımlı değil."
+            );
+        }
+
+
+        if (
+                senderEmail == null
+                        ||
+                        senderEmail.isBlank()
+        ) {
+
+
+            throw new MailSendException(
+                    "BREVO_SENDER_EMAIL tanımlı değil."
             );
         }
 
 
         // =====================================================
-        // TO
-        // =====================================================
-
-        message.setTo(
-                recipientEmail
-        );
-
-
-        // =====================================================
-        // SUBJECT
-        // =====================================================
-
-        message.setSubject(
-                "Course Platform - Öğretmenlik Başvurunuz Onaylandı"
-        );
-
-
-        // =====================================================
-        // BODY
+        // EMAIL BODY
         // =====================================================
 
         String body =
@@ -168,17 +191,88 @@ public class TeacherRegistrationMailService {
                         "Course Platform";
 
 
-        message.setText(
-                body
-        );
+        // =====================================================
+        // REQUEST BODY
+        // =====================================================
+
+        Map<String, Object> requestBody =
+                Map.of(
+
+                        "sender",
+                        Map.of(
+                                "name",
+                                senderName,
+
+                                "email",
+                                senderEmail
+                        ),
+
+                        "to",
+                        List.of(
+                                Map.of(
+                                        "email",
+                                        recipientEmail,
+
+                                        "name",
+                                        teacherName
+                                )
+                        ),
+
+                        "subject",
+                        "Course Platform - Öğretmenlik Başvurunuz Onaylandı",
+
+                        "textContent",
+                        body
+                );
 
 
         // =====================================================
-        // SEND
+        // BREVO API
         // =====================================================
 
-        mailSender.send(
-                message
-        );
+        try {
+
+
+            restClient
+                    .post()
+
+                    .uri(
+                            "/v3/smtp/email"
+                    )
+
+                    .header(
+                            "api-key",
+                            brevoApiKey
+                    )
+
+                    .contentType(
+                            MediaType.APPLICATION_JSON
+                    )
+
+                    .accept(
+                            MediaType.APPLICATION_JSON
+                    )
+
+                    .body(
+                            requestBody
+                    )
+
+                    .retrieve()
+
+                    .toBodilessEntity();
+
+
+        } catch (
+                Exception exception
+        ) {
+
+
+            throw new MailSendException(
+
+                    "Brevo üzerinden e-posta gönderilemedi.",
+
+                    exception
+            );
+        }
     }
 }
