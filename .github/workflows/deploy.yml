@@ -1,0 +1,107 @@
+name: Course Platform Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Hetzner
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HETZNER_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Deploy application
+        env:
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          HETZNER_USER: ${{ secrets.HETZNER_USER }}
+          DEPLOY_SHA: ${{ github.sha }}
+        run: |
+          ssh \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            -i ~/.ssh/id_ed25519 \
+            "$HETZNER_USER@$HETZNER_HOST" \
+            "DEPLOY_SHA='$DEPLOY_SHA' bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+
+          cd /opt/course-platform
+
+          echo "== Fetching source =="
+          git fetch origin main
+          git checkout main
+          git pull --ff-only origin main
+
+          echo "== Checking infrastructure =="
+          docker network inspect course-platform_default >/dev/null
+          docker inspect course_postgres >/dev/null
+          docker inspect course_mongo >/dev/null
+
+          NEW_IMAGE="course-platform-app:${DEPLOY_SHA}"
+          OLD_IMAGE="$(docker inspect -f '{{.Image}}' course-platform-app 2>/dev/null || true)"
+
+          echo "== Building new image =="
+          docker build -t "$NEW_IMAGE" .
+
+          echo "== Replacing application container =="
+          docker rm -f course-platform-app >/dev/null 2>&1 || true
+
+          docker run -d \
+            --name course-platform-app \
+            --restart unless-stopped \
+            --network course-platform_default \
+            --env-file /opt/course-platform/.env \
+            -p 127.0.0.1:8081:8081 \
+            "$NEW_IMAGE"
+
+          echo "== Waiting for application =="
+          APP_OK=false
+
+          for i in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:8081/ >/dev/null; then
+              APP_OK=true
+              break
+            fi
+            sleep 3
+          done
+
+          if [ "$APP_OK" != "true" ]; then
+            echo "New application failed health check."
+            docker logs --tail 100 course-platform-app || true
+            docker rm -f course-platform-app || true
+
+            if [ -n "$OLD_IMAGE" ]; then
+              echo "Rolling back previous image..."
+
+              docker run -d \
+                --name course-platform-app \
+                --restart unless-stopped \
+                --network course-platform_default \
+                --env-file /opt/course-platform/.env \
+                -p 127.0.0.1:8081:8081 \
+                "$OLD_IMAGE"
+            fi
+
+            exit 1
+          fi
+
+          docker tag "$NEW_IMAGE" course-platform-app:latest
+
+          echo "== Deployment successful =="
+          git log -1 --oneline
+          docker ps --filter name=course-platform-app
+          curl -I http://127.0.0.1:8081/
+          REMOTE
