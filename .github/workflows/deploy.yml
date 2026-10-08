@@ -1,10 +1,20 @@
 name: Course Platform Deploy
 
 on:
+  workflow_run:
+    workflows:
+      - Course Platform CI
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:
   deploy:
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+
     name: Deploy to Hetzner
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -28,7 +38,7 @@ jobs:
         env:
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
           HETZNER_USER: ${{ secrets.HETZNER_USER }}
-          DEPLOY_SHA: ${{ github.sha }}
+          DEPLOY_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
         run: |
           ssh \
             -o BatchMode=yes \
@@ -43,7 +53,7 @@ jobs:
           echo "== Fetching source =="
           git fetch origin main
           git checkout main
-          git pull --ff-only origin main
+          git merge --ff-only "$DEPLOY_SHA"
 
           echo "== Checking infrastructure =="
           docker network inspect course-platform_default >/dev/null
