@@ -1,11 +1,11 @@
 package com.example.course_platform.service;
 
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Locale;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -27,20 +27,30 @@ public class LoginAttemptService {
 
 
     // =========================================================
-    // STATE
-    //
-    // Bu yapı tek backend instance'ı için yeterlidir.
-    // Uygulama birden fazla instance'a ölçeklenirse Redis gibi
-    // ortak bir store'a taşınmalıdır.
+    // REDIS KEY PREFIXES
     // =========================================================
 
-    private final ConcurrentHashMap<String, AttemptWindow>
-            emailFailures =
-            new ConcurrentHashMap<>();
+    private static final String EMAIL_KEY_PREFIX =
+            "login:attempt:email:";
 
-    private final ConcurrentHashMap<String, AttemptWindow>
-            ipFailures =
-            new ConcurrentHashMap<>();
+    private static final String IP_KEY_PREFIX =
+            "login:attempt:ip:";
+
+
+    // =========================================================
+    // REDIS
+    // =========================================================
+
+    private final StringRedisTemplate redisTemplate;
+
+
+    public LoginAttemptService(
+            StringRedisTemplate redisTemplate
+    ) {
+
+        this.redisTemplate =
+                redisTemplate;
+    }
 
 
     // =========================================================
@@ -52,23 +62,32 @@ public class LoginAttemptService {
             String clientIp
     ) {
 
-        Instant now =
-                Instant.now();
+        String emailKey =
+                emailKey(
+                        email
+                );
+
+        String ipKey =
+                ipKey(
+                        clientIp
+                );
+
+
+        long emailFailures =
+                getFailureCount(
+                        emailKey
+                );
+
+        long ipFailures =
+                getFailureCount(
+                        ipKey
+                );
+
 
         return
-                isBlocked(
-                        emailFailures,
-                        normalizeEmail(email),
-                        MAX_FAILURES_PER_EMAIL,
-                        now
-                )
+                emailFailures >= MAX_FAILURES_PER_EMAIL
                         ||
-                        isBlocked(
-                                ipFailures,
-                                normalizeIp(clientIp),
-                                MAX_FAILURES_PER_IP,
-                                now
-                        );
+                        ipFailures >= MAX_FAILURES_PER_IP;
     }
 
 
@@ -81,19 +100,16 @@ public class LoginAttemptService {
             String clientIp
     ) {
 
-        Instant now =
-                Instant.now();
-
         increment(
-                emailFailures,
-                normalizeEmail(email),
-                now
+                emailKey(
+                        email
+                )
         );
 
         increment(
-                ipFailures,
-                normalizeIp(clientIp),
-                now
+                ipKey(
+                        clientIp
+                )
         );
     }
 
@@ -101,17 +117,21 @@ public class LoginAttemptService {
     // =========================================================
     // SUCCESSFUL LOGIN
     //
-    // Başarılı girişte ilgili hesabın başarısız deneme sayacını
-    // temizliyoruz. IP sayacını silmiyoruz; aynı IP üzerinden çok
-    // sayıda hesaba brute-force yapılmasını engellemeye devam eder.
+    // Başarılı girişte sadece ilgili e-posta sayacını
+    // temizliyoruz.
+    //
+    // IP sayacı korunur. Böylece aynı IP üzerinden çok sayıda
+    // farklı hesaba brute-force yapılması engellenmeye devam eder.
     // =========================================================
 
     public void loginSucceeded(
             String email
     ) {
 
-        emailFailures.remove(
-                normalizeEmail(email)
+        redisTemplate.delete(
+                emailKey(
+                        email
+                )
         );
     }
 
@@ -125,24 +145,22 @@ public class LoginAttemptService {
             String clientIp
     ) {
 
-        Instant now =
-                Instant.now();
-
         long emailRetry =
                 retryAfterSeconds(
-                        emailFailures,
-                        normalizeEmail(email),
-                        MAX_FAILURES_PER_EMAIL,
-                        now
+                        emailKey(
+                                email
+                        ),
+                        MAX_FAILURES_PER_EMAIL
                 );
 
         long ipRetry =
                 retryAfterSeconds(
-                        ipFailures,
-                        normalizeIp(clientIp),
-                        MAX_FAILURES_PER_IP,
-                        now
+                        ipKey(
+                                clientIp
+                        ),
+                        MAX_FAILURES_PER_IP
                 );
+
 
         return Math.max(
                 emailRetry,
@@ -152,97 +170,75 @@ public class LoginAttemptService {
 
 
     // =========================================================
-    // INTERNAL - BLOCK
-    // =========================================================
-
-    private boolean isBlocked(
-            ConcurrentHashMap<String, AttemptWindow> store,
-            String key,
-            int limit,
-            Instant now
-    ) {
-
-        AttemptWindow window =
-                store.get(
-                        key
-                );
-
-        if (
-                window == null
-        ) {
-
-            return false;
-        }
-
-
-        if (
-                isExpired(
-                        window,
-                        now
-                )
-        ) {
-
-            store.remove(
-                    key,
-                    window
-            );
-
-            return false;
-        }
-
-
-        return
-                window.failures()
-                        >=
-                        limit;
-    }
-
-
-    // =========================================================
     // INTERNAL - INCREMENT
     // =========================================================
 
     private void increment(
-            ConcurrentHashMap<String, AttemptWindow> store,
-            String key,
-            Instant now
+            String key
     ) {
 
-        store.compute(
-
-                key,
-
-                (
-                        ignored,
-                        current
-                ) -> {
-
-                    if (
-                            current == null
-                                    ||
-                                    isExpired(
-                                            current,
-                                            now
-                                    )
-                    ) {
-
-                        return new AttemptWindow(
-                                1,
-                                now
+        Long failures =
+                redisTemplate
+                        .opsForValue()
+                        .increment(
+                                key
                         );
-                    }
 
 
-                    return new AttemptWindow(
+        if (
+                failures != null
+                        &&
+                        failures == 1
+        ) {
 
-                            current.failures()
-                                    +
-                                    1,
+            redisTemplate.expire(
+                    key,
+                    WINDOW
+            );
+        }
+    }
 
-                            current.windowStartedAt()
-                    );
-                }
-        );
+
+    // =========================================================
+    // INTERNAL - FAILURE COUNT
+    // =========================================================
+
+    private long getFailureCount(
+            String key
+    ) {
+
+        String value =
+                redisTemplate
+                        .opsForValue()
+                        .get(
+                                key
+                        );
+
+
+        if (
+                value == null
+        ) {
+
+            return 0;
+        }
+
+
+        try {
+
+            return Long.parseLong(
+                    value
+            );
+
+        } catch (
+                NumberFormatException exception
+        ) {
+
+            redisTemplate.delete(
+                    key
+            );
+
+            return 0;
+        }
     }
 
 
@@ -251,86 +247,77 @@ public class LoginAttemptService {
     // =========================================================
 
     private long retryAfterSeconds(
-            ConcurrentHashMap<String, AttemptWindow> store,
             String key,
-            int limit,
-            Instant now
+            int limit
     ) {
 
-        AttemptWindow window =
-                store.get(
+        long failures =
+                getFailureCount(
                         key
                 );
 
+
         if (
-                window == null
-                        ||
-                        window.failures()
-                                <
-                                limit
+                failures < limit
         ) {
 
             return 0;
         }
 
 
+        Long ttl =
+                redisTemplate.getExpire(
+                        key,
+                        TimeUnit.SECONDS
+                );
+
+
         if (
-                isExpired(
-                        window,
-                        now
-                )
+                ttl == null
+                        ||
+                        ttl <= 0
         ) {
 
-            store.remove(
-                    key,
-                    window
+            redisTemplate.delete(
+                    key
             );
 
             return 0;
         }
 
 
-        Instant unlockAt =
-                window.windowStartedAt()
-                        .plus(
-                                WINDOW
-                        );
-
-
-        long seconds =
-                Duration
-                        .between(
-                                now,
-                                unlockAt
-                        )
-                        .getSeconds();
-
-
         return Math.max(
                 1,
-                seconds
+                ttl
         );
     }
 
 
     // =========================================================
-    // INTERNAL - WINDOW
+    // REDIS KEYS
     // =========================================================
 
-    private boolean isExpired(
-            AttemptWindow window,
-            Instant now
+    private String emailKey(
+            String email
     ) {
 
-        return
-                !window
-                        .windowStartedAt()
-                        .plus(
-                                WINDOW
-                        )
-                        .isAfter(
-                                now
-                        );
+        return EMAIL_KEY_PREFIX
+                +
+                normalizeEmail(
+                        email
+                );
+    }
+
+
+    private String ipKey(
+            String clientIp
+    ) {
+
+        return IP_KEY_PREFIX
+                +
+                normalizeIp(
+                        clientIp
+                );
     }
 
 
@@ -373,16 +360,5 @@ public class LoginAttemptService {
 
 
         return clientIp.trim();
-    }
-
-
-    // =========================================================
-    // VALUE OBJECT
-    // =========================================================
-
-    private record AttemptWindow(
-            int failures,
-            Instant windowStartedAt
-    ) {
     }
 }
